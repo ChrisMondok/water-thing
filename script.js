@@ -11,37 +11,31 @@ var pyramidVerts = new Float32Array([
 	 0.5, -0.5,  0.0 //lower right
 ]);
 
+var drawables = [];
+
 function start() {
 	var canvas = document.querySelector('canvas');
 	var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+
+	gl.enable(gl.DEPTH_TEST);
 
 	window.gl = gl;
 
 
 	getProgram(gl).then(function(program) {
+		drawables.push(new Drawable(gl, program));
 		window.program = program;
-		draw(gl, program);
+		requestAnimationFrame(draw);
 	}).then(null, function(e) {
 		console.error(e);
 	});
 }
 
-function draw(gl, program) {
-	gl.useProgram(program);
-
-	var transformLocation = gl.getUniformLocation(program, 'u_transform');
-	gl.uniformMatrix4fv(gl.getUniformLocation(program, 'u_transform'), false, Array.prototype.concat.apply([], transformation.elements));
-
-
-	var vertexPosAttrib = gl.getAttribLocation(program, 'position');
-	gl.enableVertexAttribArray(vertexPosAttrib);
-
-	var vertexPositionBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, pyramidVerts, gl.STATIC_DRAW);
-	gl.vertexAttribPointer(vertexPosAttrib, 3, gl.FLOAT, false, 0, 0);
-
-	gl.drawArrays(gl.TRIANGLE_STRIP, 0, pyramidVerts.length / 3);
+function draw() {
+	drawables.forEach(function(d) {
+		d.draw();
+	});
+	requestAnimationFrame(draw);
 }
 
 function getProgram(gl) {
