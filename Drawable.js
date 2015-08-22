@@ -26,26 +26,11 @@ function Drawable(gl, program) {
 }
 
 Drawable.prototype = Object.create(Actor.prototype);
+Drawable.prototype.vertexBuffer = null;
+Drawable.prototype.colorBuffer = null;
 
-Drawable.prototype.draw = function() {
-	this.gl.useProgram(this.program);
-
-	var transMatLoc = this.gl.getUniformLocation(this.program, 'u_transform');
-	this.gl.uniformMatrix4fv(transMatLoc, false, this.getTransformMatrix().x(camera.getMatrix()).toArray());
-
-	var vertexPosAttrib = gl.getAttribLocation(this.program, 'a_position');
-	this.gl.enableVertexAttribArray(vertexPosAttrib);
-
-	var vertexColorAttrib = gl.getAttribLocation(this.program, 'a_color');
-	this.gl.enableVertexAttribArray(vertexColorAttrib);
-	
-	this.gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-	this.gl.vertexAttribPointer(vertexPosAttrib, 3, gl.FLOAT, false, 0, 0);
-
-	this.gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
-	this.gl.vertexAttribPointer(vertexColorAttrib, 4, gl.UNSIGNED_BYTE, false, 0, 0);
-
-	this.gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.vertices.length / 3);
+Drawable.prototype.draw = function(renderer) {
+	renderer.drawTriangleStripColored(this.vertexBuffer, this.colorBuffer, this.vertices.length / 3);
 };
 
 Drawable.prototype.createBuffers = function() {
