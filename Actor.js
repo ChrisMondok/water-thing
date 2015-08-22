@@ -15,6 +15,9 @@ Object.defineProperty(Actor.prototype, 'z', {
 	set: function(z) { return this.position.elements[2] = z; }
 });
 
+Actor.prototype.tick = function(dt) {
+};
+
 Actor.prototype.getTransformMatrix = function() {
 	return Matrix.create([
 		[ 1,  0,  0,  0],

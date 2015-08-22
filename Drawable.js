@@ -1,24 +1,5 @@
 function Drawable(gl) {
 	Actor.apply(this);
-
-	this.vertices = new Float32Array([
-		- 50.0, - 50.0, +  0.0, //lower left
-		+ 50.0, - 50.0, +  0.0, //lower right
-	 	+  0.0, + 50.0, +  0.0, //top
-	 	+  0.0, +  0.0, + 50.0, //center
-		- 50.0, - 50.0, +  0.0, //lower left
-		+ 50.0, - 50.0, +  0.0 //lower right
-	]);
-
-	this.colors = new Uint8Array([
-		0, 0, 255, 255, //lower left, blue
-		0, 255, 0, 255, //lower right, green
-		255, 0, 0, 255, //top, red
-		0, 0, 0, 255, //center, black
-		0, 0, 255, 255, //lower left, blue
-		0, 255, 0, 255  //lower right, green
-	]);
-
 	this.createBuffers(gl);
 }
 
@@ -33,6 +14,9 @@ Drawable.prototype.draw = function(renderer) {
 };
 
 Drawable.prototype.createBuffers = function(gl) {
+	if(!this.vertices || !this.colors)
+		throw new Error("Drawable did not set its vertices / colors!");
+
 	this.vertexBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, this.vertices, gl.STATIC_DRAW);

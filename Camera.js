@@ -45,49 +45,4 @@ Camera.prototype = Object.create(Actor.prototype);
 			[0, 0, near * far / (near - far) * 2, 0]
 		]);
 	}
-
-	function translateMatrix(x, y, z) {
-		return Matrix.create([
-			[ 1,  0,  0,  0],
-			[ 0,  1,  0,  0],
-			[ 0,  0,  1,  0],
-			[ x,  y,  z,  1]
-		]);
-	}
-
-	function yawMatrix(yaw) { 
-		var c = Math.cos(yaw);
-		var s = Math.sin(yaw);
-		return Matrix.create([
-			[ c,  s,  0,  0],
-			[-s,  c,  0,  0],
-			[ 0,  0,  1,  0],
-			[ 0,  0,  0,  1]
-		]);
-	}
-
-	function pitchMatrix(pitch) {
-		var c = Math.cos(pitch);
-		var s = Math.sin(pitch);
-
-		return Matrix.create([
-			[ 1,  0,  0,  0],
-			[ 0,  c,  s,  0],
-			[ 0, -s,  c,  0],
-			[ 0,  0,  0,  1]
-		]);
-	}
-
-	function rollMatrix(roll) {
-		var c = Math.cos(roll);
-		var s = Math.sin(roll);
-
-		return Matrix.create([
-			[ c,  0, -s,  0],
-			[ 0,  1,  0,  0],
-			[ s,  0,  c,  0],
-			[ 0,  0,  0,  1]
-		]);
-	}
-
 })();

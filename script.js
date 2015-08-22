@@ -33,17 +33,20 @@ function start() {
 	getProgram(gl).then(function(program) {
 		renderPass = new RenderPass(gl, program);
 
-		var d = new Drawable(gl);
+		var d = new Pyramid(gl);
 		d.x = 100;
 		renderPass.drawables.push(d);
 
-		d = new Drawable(gl, program);
+		d = new Pyramid(gl);
 		d.x = -100;
 		renderPass.drawables.push(d);
 
-		d = new Drawable(gl, program);
+		d = new Pyramid(gl);
 		d.y = -100;
 		renderPass.drawables.push(d);
+
+		var water = window.water = new WaterSurface(gl, 200, 8);
+		renderPass.drawables.push(water);
 
 		requestAnimationFrame(draw);
 	}).then(null, function(e) {

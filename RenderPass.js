@@ -4,6 +4,7 @@ function RenderPass(gl, program) {
 	this.drawables = [];
 
 	this.gl.enable(gl.DEPTH_TEST);
+	//this.gl.enable(gl.CULL_FACE);
 
 	this.u_transform = gl.getUniformLocation(program, 'u_transform');
 	this.a_position =  gl.getAttribLocation(program, 'a_position');
@@ -30,7 +31,7 @@ RenderPass.prototype.drawTriangleStripColored = function(vertBuffer, colorBuffer
 		this.gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0);
 
 		this.gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-		this.gl.vertexAttribPointer(this.a_color, 4, gl.UNSIGNED_BYTE, false, 0, 0);
+		this.gl.vertexAttribPointer(this.a_color, 4, gl.FLOAT, false, 0, 0);
 
 		this.gl.drawArrays(gl.TRIANGLE_STRIP, 0, numVerts);
 };
