@@ -14,7 +14,7 @@ function RenderPass(gl, program) {
 	this.gl.enableVertexAttribArray(this.a_color);
 }
 
-RenderPass.prototype.render = function(camera) {
+RenderPass.prototype.render = function(camera, timestamp) {
 	this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
 	this.gl.useProgram(this.program);
@@ -22,7 +22,7 @@ RenderPass.prototype.render = function(camera) {
 	for(var i = 0; i < this.drawables.length; i++) {
 		var d = this.drawables[i];
 		this.gl.uniformMatrix4fv(this.u_transform, false, d.getTransformMatrix().x(camera.getMatrix()).toArray());
-		this.drawables[i].draw(this);
+		this.drawables[i].draw(this, timestamp);
 	}
 };
 

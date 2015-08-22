@@ -9,7 +9,7 @@ Drawable.prototype.colorBuffer = null;
 Drawable.prototype.vertices = null;
 Drawable.prototype.colors = null;
 
-Drawable.prototype.draw = function(renderer) {
+Drawable.prototype.draw = function(renderer, timestamp) {
 	renderer.drawTriangleStripColored(this.vertexBuffer, this.colorBuffer, this.vertices.length / 3);
 };
 
