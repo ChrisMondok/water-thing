@@ -15,24 +15,37 @@ var drawables = [];
 
 function start() {
 	var canvas = document.querySelector('canvas');
-	var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+	var gl = window.gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 
 	gl.enable(gl.DEPTH_TEST);
 
-	window.gl = gl;
+	var camera = window.camera = new Camera();
 
 	function draw(ts) {
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		drawables.forEach(function(d) {
 			d.draw();
 		});
+
+		var angle = ts / 1000;
+		camera.x = Math.sin(angle) * 150;
+		camera.y = Math.cos(angle) * 150;
 		requestAnimationFrame(draw);
 	}
 
 	getProgram(gl).then(function(program) {
 		var d = new Drawable(gl, program);
-		d.x = 50;
+		d.x = 100;
 		drawables.push(d);
+
+		d = new Drawable(gl, program);
+		d.x = -100;
+		drawables.push(d);
+
+		d = new Drawable(gl, program);
+		d.y = -100;
+		drawables.push(d);
+
 		window.d = d;
 		window.program = program;
 		requestAnimationFrame(draw);

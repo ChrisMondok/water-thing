@@ -2,13 +2,15 @@ function Drawable(gl, program) {
 	this.gl = gl;
 	this.program = program;
 
-	this.vertices =  new Float32Array([
-		this.x - 50.0, this.y - 50.0, this.z - 50.0, //lower left
-		this.x + 50.0, this.y - 50.0, this.z - 50.0, //lower right
-	 	this.x +  0.0, this.y + 50.0, this.z - 50.0, //top
-	 	this.x +  0.0, this.y +  0.0, this.z +  0.0, //center
-		this.x - 50.0, this.y - 50.0, this.z - 50.0, //lower left
-		this.x + 50.0, this.y - 50.0, this.z - 50.0 //lower right
+	Actor.apply(this);
+
+	this.vertices = new Float32Array([
+		- 50.0, - 50.0, +  0.0, //lower left
+		+ 50.0, - 50.0, +  0.0, //lower right
+	 	+  0.0, + 50.0, +  0.0, //top
+	 	+  0.0, +  0.0, + 50.0, //center
+		- 50.0, - 50.0, +  0.0, //lower left
+		+ 50.0, - 50.0, +  0.0 //lower right
 	]);
 
 	this.colors = new Uint8Array([
@@ -23,22 +25,13 @@ function Drawable(gl, program) {
 	this.createBuffers();
 }
 
-Drawable.prototype.x = 0;
-Drawable.prototype.y = 0;
-Drawable.prototype.z = 0;
+Drawable.prototype = Object.create(Actor.prototype);
 
 Drawable.prototype.draw = function() {
 	this.gl.useProgram(this.program);
 
-	var transformMatrix = Matrix.create([
-		[ 1,  0,  0,  0],
-		[ 0,  1,  0,  0],
-		[ 0,  0,  1,  0],
-		[ this.x,  this.y,  this.z,  1]
-	]);
-
 	var transMatLoc = this.gl.getUniformLocation(this.program, 'u_transform');
-	this.gl.uniformMatrix4fv(transMatLoc, false, transformMatrix.x(camera.getMatrix()).toArray());
+	this.gl.uniformMatrix4fv(transMatLoc, false, this.getTransformMatrix().x(camera.getMatrix()).toArray());
 
 	var vertexPosAttrib = gl.getAttribLocation(this.program, 'a_position');
 	this.gl.enableVertexAttribArray(vertexPosAttrib);

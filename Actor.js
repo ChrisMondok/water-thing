@@ -20,6 +20,6 @@ Actor.prototype.getTransformMatrix = function() {
 		[ 1,  0,  0,  0],
 		[ 0,  1,  0,  0],
 		[ 0,  0,  1,  0],
-		[ this.position.elements.concat(1) ]
+		this.position.elements.concat(1)
 	]);
 };

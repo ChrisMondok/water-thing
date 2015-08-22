@@ -1,14 +1,16 @@
 function Camera(gl, program) {
+	Actor.apply(this);
+
 	this.pitch = 0;
 	this.yaw = 0;
 	this.roll = 0;
-	this.fov = 60;
+	this.fov = Math.degToRad(60);
 	this.near = 1;
 	this.far = 1000;
 
-	this.position = Vector.create([0, 0, 100]);
+	this.position.setElements([0, 50, 50]);
 	this.target = Vector.create([0, 0, 0]);
-	this.up = Vector.create([0, -1, 0]);
+	this.up = Vector.create([0, 0, 1]);
 }
 
 Camera.prototype = Object.create(Actor.prototype);
@@ -89,4 +91,3 @@ Camera.prototype = Object.create(Actor.prototype);
 	}
 
 })();
-var camera = new Camera();
