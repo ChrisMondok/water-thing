@@ -21,6 +21,13 @@ function start() {
 
 	window.gl = gl;
 
+	function draw(ts) {
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		drawables.forEach(function(d) {
+			d.draw();
+		});
+		requestAnimationFrame(draw);
+	}
 
 	getProgram(gl).then(function(program) {
 		drawables.push(new Drawable(gl, program));
@@ -31,12 +38,6 @@ function start() {
 	});
 }
 
-function draw() {
-	drawables.forEach(function(d) {
-		d.draw();
-	});
-	requestAnimationFrame(draw);
-}
 
 function getProgram(gl) {
 	var program = gl.createProgram();
