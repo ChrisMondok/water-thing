@@ -1,30 +1,37 @@
 function Camera(gl, program) {
-	this.x = 0;
-	this.y = 0;
-	this.z = -100;
 	this.pitch = 0;
 	this.yaw = 0;
 	this.roll = 0;
 	this.fov = 60;
 	this.near = 1;
 	this.far = 1000;
+
+	this.position = Vector.create([0, 0, 100]);
+	this.target = Vector.create([0, 0, 0]);
+	this.up = Vector.create([0, -1, 0]);
 }
 
+Camera.prototype = Object.create(Actor.prototype);
 
 (function() {
 	Camera.prototype.getMatrix = function() {
-		var mats = [
-			translateMatrix(this.x, this.y, this.z),
-			yawMatrix(this.yaw),
-			rollMatrix(this.roll),
-			pitchMatrix(this.pitch),
-			perspectiveMatrix(this.fov, 4/3, this.near, this.far)
-		];
-
-		return mats.reduce(function(a, b) {
-			return a.x(b);
-		});
+		var cameraMatrix = lookAt(this.position, this.target, this.up);
+		var viewMatrix = cameraMatrix.inverse();
+		return viewMatrix.x(perspectiveMatrix(this.fov, 4/3, this.near, this.far));
 	};
+
+	function lookAt(position, target, up) {
+		var zAxis = position.subtract(target).normalize();
+		var xAxis = up.cross(zAxis);
+		var yAxis = zAxis.cross(xAxis);
+
+		return Matrix.create([
+			xAxis.elements.concat(0),
+			yAxis.elements.concat(0),
+			zAxis.elements.concat(0),
+			position.elements.concat(1)
+		]);
+	}
 
 	function perspectiveMatrix(fov, aspect, near, far) {
 		var f = Math.tan(Math.PI * 0.5 - 0.5 * fov);

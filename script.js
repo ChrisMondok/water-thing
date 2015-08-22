@@ -30,7 +30,10 @@ function start() {
 	}
 
 	getProgram(gl).then(function(program) {
-		drawables.push(new Drawable(gl, program));
+		var d = new Drawable(gl, program);
+		d.x = 50;
+		drawables.push(d);
+		window.d = d;
 		window.program = program;
 		requestAnimationFrame(draw);
 	}).then(null, function(e) {
