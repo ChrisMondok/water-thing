@@ -9,12 +9,12 @@ Vector.prototype.magnitude = function() {
 Vector.prototype.normalize = function() {
 	var magnitude = this.magnitude();
 	return this.map(function(value) {
-		return magnitude > 0.00001 ? value / magnitude : 0;
+		return magnitude > Sylvester.precision ? value / magnitude : 0;
 	});
 };
 
 Array.prototype.flatten = function() {
-	//yeah, this is gross, but it's much faster than array.reduce(concat)
+	//yeah, this is ugly, but it's much faster than array.reduce(concat)
 	var count = this.reduce(function(count, a) {
 		return count + a.length;
 	}, 0);

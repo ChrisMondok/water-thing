@@ -1,7 +1,4 @@
-function Drawable(gl, program) {
-	this.gl = gl;
-	this.program = program;
-
+function Drawable(gl) {
 	Actor.apply(this);
 
 	this.vertices = new Float32Array([
@@ -22,23 +19,25 @@ function Drawable(gl, program) {
 		0, 255, 0, 255  //lower right, green
 	]);
 
-	this.createBuffers();
+	this.createBuffers(gl);
 }
 
 Drawable.prototype = Object.create(Actor.prototype);
 Drawable.prototype.vertexBuffer = null;
 Drawable.prototype.colorBuffer = null;
+Drawable.prototype.vertices = null;
+Drawable.prototype.colors = null;
 
 Drawable.prototype.draw = function(renderer) {
 	renderer.drawTriangleStripColored(this.vertexBuffer, this.colorBuffer, this.vertices.length / 3);
 };
 
-Drawable.prototype.createBuffers = function() {
-	this.vertexBuffer = this.gl.createBuffer();
-	this.gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-	this.gl.bufferData(gl.ARRAY_BUFFER, this.vertices, gl.STATIC_DRAW);
+Drawable.prototype.createBuffers = function(gl) {
+	this.vertexBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, this.vertices, gl.STATIC_DRAW);
 
-	this.colorBuffer = this.gl.createBuffer();
-	this.gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
-	this.gl.bufferData(gl.ARRAY_BUFFER, this.colors, gl.STATIC_DRAW);
+	this.colorBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, this.colors, gl.STATIC_DRAW);
 };

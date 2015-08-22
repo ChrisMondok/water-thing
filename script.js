@@ -19,7 +19,7 @@ function start() {
 
 	var renderPass;
 
-	var camera = window.camera = new Camera();
+	var camera = new Camera();
 
 	function draw(ts) {
 		renderPass.render(camera);
@@ -33,7 +33,7 @@ function start() {
 	getProgram(gl).then(function(program) {
 		renderPass = new RenderPass(gl, program);
 
-		var d = new Drawable(gl, program);
+		var d = new Drawable(gl);
 		d.x = 100;
 		renderPass.drawables.push(d);
 
@@ -45,8 +45,6 @@ function start() {
 		d.y = -100;
 		renderPass.drawables.push(d);
 
-		window.d = d;
-		window.program = program;
 		requestAnimationFrame(draw);
 	}).then(null, function(e) {
 		console.error(e);
