@@ -3,12 +3,12 @@ function Drawable(gl, program) {
 	this.program = program;
 
 	this.vertices =  new Float32Array([
-		-0.5, -0.5, -2.0, //lower left
-	 	 0.5, -0.5, -2.0, //lower right
-	 	 0.0,  0.5, -2.0, //top
-	 	 0.0,  0.0, -1.75, //center
-		-0.5, -0.5, -2.0, //lower left
-	 	 0.5, -0.5, -2.0 //lower right
+		-50.0, -50.0, -50.0, //lower left
+	 	 50.0, -50.0, -50.0, //lower right
+	 	  0.0,  50.0, -50.0, //top
+	 	  0.0,   0.0,   0.0, //center
+		-50.0, -50.0, -50.0, //lower left
+	 	 50.0, -50.0, -50.0 //lower right
 	]);
 
 	this.colors = new Uint8Array([
