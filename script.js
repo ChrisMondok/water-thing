@@ -76,6 +76,7 @@ function start() {
 		var b = new Buoy(gl, water, [0, 0.5, 0.2]);
 		renderPass.drawables.push(b);
 		actors.push(b);
+		window.buoy = b;
 
 		var waterSurface = new WaterSurface(gl, water, 300, 32);
 		renderPass.drawables.push(waterSurface);
