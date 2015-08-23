@@ -94,13 +94,13 @@ WaterSurface.prototype.updateBuffers = function(timestamp) {
 
 	for(var y = 0; y < rows - 1; y++) {
 		for(var x = 0; x < columns; x++) {
-			addVertex(x, y);
 			addVertex(x, y + 1);
+			addVertex(x, y);
 		}
 
 		if(y < rows - 2) {
-			addVertex(columns - 1, y + 1);
-			addVertex(0, y + 1);
+			addVertex(columns - 1, y);
+			addVertex(0, y + 2);
 		}
 	}
 };
