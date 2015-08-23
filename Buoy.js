@@ -22,8 +22,8 @@ Buoy.prototype.createVertices = function() {
 		x = Math.cos(angle) * this.radius;
 		y = Math.sin(angle) * this.radius;
 
-		verts.push(x, y, -this.height / 4);
 		verts.push(x, y, 3 * this.height / 4);
+		verts.push(x, y, -this.height / 4);
 	}
 
 	//TODO: top and bottom
@@ -32,7 +32,10 @@ Buoy.prototype.createVertices = function() {
 };
 
 Buoy.prototype.tick = function(timestamp) {
-	this.z = this.water.getZ(timestamp, Vector.create([this.x, this.y]));
+	var v = this.getVector2D();
+	this.z = this.water.getZ(timestamp, v);
+	var normal = this.water.getNormal(timestamp, v);
+	this.rotation.setElements([normal.elements[1], normal.elements[0], 0]);
 };
 
 Buoy.prototype.createColors = function(color) {

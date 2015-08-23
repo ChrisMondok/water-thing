@@ -12,6 +12,19 @@ Water.prototype.getZ = function(timestamp, vec2) {
 	}, 0);
 };
 
+Water.prototype.getSlope = function(timestamp, vec2) {
+	return this.waveSources.map(function(ws) {
+		return ws.getSlope(timestamp, vec2);
+	}).reduce(function(a, b) {
+		return a.add(b);
+	}, Vector.create([0, 0]));
+};
+
+Water.prototype.getNormal = function(timestamp, vec2) {
+	var slope = this.getSlope(timestamp, vec2);
+	return Vector.create([1, 0, -slope.e(1)]).cross(Vector.create([0, 1, slope.e(2)])).normalize();
+};
+
 function WaveSource(fluid) {
 	Actor2D.apply(this);
 	this.fluid = fluid;
@@ -47,8 +60,22 @@ function PointWaveSource(fluid) {
 
 PointWaveSource.prototype = WaveSource.prototype;
 
-PointWaveSource.prototype.getZ = function(timestamp, vec2d) {
+PointWaveSource.prototype.getPhase = function(timestamp, vec2d) {
 	var dist = this.position.distanceFrom(vec2d);
-	var phase = -dist / this.getWavelength() + 2 * Math.PI * (timestamp/ (1000 * this.period)) + this.phase;
+	return -dist / this.getWavelength() + 2 * Math.PI * (timestamp/ (1000 * this.period)) + this.phase;
+};
+
+PointWaveSource.prototype.getZ = function(timestamp, vec2d) {
+	var phase = this.getPhase(timestamp, vec2d);
 	return Math.sin(phase) * this.amplitude;
+};
+
+PointWaveSource.prototype.getSlope = function(timestamp, vec2d) {
+	var phase = this.getPhase(timestamp, vec2d);
+	var slope = Math.cos(phase) * this.amplitude / this.getWavelength();
+	var angle = Math.atan2(vec2d.e(2) - this.y, vec2d.e(1) - this.x);
+	return Vector.create([
+		Math.cos(angle) * slope,
+		Math.sin(angle) * slope
+	]);
 }

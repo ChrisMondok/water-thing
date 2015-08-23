@@ -26,6 +26,10 @@ Object.defineProperty(Actor.prototype, 'roll', {
 	set: function(roll) { return this.rotation.elements[1] = roll; }
 });
 
+Actor.prototype.getVector2D = function() {
+	return Vector.create([this.x, this.y]);
+};
+
 Actor.prototype.getTransformMatrix = function() {
 	var self = this;
 

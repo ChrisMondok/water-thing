@@ -43,42 +43,30 @@ function start() {
 		renderPass = new RenderPass(gl, program);
 
 		var water = window.water = new Water();
+
 		var pws = new PointWaveSource(water);
-		pws.x = 100;
+		pws.x = 200;
+		pws.y = 50;
 		pws.phase = Math.PI;
-		pws.period = 1.2;
 		water.waveSources.push(pws);
 
 		pws = new PointWaveSource(water);
-		pws.x = -100;
-		water.waveSources.push(pws);
-
-		pws = new PointWaveSource(water);
+		pws.x = -50;
 		pws.y = -100;
 		pws.period = 1.4;
 		water.waveSources.push(pws);
 
-		var d = new Pyramid(gl);
-		d.x = 100;
-		renderPass.drawables.push(d);
-		actors.push(d);
-
-		d = new Pyramid(gl);
-		d.x = -100;
-		renderPass.drawables.push(d);
-		actors.push(d);
-
-		d = new Pyramid(gl);
-		d.y = -100;
-		renderPass.drawables.push(d);
-		actors.push(d);
-
 		var b = new Buoy(gl, water, [0, 0.5, 0.2]);
 		renderPass.drawables.push(b);
+		b.x = -100;
 		actors.push(b);
-		window.buoy = b;
 
-		var waterSurface = new WaterSurface(gl, water, 300, 32);
+		b = new Buoy(gl, water, [0.8, 0, 0]);
+		renderPass.drawables.push(b);
+		b.x = 100;
+		actors.push(b);
+
+		var waterSurface = new WaterSurface(gl, water, 600, 64);
 		renderPass.drawables.push(waterSurface);
 		actors.push(waterSurface);
 
