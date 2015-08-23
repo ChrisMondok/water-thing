@@ -23,9 +23,12 @@ function start() {
 
 	var actors = [];
 
+
 	function tick(ts) {
 		for(var i = 0; i < actors.length; i++)
 			actors[i].tick(ts);
+		draw(ts);
+		requestAnimationFrame(tick);
 	}
 
 	function draw(ts) {
@@ -34,7 +37,6 @@ function start() {
 		var angle = ts / 10000;
 		camera.x = Math.sin(angle) * 200;
 		camera.y = Math.cos(angle) * 200;
-		requestAnimationFrame(draw);
 	}
 
 	getProgram(gl).then(function(program) {
@@ -71,14 +73,15 @@ function start() {
 		renderPass.drawables.push(d);
 		actors.push(d);
 
+		var b = new Buoy(gl, water, [0, 0.5, 0.2]);
+		renderPass.drawables.push(b);
+		actors.push(b);
+
 		var waterSurface = new WaterSurface(gl, water, 300, 32);
 		renderPass.drawables.push(waterSurface);
 		actors.push(waterSurface);
 
-		requestAnimationFrame(function(timestamp) {
-			tick(timestamp);
-			draw(timestamp);
-		});
+		requestAnimationFrame(tick);
 	}).then(null, function(e) {
 		console.error(e);
 	});
