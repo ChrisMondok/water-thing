@@ -39,12 +39,11 @@ Buoy.prototype.tick = function(timestamp) {
 };
 
 Buoy.prototype.createColors = function(color) {
-	var colors = new Float32Array(this.vertices.length / 3 * 4);
-	for(var i = 0; i < colors.length; i += 4) {
+	var colors = new Float32Array(this.vertices.length);
+	for(var i = 0; i < colors.length; i += 3) {
 		colors[i + 0] = color[0];
 		colors[i + 1] = color[1];
 		colors[i + 2] = color[2];
-		colors[i + 3] = 1;
 	}
 
 	return colors;

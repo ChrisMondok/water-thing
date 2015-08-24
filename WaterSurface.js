@@ -9,7 +9,7 @@ function WaterSurface(gl, water, size, cellsPerSide) {
 	var numPoints = (rows - 1) * pointsPerRow + duplicatePoints;
 
 	this.triangleStripArray = new Float32Array(numPoints * 3);
-	this.colorArray = new Float32Array(numPoints * 4);
+	this.colorArray = new Float32Array(numPoints * 3);
 
 	Drawable.call(this, gl);
 }
@@ -88,8 +88,7 @@ WaterSurface.prototype.updateBuffers = function(timestamp) {
 		self.colorArray[c+0] = color[0];
 		self.colorArray[c+1] = color[1];
 		self.colorArray[c+2] = color[2];
-		self.colorArray[c+3] = color[3];
-		c += 4;
+		c += 3;
 	}
 
 	for(var y = 0; y < rows - 1; y++) {
@@ -109,7 +108,6 @@ WaterSurface.prototype.getColor = function(x, y, z) {
 	return [
 		0,
 		130/255 * (20 + z) / 30,
-		148/255 * (20 + z) / 30,
-		1
+		148/255 * (20 + z) / 30
 	];
 };
