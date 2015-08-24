@@ -47,13 +47,14 @@ function start() {
 		var pws = new PointWaveSource(water);
 		pws.x = 200;
 		pws.y = 50;
-		pws.phase = Math.PI;
+		pws.period = 3;
+		pws.amplitude = 10;
 		water.waveSources.push(pws);
 
 		pws = new PointWaveSource(water);
 		pws.x = -50;
 		pws.y = -100;
-		pws.period = 1.4;
+		pws.period = 2;
 		water.waveSources.push(pws);
 
 		var b = new Buoy(gl, water, [0, 0.5, 0.2]);
@@ -66,7 +67,7 @@ function start() {
 		b.x = 100;
 		actors.push(b);
 
-		var waterSurface = new WaterSurface(gl, water, 600, 64);
+		var waterSurface = new WaterSurface(gl, water, 300, 16);
 		renderPass.drawables.push(waterSurface);
 		actors.push(waterSurface);
 
