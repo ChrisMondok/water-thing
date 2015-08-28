@@ -5,10 +5,17 @@ function Buoy(gl, water, color) {
 	this.vertices = this.createVertices();
 	this.colors = this.createColors(color);
 
-	Drawable.call(this, gl);
+	this.vertexBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, this.vertices, gl.STATIC_DRAW);
+
+	this.colorBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, this.colors, gl.STATIC_DRAW);
 }
 
-Buoy.prototype = Object.create(Drawable.prototype);
+Buoy.prototype = Object.create(Actor.prototype);
+Buoy.prototype.constructor = Buoy;
 
 Buoy.prototype.radius = 15;
 Buoy.prototype.facetRes = 12;
@@ -29,6 +36,10 @@ Buoy.prototype.createVertices = function() {
 	//TODO: top and bottom
 
 	return new Float32Array(verts);
+};
+
+Buoy.prototype.draw = function(renderer, timestamp) {
+	renderer.drawTriangleStripColored(this.vertexBuffer, this.colorBuffer, this.vertices.length / 3);
 };
 
 Buoy.prototype.tick = function(timestamp) {

@@ -17,7 +17,7 @@ function start() {
 	var canvas = document.querySelector('canvas');
 	var gl = window.gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 
-	var renderPass;
+	var renderer;
 
 	var camera = window.camera = new Camera();
 
@@ -32,7 +32,7 @@ function start() {
 	}
 
 	function draw(ts) {
-		renderPass.render(camera, ts);
+		renderer.render(camera, ts);
 
 		var angle = ts / 10000;
 		camera.x = Math.sin(angle) * 200;
@@ -40,7 +40,7 @@ function start() {
 	}
 
 	getProgram(gl).then(function(program) {
-		renderPass = new RenderPass(gl, program);
+		renderer = new Renderer(gl, program);
 
 		var water = window.water = new Water();
 
@@ -58,17 +58,17 @@ function start() {
 		water.waveSources.push(pws);
 
 		var b = new Buoy(gl, water, [0, 0.5, 0.2]);
-		renderPass.drawables.push(b);
+		renderer.drawables.push(b);
 		b.x = -100;
 		actors.push(b);
 
 		b = new Buoy(gl, water, [0.8, 0, 0]);
-		renderPass.drawables.push(b);
+		renderer.drawables.push(b);
 		b.x = 100;
 		actors.push(b);
 
 		var waterSurface = new WaterSurface(gl, water, 300, 16);
-		renderPass.drawables.push(waterSurface);
+		renderer.drawables.push(waterSurface);
 		actors.push(waterSurface);
 
 		requestAnimationFrame(tick);

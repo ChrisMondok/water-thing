@@ -1,4 +1,5 @@
 function WaterSurface(gl, water, size, cellsPerSide) {
+	Actor.apply(this, gl);
 	this.size = size;
 	this.cellsPerSide = cellsPerSide;
 	this.water = water;
@@ -11,10 +12,11 @@ function WaterSurface(gl, water, size, cellsPerSide) {
 	this.triangleStripArray = new Float32Array(numPoints * 3);
 	this.colorArray = new Float32Array(numPoints * 3);
 
-	Drawable.call(this, gl);
+	this.createBuffers(gl);
 }
 
-WaterSurface.prototype = Object.create(Drawable.prototype);
+WaterSurface.prototype = Object.create(Actor.prototype);
+WaterSurface.prototype.constructor = WaterSurface;
 
 WaterSurface.prototype.width = 100;
 WaterSurface.prototype.height = 100;
@@ -57,7 +59,7 @@ WaterSurface.prototype.draw = function(renderer, timestamp) {
 	gl.bufferData(gl.ARRAY_BUFFER, this.triangleStripArray, gl.DYNAMIC_DRAW);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, this.colorArray, gl.STATIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER, this.colorArray, gl.DYNAMIC_DRAW);
 
 	renderer.drawTriangleStripColored(this.vertexBuffer, this.colorBuffer, this.triangleStripArray.length / 3);
 };

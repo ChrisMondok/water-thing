@@ -1,4 +1,4 @@
-function RenderPass(gl, program) {
+function Renderer(gl, program) {
 	this.gl = gl;
 	this.program = program;
 	this.drawables = [];
@@ -14,7 +14,7 @@ function RenderPass(gl, program) {
 	this.gl.enableVertexAttribArray(this.a_color);
 }
 
-RenderPass.prototype.render = function(camera, timestamp) {
+Renderer.prototype.render = function(camera, timestamp) {
 	this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
 	this.gl.useProgram(this.program);
@@ -26,7 +26,7 @@ RenderPass.prototype.render = function(camera, timestamp) {
 	}
 };
 
-RenderPass.prototype.drawTriangleStripColored = function(vertBuffer, colorBuffer, numVerts) {
+Renderer.prototype.drawTriangleStripColored = function(vertBuffer, colorBuffer, numVerts) {
 		this.gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
 		this.gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0);
 
