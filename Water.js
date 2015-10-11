@@ -22,7 +22,7 @@ Water.prototype.getSlope = function(timestamp, vec2) {
 
 Water.prototype.getNormal = function(timestamp, vec2) {
 	var slope = this.getSlope(timestamp, vec2);
-	return Vector.create([1, 0, -slope[0]]).cross(Vector.create([0, 1, slope[1]])).normalize();
+	return Vector.create([slope[0], -slope[1], 1]).normalize();
 };
 
 function WaveSource(fluid) {
