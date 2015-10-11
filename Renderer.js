@@ -4,7 +4,7 @@ function Renderer(gl, program) {
 	this.drawables = [];
 
 	this.gl.enable(gl.DEPTH_TEST);
-	//this.gl.enable(gl.CULL_FACE);
+	this.gl.enable(gl.CULL_FACE);
 
 	this.u_sun = gl.getUniformLocation(program, 'u_sun');
 	this.u_projection = gl.getUniformLocation(program, 'u_projection');

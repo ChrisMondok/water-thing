@@ -29,7 +29,7 @@ primitives.cylinder = function(cx, cy, cz, height, radius, facetRes) {
 	norms.push(0, 0, 1);
 
 	for(i = 0; i <= facetRes; i++) {
-		angle = (i/facetRes % 1) * 2 * Math.PI;
+		angle = ((facetRes - i)/facetRes % 1) * 2 * Math.PI;
 		nx = 0;
 		ny = 0;
 		x = cx + Math.cos(angle) * radius;
