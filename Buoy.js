@@ -2,7 +2,9 @@ function Buoy(gl, water, color) {
 	Actor.apply(this);
 
 	this.water = water;
-	this.vertices = this.createVertices();
+	var cylinder = primitives.cylinder(0, 0, this.height / 4, this.height, this.radius, this.facetRes);
+	this.vertices = cylinder.vertices;
+	this.normals = cylinder.normals;
 	this.colors = this.createColors(color);
 
 	this.vertexBuffer = gl.createBuffer();
@@ -20,23 +22,6 @@ Buoy.prototype.constructor = Buoy;
 Buoy.prototype.radius = 15;
 Buoy.prototype.facetRes = 12;
 Buoy.prototype.height = 50;
-
-Buoy.prototype.createVertices = function() {
-	var verts = [];
-	var angle, x, y;
-	for(var i = 0; i <= this.facetRes; i++) {
-		angle = (i/this.facetRes % 1) * 2 * Math.PI;
-		x = Math.cos(angle) * this.radius;
-		y = Math.sin(angle) * this.radius;
-
-		verts.push(x, y, 3 * this.height / 4);
-		verts.push(x, y, -this.height / 4);
-	}
-
-	//TODO: top and bottom
-
-	return new Float32Array(verts);
-};
 
 Buoy.prototype.draw = function(renderer, timestamp) {
 	renderer.drawTriangleStripColored(this.vertexBuffer, this.colorBuffer, this.vertices.length / 3);

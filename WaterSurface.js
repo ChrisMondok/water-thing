@@ -10,6 +10,7 @@ function WaterSurface(gl, water, size, cellsPerSide) {
 	var numPoints = (rows - 1) * pointsPerRow + duplicatePoints;
 
 	this.triangleStripArray = new Float32Array(numPoints * 3);
+	this.normalArray = new Float32Array(numPoints * 3);
 	this.colorArray = new Float32Array(numPoints * 3);
 
 	this.createBuffers(gl);
@@ -78,7 +79,8 @@ WaterSurface.prototype.updateBuffers = function(timestamp) {
 
 	var verts = this.getVertices(timestamp);
 
-	var s = 0, c = 0;
+	var s = 0, c = 0, n = 0;
+	var vv = Vector.Zero(2);
 	function addVertex(x, y) { //it would be nice if I could inline functions...
 		var v = verts[y][x];
 		self.triangleStripArray[s+0] = v[0];
@@ -91,6 +93,13 @@ WaterSurface.prototype.updateBuffers = function(timestamp) {
 		self.colorArray[c+1] = color[1];
 		self.colorArray[c+2] = color[2];
 		c += 3;
+
+		vv.setElements([x, y]);
+		var normal = self.water.getNormal(timestamp, vv);
+		self.normalArray[n+0] = normal.e(1);
+		self.normalArray[n+1] = normal.e(2);
+		self.normalArray[n+2] = normal.e(3);
+		n += 3;
 	}
 
 	for(var y = 0; y < rows - 1; y++) {
