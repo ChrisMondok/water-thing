@@ -37,6 +37,7 @@ function start() {
 		var angle = ts / 10000;
 		camera.x = Math.sin(angle) * 200;
 		camera.y = Math.cos(angle) * 200;
+		camera.z = Math.sin(ts / 7000) * 50 + 75;
 	}
 
 	getProgram(gl).then(function(program) {

@@ -30,18 +30,8 @@ Actor.prototype.getVector2D = function() {
 	return Vector.create([this.x, this.y]);
 };
 
-Actor.prototype.getTransformMatrix = function() {
+Actor.prototype.getRotationMatrix = function() {
 	var self = this;
-
-	function makeTranslation() {
-		return Matrix.create([
-				[ 1,  0,  0,  0],
-				[ 0,  1,  0,  0],
-				[ 0,  0,  1,  0],
-				self.position.elements.concat(1)
-		]);
-	}
-
 	function makeXRotation() {
 		var c = Math.cos(self.rotation.e(1));
 		var s = Math.sin(self.rotation.e(1));
@@ -75,7 +65,16 @@ Actor.prototype.getTransformMatrix = function() {
 		]);
 	}
 
-	return makeXRotation().x(makeYRotation()).x(makeZRotation()).x(makeTranslation());
+	return makeXRotation().x(makeYRotation()).x(makeZRotation());
+};
+
+Actor.prototype.getTranslationMatrix = function() {
+	return Matrix.create([
+			[ 1,  0,  0,  0],
+			[ 0,  1,  0,  0],
+			[ 0,  0,  1,  0],
+			this.position.elements.concat(1)
+	]);
 };
 
 function Actor2D() {

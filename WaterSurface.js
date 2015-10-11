@@ -11,9 +11,15 @@ function WaterSurface(gl, water, size, cellsPerSide) {
 
 	this.triangleStripArray = new Float32Array(numPoints * 3);
 	this.normalArray = new Float32Array(numPoints * 3);
-	this.colorArray = new Float32Array(numPoints * 3);
 
-	this.createBuffers(gl);
+	this.color = new Float32Array([
+		0,
+		130/255,
+		148/255
+	]);
+
+	this.vertexBuffer = gl.createBuffer();
+	this.normalBuffer = gl.createBuffer();
 }
 
 WaterSurface.prototype = Object.create(Actor.prototype);
@@ -59,15 +65,12 @@ WaterSurface.prototype.draw = function(renderer, timestamp) {
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, this.triangleStripArray, gl.DYNAMIC_DRAW);
 
-	gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, this.colorArray, gl.DYNAMIC_DRAW);
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, this.normalArray, gl.DYNAMIC_DRAW);
 
-	renderer.drawTriangleStripColored(this.vertexBuffer, this.colorBuffer, this.triangleStripArray.length / 3);
-};
+	renderer.setColor(this.color);
 
-WaterSurface.prototype.createBuffers = function(gl) {
-	this.vertexBuffer = gl.createBuffer();
-	this.colorBuffer = gl.createBuffer();
+	renderer.drawTriangleStrip(this.vertexBuffer, this.normalBuffer, this.triangleStripArray.length / 3);
 };
 
 WaterSurface.prototype.updateBuffers = function(timestamp) {
@@ -79,7 +82,7 @@ WaterSurface.prototype.updateBuffers = function(timestamp) {
 
 	var verts = this.getVertices(timestamp);
 
-	var s = 0, c = 0, n = 0;
+	var s = 0, n = 0;
 	var vv = Vector.Zero(2);
 	function addVertex(x, y) { //it would be nice if I could inline functions...
 		var v = verts[y][x];
@@ -88,13 +91,7 @@ WaterSurface.prototype.updateBuffers = function(timestamp) {
 		self.triangleStripArray[s+2] = v[2];
 		s += 3;
 
-		var color = self.getColor(x, y, v[2]);
-		self.colorArray[c+0] = color[0];
-		self.colorArray[c+1] = color[1];
-		self.colorArray[c+2] = color[2];
-		c += 3;
-
-		vv.setElements([x, y]);
+		vv.setElements([v[0], v[1]]);
 		var normal = self.water.getNormal(timestamp, vv);
 		self.normalArray[n+0] = normal.e(1);
 		self.normalArray[n+1] = normal.e(2);
@@ -113,12 +110,4 @@ WaterSurface.prototype.updateBuffers = function(timestamp) {
 			addVertex(0, y + 2);
 		}
 	}
-};
-
-WaterSurface.prototype.getColor = function(x, y, z) {
-	return [
-		0,
-		130/255 * (20 + z) / 30,
-		148/255 * (20 + z) / 30
-	];
 };
