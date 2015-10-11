@@ -68,7 +68,7 @@ function start() {
 		b.x = 100;
 		actors.push(b);
 
-		var waterSurface = new WaterSurface(gl, water, 300, 16);
+		var waterSurface = window.waterSurface = new WaterSurface(gl, water, 300, 16);
 		renderer.drawables.push(waterSurface);
 		actors.push(waterSurface);
 

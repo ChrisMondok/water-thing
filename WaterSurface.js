@@ -41,13 +41,13 @@ WaterSurface.prototype.getVertices = function(timestamp) {
 	}
 
 	function getVertex(x, y) {
-		var xWorld = (x - cps/2) / cps * self.size;
-		var yWorld = (y - cps/2) / cps * self.size;
+		var xWorld = (x - cps/2) / cps * self.size + self.x;
+		var yWorld = (y - cps/2) / cps * self.size + self.y;
 		vec2.elements[0] = xWorld;
 		vec2.elements[1] = yWorld;
 		return [
-			xWorld,
-			yWorld,
+			xWorld - self.x,
+			yWorld - self.y,
 			self.water.getZ(timestamp, vec2)
 		];
 	}
