@@ -114,8 +114,8 @@ function WaterMaterial() {
 	Material.apply(this);
 	this.ambient = new Float32Array([0, 0.2, 0.3]);
 	this.diffuse = new Float32Array([0, 0.2, 0.3]);
-	this.specular = new Float32Array([0.2, 0.8, 0.9]);
+	this.reflectivity = 0.8;
 }
 WaterMaterial.prototype = Object.create(Material.prototype);
-WaterMaterial.prototype.shininess = 6;
+WaterMaterial.prototype.shininess = 10;
 WaterMaterial.prototype.constructor = WaterMaterial;

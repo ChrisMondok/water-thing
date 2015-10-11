@@ -5,9 +5,9 @@ uniform vec3 u_sun;
 uniform vec3 u_camera;
 
 uniform vec3 u_diffuse;
-uniform vec3 u_specular;
 uniform vec3 u_ambient;
 uniform float u_shininess;
+uniform float u_reflectivity;
 
 varying vec3 v_vertex_normal;
 varying vec3 v_vertex_pos;
@@ -42,7 +42,7 @@ mediump vec3 compute_specular() {
 		power = pow(spec_angle, u_shininess);
 	}
 
-	return u_specular * power;
+	return vec3(u_reflectivity * power);
 }
 
 void main() {
