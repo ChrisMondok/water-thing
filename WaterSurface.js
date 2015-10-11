@@ -59,9 +59,11 @@ WaterSurface.prototype.getWorldZ = function(worldX, worldY) {
 	return this.water.getZ(worldX, worldY);
 };
 
-WaterSurface.prototype.draw = function(renderer, timestamp) {
+WaterSurface.prototype.tick = function(timestamp) {
 	this.updateBuffers(timestamp);
+};
 
+WaterSurface.prototype.draw = function(renderer, timestamp) {
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, this.triangleStripArray, gl.DYNAMIC_DRAW);
 
