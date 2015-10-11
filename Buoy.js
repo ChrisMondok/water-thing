@@ -5,7 +5,8 @@ function Buoy(gl, water, color) {
 	var cylinder = primitives.cylinder(0, 0, this.height / 4, this.height, this.radius, this.facetRes);
 	this.vertices = cylinder.vertices;
 	this.normals = cylinder.normals;
-	this.color = new Float32Array(color);
+	this.diffuse = new Float32Array(color);
+	this.specular = new Float32Array([0.2, 0.2, 0.2]);
 
 	this.vertexBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
@@ -24,7 +25,7 @@ Buoy.prototype.facetRes = 24;
 Buoy.prototype.height = 50;
 
 Buoy.prototype.draw = function(renderer, timestamp) {
-	renderer.setColor(this.color);
+	renderer.setMaterial(this.diffuse, this.specular);
 	renderer.drawTriangleStrip(this.vertexBuffer, this.normalBuffer, this.vertices.length / 3);
 };
 

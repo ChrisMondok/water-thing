@@ -12,11 +12,13 @@ function WaterSurface(gl, water, size, cellsPerSide) {
 	this.triangleStripArray = new Float32Array(numPoints * 3);
 	this.normalArray = new Float32Array(numPoints * 3);
 
-	this.color = new Float32Array([
+	this.diffuse = new Float32Array([
 		0,
-		130/255,
-		148/255
+		0.2,
+		0.3
 	]);
+
+	this.specular = new Float32Array([0.2, 0.8, 0.9]);
 
 	this.vertexBuffer = gl.createBuffer();
 	this.normalBuffer = gl.createBuffer();
@@ -70,7 +72,7 @@ WaterSurface.prototype.draw = function(renderer, timestamp) {
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, this.normalArray, gl.DYNAMIC_DRAW);
 
-	renderer.setColor(this.color);
+	renderer.setMaterial(this.diffuse, this.specular);
 
 	renderer.drawTriangleStrip(this.vertexBuffer, this.normalBuffer, this.triangleStripArray.length / 3);
 };

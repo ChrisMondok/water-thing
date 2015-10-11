@@ -7,12 +7,14 @@ function Renderer(gl, program) {
 	//this.gl.enable(gl.CULL_FACE);
 
 	this.u_sun = gl.getUniformLocation(program, 'u_sun');
-	this.u_camera = gl.getUniformLocation(program, 'u_camera');
+	this.u_projection = gl.getUniformLocation(program, 'u_projection');
 	this.u_ambient_light = gl.getUniformLocation(program, 'u_ambient_light');
+	this.u_camera = gl.getUniformLocation(program, 'u_camera');
 
 	this.u_translation = gl.getUniformLocation(program, 'u_translation');
 	this.u_rotation = gl.getUniformLocation(program, 'u_rotation');
-	this.u_color = gl.getUniformLocation(program, 'u_color');
+	this.u_diffuse = gl.getUniformLocation(program, 'u_diffuse');
+	this.u_specular = gl.getUniformLocation(program, 'u_specular');
 
 	this.a_position = gl.getAttribLocation(program, 'a_position');
 	this.gl.enableVertexAttribArray(this.a_position);
@@ -28,10 +30,11 @@ Renderer.prototype.render = function(camera, timestamp) {
 
 	this.gl.useProgram(this.program);
 
-	this.gl.uniformMatrix4fv(this.u_camera, false, camera.getMatrix().toArray());
+	this.gl.uniformMatrix4fv(this.u_projection, false, camera.getMatrix().toArray());
 
 	this.gl.uniform3f(this.u_sun, this.sunPosition.e(1), this.sunPosition.e(2), this.sunPosition.e(3));
 	this.gl.uniform3f(this.u_ambient_light, 0.1, 0.1, 0.1);
+	this.gl.uniform3f(this.u_camera, camera.x, camera.y, camera.z);
 
 	for(var i = 0; i < this.drawables.length; i++) {
 		var d = this.drawables[i];
@@ -41,8 +44,9 @@ Renderer.prototype.render = function(camera, timestamp) {
 	}
 };
 
-Renderer.prototype.setColor = function(colorBuffer) {
-	this.gl.uniform3fv(this.u_color, colorBuffer);
+Renderer.prototype.setMaterial = function(diffuse, specular) {
+	this.gl.uniform3fv(this.u_diffuse, diffuse);
+	this.gl.uniform3fv(this.u_specular, specular);
 };
 
 Renderer.prototype.drawTriangleStrip= function(vertBuffer, normalBuffer, numVerts) {
