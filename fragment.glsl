@@ -19,26 +19,24 @@ mediump vec3 diffuse() {
 }
 
 mediump vec3 ambient() {
-	return u_diffuse * u_ambient_light; //should this use diffuse? specular? idk.
+	return u_diffuse * u_ambient_light;
 }
 
 mediump vec3 specular() {
 	vec3 normal = normalize(v_vertex_normal);
-	//vec3 light_direction = normalize(normalize(u_sun) - normalize(v_vertex_pos));
 	vec3 light_direction = normalize(u_sun);
 
 	float lambertian = max(dot(light_direction, normal), 0.0);
 	float power = 0.0;
 
-	if(lambertian > 0.0) {
-		vec3 view_direction = normalize(v_vertex_normal - u_camera);
+	if(lambertian > 0.0 || lambertian <= 0.0) {
+		vec3 view_direction = normalize(u_camera);
 
 		vec3 half_dir = normalize(light_direction + view_direction);
+
 		float spec_angle = max(dot(half_dir, normal), 0.0);
 		power = pow(spec_angle, u_shininess);
 	}
-
-
 
 	return u_specular * power;
 }
