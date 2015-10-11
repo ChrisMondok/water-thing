@@ -31,7 +31,7 @@ Renderer.prototype.render = function(camera, timestamp) {
 	this.gl.uniformMatrix4fv(this.u_camera, false, camera.getMatrix().toArray());
 
 	this.gl.uniform3f(this.u_sun, this.sunPosition.e(1), this.sunPosition.e(2), this.sunPosition.e(3));
-	this.gl.uniform3f(this.u_ambient_light, 0.2, 0.2, 0.2);
+	this.gl.uniform3f(this.u_ambient_light, 0.1, 0.1, 0.1);
 
 	for(var i = 0; i < this.drawables.length; i++) {
 		var d = this.drawables[i];
