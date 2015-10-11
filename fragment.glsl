@@ -6,6 +6,8 @@ uniform vec3 u_camera;
 
 uniform vec3 u_diffuse;
 uniform vec3 u_specular;
+uniform vec3 u_ambient;
+uniform float u_shininess;
 
 varying vec3 v_vertex_normal;
 varying vec3 v_vertex_pos;
@@ -32,8 +34,8 @@ mediump vec3 specular() {
 		vec3 view_direction = normalize(v_vertex_normal - u_camera);
 
 		vec3 half_dir = normalize(light_direction + view_direction);
-		float specAngle = max(dot(half_dir, normal), 0.0);
-		power = pow(specAngle, 16.0/4.0); //16 is "shininess"
+		float spec_angle = max(dot(half_dir, normal), 0.0);
+		power = pow(spec_angle, u_shininess);
 	}
 
 

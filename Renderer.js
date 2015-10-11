@@ -13,8 +13,11 @@ function Renderer(gl, program) {
 
 	this.u_translation = gl.getUniformLocation(program, 'u_translation');
 	this.u_rotation = gl.getUniformLocation(program, 'u_rotation');
+
 	this.u_diffuse = gl.getUniformLocation(program, 'u_diffuse');
 	this.u_specular = gl.getUniformLocation(program, 'u_specular');
+	this.u_ambient = gl.getUniformLocation(program, 'u_ambient');
+	this.u_shininess = gl.getUniformLocation(program, 'u_shininess');
 
 	this.a_position = gl.getAttribLocation(program, 'a_position');
 	this.gl.enableVertexAttribArray(this.a_position);
@@ -44,9 +47,13 @@ Renderer.prototype.render = function(camera, timestamp) {
 	}
 };
 
-Renderer.prototype.setMaterial = function(diffuse, specular) {
-	this.gl.uniform3fv(this.u_diffuse, diffuse);
-	this.gl.uniform3fv(this.u_specular, specular);
+Renderer.prototype.setMaterial = function(material) {
+	if(!material.isComplete())
+		throw new Error("Material is incomplete!");
+	this.gl.uniform3fv(this.u_diffuse, material.diffuse);
+	this.gl.uniform3fv(this.u_specular, material.specular);
+	this.gl.uniform3fv(this.u_ambient, material.ambient);
+	this.gl.uniform1f(this.u_shininess, material.shininess);
 };
 
 Renderer.prototype.drawTriangleStrip= function(vertBuffer, normalBuffer, numVerts) {
