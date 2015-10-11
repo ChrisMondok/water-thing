@@ -82,7 +82,7 @@ WaterSurface.prototype.updateBuffers = function(timestamp) {
 
 	var s = 0, n = 0;
 	var vv = Vector.Zero(2);
-	function addVertex(x, y) { //it would be nice if I could inline functions...
+	function addVertex(x, y) {
 		var v = verts[y][x];
 		self.triangleStripArray[s+0] = v[0];
 		self.triangleStripArray[s+1] = v[1];

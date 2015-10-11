@@ -16,13 +16,13 @@ Water.prototype.getSlope = function(timestamp, vec2) {
 	return this.waveSources.map(function(ws) {
 		return ws.getSlope(timestamp, vec2);
 	}).reduce(function(a, b) {
-		return a.add(b);
-	}, Vector.create([0, 0]));
+		return [a[0] + b[0], a[1] + b[1]];
+	}, [0, 0]);
 };
 
 Water.prototype.getNormal = function(timestamp, vec2) {
 	var slope = this.getSlope(timestamp, vec2);
-	return Vector.create([1, 0, -slope.e(1)]).cross(Vector.create([0, 1, slope.e(2)])).normalize();
+	return Vector.create([1, 0, -slope[0]]).cross(Vector.create([0, 1, slope[1]])).normalize();
 };
 
 function WaveSource(fluid) {
@@ -83,8 +83,5 @@ PointWaveSource.prototype.getSlope = function(timestamp, vec2d) {
 	var phase = this.getPhase(timestamp, vec2d);
 	var slope =  this.slopeFunction(phase) / this.getWavelength();
 	var angle = Math.atan2(vec2d.e(2) - this.y, vec2d.e(1) - this.x);
-	return Vector.create([
-		Math.cos(angle) * slope,
-		Math.sin(angle) * slope
-	]);
-}
+	return [ Math.cos(angle) * slope, Math.sin(angle) * slope ];
+};
