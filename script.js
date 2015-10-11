@@ -41,7 +41,7 @@ function start() {
 	}
 
 	getProgram(gl).then(function(program) {
-		renderer = new Renderer(gl, program);
+		window.renderer = renderer = new Renderer(gl, program);
 
 		var water = window.water = new Water();
 

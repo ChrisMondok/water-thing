@@ -6,8 +6,9 @@ function Renderer(gl, program) {
 	this.gl.enable(gl.DEPTH_TEST);
 	//this.gl.enable(gl.CULL_FACE);
 
-	this.u_sun_direction = gl.getUniformLocation(program, 'u_sun_direction');
+	this.u_sun = gl.getUniformLocation(program, 'u_sun');
 	this.u_camera = gl.getUniformLocation(program, 'u_camera');
+	this.u_ambient_light = gl.getUniformLocation(program, 'u_ambient_light');
 
 	this.u_translation = gl.getUniformLocation(program, 'u_translation');
 	this.u_rotation = gl.getUniformLocation(program, 'u_rotation');
@@ -29,7 +30,8 @@ Renderer.prototype.render = function(camera, timestamp) {
 
 	this.gl.uniformMatrix4fv(this.u_camera, false, camera.getMatrix().toArray());
 
-	this.gl.uniform3f(this.u_sun_direction, this.sunPosition.e(1), this.sunPosition.e(2), this.sunPosition.e(3));
+	this.gl.uniform3f(this.u_sun, this.sunPosition.e(1), this.sunPosition.e(2), this.sunPosition.e(3));
+	this.gl.uniform3f(this.u_ambient_light, 0.2, 0.2, 0.2);
 
 	for(var i = 0; i < this.drawables.length; i++) {
 		var d = this.drawables[i];
