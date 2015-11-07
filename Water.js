@@ -13,11 +13,15 @@ Water.prototype.getZ = function(timestamp, vec2) {
 };
 
 Water.prototype.getSlope = function(timestamp, vec2) {
-	return this.waveSources.map(function(ws) {
-		return ws.getSlope(timestamp, vec2);
-	}).reduce(function(a, b) {
-		return [a[0] + b[0], a[1] + b[1]];
-	}, [0, 0]);
+	var slope = [0, 0];
+
+	for(var i = 0; i < this.waveSources.length; i++) {
+		var wss = this.waveSources[i].getSlope(timestamp, vec2);
+		slope[0] += wss[0];
+		slope[1] += wss[1];
+	}
+
+	return slope;
 };
 
 Water.prototype.getNormal = function(timestamp, vec2) {
