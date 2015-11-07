@@ -5,7 +5,7 @@ function MaterialEditor(material, materialName) {
 
 	materialName = materialName || material.constructor.name;
 
-	summary.textContent = "Material Editor ("+material.constructor.name+")";
+	summary.textContent = "Material Editor ("+materialName+")";
 
 	container.appendChild(summary);
 
