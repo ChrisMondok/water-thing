@@ -39,8 +39,9 @@ function BuoyMaterial(color) {
 	Material.apply(this);
 	this.diffuse = new Float32Array(color);
 	this.ambient = new Float32Array(color);
-	this.reflectivity = 0.3;
 }
+
 BuoyMaterial.prototype = Object.create(Material.prototype);
+BuoyMaterial.prototype.reflectivity = 0.3;
 BuoyMaterial.prototype.shininess = 6;
 BuoyMaterial.prototype.constructor = BuoyMaterial;
