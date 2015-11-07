@@ -63,12 +63,14 @@ function start() {
 		b.x = -100;
 		actors.push(b);
 
+		new MaterialEditor(b.material, 'Green Buoy');
+
 		b = new Buoy(gl, water, [0.8, 0, 0]);
 		renderer.drawables.push(b);
 		b.x = 100;
 		actors.push(b);
 
-		var waterSurface = window.waterSurface = new WaterSurface(gl, water, 300, 16);
+		var waterSurface = window.waterSurface = new WaterSurface(gl, water, 512, 64);
 		renderer.drawables.push(waterSurface);
 		actors.push(waterSurface);
 

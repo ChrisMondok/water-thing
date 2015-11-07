@@ -1,0 +1,41 @@
+#toolbox {
+	position: absolute;
+	right: 0;
+	top: 0;
+	color: white;
+	background-color: rgba(0, 0, 0, 0.5);
+	font-family: sans;
+}
+
+#toolbox > details {
+	padding: 1em;
+	padding-left: 2em;
+}
+
+#toolbox > details > summary {
+	margin-left: -1em;
+}
+
+#toolbox > details + details {
+	border-top: 1px solid white;
+}
+
+#toolbox label {
+	display: block;
+}
+
+#toolbox label > input {
+	display: block;
+}
+
+#toolbox input[type=range] {
+	width: 320px;
+}
+
+#toolbox section:not(:first-child) {
+	margin-top: 1em;
+}
+
+#toolbox section > header {
+	margin-left: -1em;
+}
