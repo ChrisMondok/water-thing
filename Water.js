@@ -5,11 +5,12 @@ function Water() {
 Water.prototype.viscosity = 12; //this is probably totally the wrong name for this
 
 Water.prototype.getZ = function(timestamp, vec2) {
-	return this.waveSources.map(function(ws) {
-		return ws.getZ(timestamp, vec2);
-	}).reduce(function(a, b) {
-		return a + b;
-	}, 0);
+	var z = 0;
+
+	for(var i = 0; i < this.waveSources.length; i++)
+		z += this.waveSources[i].getZ(timestamp, vec2);
+
+	return z;
 };
 
 Water.prototype.getSlope = function(timestamp, vec2) {
