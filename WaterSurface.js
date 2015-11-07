@@ -29,7 +29,7 @@ WaterSurface.prototype.getVertices = function(timestamp) {
 	var cps = this.cellsPerSide;
 	var output = new Array(cps + 1);
 
-	var vec2 = Vector.create([0, 0]);
+	var xyWorld = [0, 0];
 	for(var y = 0; y < cps + 1; y++) {
 		output[y] = new Array(cps + 1);
 		for(var x = 0; x < cps + 1; x++)
@@ -37,22 +37,20 @@ WaterSurface.prototype.getVertices = function(timestamp) {
 	}
 
 	function getVertex(x, y) {
-		var xWorld = (x - cps/2) / cps * self.size + self.x;
-		var yWorld = (y - cps/2) / cps * self.size + self.y;
-		vec2.elements[0] = xWorld;
-		vec2.elements[1] = yWorld;
+		xyWorld[0] = (x - cps/2) / cps * self.size + self.x;
+		xyWorld[1] = (y - cps/2) / cps * self.size + self.y;
 		return [
-			xWorld - self.x,
-			yWorld - self.y,
-			self.water.getZ(timestamp, vec2)
+			xyWorld[0] - self.x,
+			xyWorld[1] - self.y,
+			self.water.getZ(timestamp, xyWorld)
 		];
 	}
 
 	return output;
 };
 
-WaterSurface.prototype.getWorldZ = function(worldX, worldY) {
-	return this.water.getZ(worldX, worldY);
+WaterSurface.prototype.getWorldZ = function(xy) {
+	return this.water.getZ(xy);
 };
 
 WaterSurface.prototype.tick = function(timestamp) {
@@ -89,11 +87,10 @@ WaterSurface.prototype.updateBuffers = function(timestamp) {
 		self.triangleStripArray[s+2] = v[2];
 		s += 3;
 
-		vv.setElements([v[0], v[1]]);
-		var normal = self.water.getNormal(timestamp, vv);
-		self.normalArray[n+0] = normal.e(1);
-		self.normalArray[n+1] = normal.e(2);
-		self.normalArray[n+2] = normal.e(3);
+		var normal = self.water.getNormal(timestamp, v);
+		self.normalArray[n+0] = normal[0];
+		self.normalArray[n+1] = normal[1];
+		self.normalArray[n+2] = normal[2];
 		n += 3;
 	}
 

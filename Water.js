@@ -4,20 +4,20 @@ function Water() {
 
 Water.prototype.viscosity = 12; //this is probably totally the wrong name for this
 
-Water.prototype.getZ = function(timestamp, vec2) {
+Water.prototype.getZ = function(timestamp, xy) {
 	var z = 0;
 
 	for(var i = 0; i < this.waveSources.length; i++)
-		z += this.waveSources[i].getZ(timestamp, vec2);
+		z += this.waveSources[i].getZ(timestamp, xy);
 
 	return z;
 };
 
-Water.prototype.getSlope = function(timestamp, vec2) {
+Water.prototype.getSlope = function(timestamp, xy) {
 	var slope = [0, 0];
 
 	for(var i = 0; i < this.waveSources.length; i++) {
-		var wss = this.waveSources[i].getSlope(timestamp, vec2);
+		var wss = this.waveSources[i].getSlope(timestamp, xy);
 		slope[0] += wss[0];
 		slope[1] += wss[1];
 	}
@@ -25,9 +25,9 @@ Water.prototype.getSlope = function(timestamp, vec2) {
 	return slope;
 };
 
-Water.prototype.getNormal = function(timestamp, vec2) {
-	var slope = this.getSlope(timestamp, vec2);
-	return Vector.create([slope[0], -slope[1], 1]).normalize();
+Water.prototype.getNormal = function(timestamp, xy) {
+	var slope = this.getSlope(timestamp, xy);
+	return [slope[0], -slope[1], 1].normalize();
 };
 
 function WaveSource(fluid) {
@@ -53,10 +53,10 @@ WaveSource.prototype.getWavelength = function() {
 	return this.getSpeed() * this.period;
 };
 
-WaveSource.prototype.getZ = function(timestamp, x, y) {
+WaveSource.prototype.getZ = function(timestamp, xy) {
 	return 0;
 };
 
-WaveSource.prototype.getSlope = function(timestamp, x, y) {
+WaveSource.prototype.getSlope = function(timestamp, xy) {
 	return 0;
 };

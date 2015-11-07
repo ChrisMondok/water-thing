@@ -37,3 +37,31 @@ Math.degToRad = Math.degToRad || function degToRad(deg) {
 Math.radToDeg = Math.radToDeg || function radToDeg(rad) {
 	return rad / Math.PI * 180;
 };
+
+Array.prototype.normalize = function() {
+	var precision = 0.000001;
+	var magnitude = this.magnitude();
+	for(var i = 0; i < this.length; i++)
+		this[i] = magnitude > precision ? this[i] / magnitude : 0;
+	return this;
+};
+
+Array.prototype.magnitude = function() {
+	var sum = 0;
+	for(var i = 0; i < this.length; i++)
+		sum += Math.pow(this[i], 2);
+	
+	return Math.sqrt(sum);
+};
+
+Array.prototype.add = function(other) {
+	for(var i = 0; i < this.length; i++)
+		this[i] += other[i];
+	return this;
+};
+
+Array.prototype.subtract = function(other) {
+	for(var i = 0; i < this.length; i++)
+		this[i] -= other[i];
+	return this;
+};

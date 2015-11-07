@@ -29,10 +29,10 @@ Buoy.prototype.draw = function(renderer, timestamp) {
 };
 
 Buoy.prototype.tick = function(timestamp) {
-	var v = this.getVector2D();
-	this.z = this.water.getZ(timestamp, v);
-	var normal = this.water.getNormal(timestamp, v);
-	this.rotation.setElements([normal.elements[1], normal.elements[0], 0]);
+	var xy = this.getVector2D().elements;
+	this.z = this.water.getZ(timestamp, xy);
+	var normal = this.water.getNormal(timestamp, xy);
+	this.rotation.setElements([normal[1], normal[0], 0]);
 };
 
 function BuoyMaterial(color) {
