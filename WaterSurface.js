@@ -114,5 +114,5 @@ function WaterMaterial() {
 }
 WaterMaterial.prototype = Object.create(Material.prototype);
 WaterMaterial.prototype.reflectivity = 0.8;
-WaterMaterial.prototype.shininess = 10;
+WaterMaterial.prototype.shininess = 24;
 WaterMaterial.prototype.constructor = WaterMaterial;
