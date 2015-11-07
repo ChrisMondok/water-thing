@@ -70,9 +70,13 @@ function start() {
 		b.x = 100;
 		actors.push(b);
 
+		new MaterialEditor(b.material, 'Red Buoy');
+
 		var waterSurface = window.waterSurface = new WaterSurface(gl, water, 512, 64);
 		renderer.drawables.push(waterSurface);
 		actors.push(waterSurface);
+
+		new MaterialEditor(waterSurface.material);
 
 		requestAnimationFrame(tick);
 	}).then(null, function(e) {
