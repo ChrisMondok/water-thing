@@ -15,8 +15,8 @@ function Renderer(gl, program) {
 	this.u_rotation = gl.getUniformLocation(program, 'u_rotation');
 
 	this.u_diffuse = gl.getUniformLocation(program, 'u_diffuse');
+	this.u_emissive = gl.getUniformLocation(program, 'u_emissive');
 	this.u_reflectivity = gl.getUniformLocation(program, 'u_reflectivity');
-	this.u_ambient = gl.getUniformLocation(program, 'u_ambient');
 	this.u_shininess = gl.getUniformLocation(program, 'u_shininess');
 
 	this.a_position = gl.getAttribLocation(program, 'a_position');
@@ -51,8 +51,8 @@ Renderer.prototype.setMaterial = function(material) {
 	if(!material.isComplete())
 		throw new Error("Material is incomplete!");
 	this.gl.uniform3fv(this.u_diffuse, material.diffuse);
+	this.gl.uniform3fv(this.u_emissive, material.emissive);
 	this.gl.uniform1f(this.u_reflectivity, material.reflectivity);
-	this.gl.uniform3fv(this.u_ambient, material.ambient);
 	this.gl.uniform1f(this.u_shininess, material.shininess);
 };
 

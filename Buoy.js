@@ -38,7 +38,7 @@ Buoy.prototype.tick = function(timestamp) {
 function BuoyMaterial(color) {
 	Material.apply(this);
 	this.diffuse = new Float32Array(color);
-	this.ambient = new Float32Array(color);
+	this.emissive = new Float32Array([0, 0, 0]);
 }
 
 BuoyMaterial.prototype = Object.create(Material.prototype);

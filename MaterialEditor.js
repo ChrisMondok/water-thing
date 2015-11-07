@@ -18,7 +18,7 @@ function MaterialEditor(material, materialName) {
 	}, material.shininess, 0, 50, 1));
 
 	container.appendChild(makeColorPicker('Diffuse', material.diffuse));
-	container.appendChild(makeColorPicker('Ambient', material.ambient));
+	container.appendChild(makeColorPicker('Emissive', material.emissive));
 
 	document.querySelector('#toolbox').appendChild(container);
 }
