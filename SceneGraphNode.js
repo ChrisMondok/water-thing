@@ -5,7 +5,7 @@ function SceneGraphNode() {
 }
 
 SceneGraphNode.prototype.walk = function(renderer, timestamp) {
-	renderer.pushTransform(this.getRotationMatrix().x(this.getTranslationMatrix()));
+	renderer.pushTransform(this.getTransformMatrix());
 
 	this.draw(renderer, timestamp);
 	for(var i = 0; i < this.components.length; i++)
@@ -21,20 +21,21 @@ SceneGraphNode.prototype.addComponent = function(c) {
 	this.components.push(c);
 };
 
-SceneGraphNode.prototype.getTranslationMatrix = function() {
-	var x = this.position.elements[0];
-	var y = this.position.elements[1];
-	var z = this.position.elements[2];
-	return Matrix.create([
-		[1, 0, 0, 0],
-		[0, 1, 0, 0],
-		[0, 0, 1, 0],
-		[x, y, z, 1]
-	]);
-};
-
-SceneGraphNode.prototype.getRotationMatrix = function() {
+SceneGraphNode.prototype.getTransformMatrix = function() {
 	var self = this;
+
+	function makeTranslation() {
+		var x = self.position.elements[0];
+		var y = self.position.elements[1];
+		var z = self.position.elements[2];
+		return Matrix.create([
+			[1, 0, 0, 0],
+			[0, 1, 0, 0],
+			[0, 0, 1, 0],
+			[x, y, z, 1]
+		]);
+	}
+
 	function makeXRotation() {
 		var c = Math.cos(self.rotation.e(1));
 		var s = Math.sin(self.rotation.e(1));
@@ -68,5 +69,5 @@ SceneGraphNode.prototype.getRotationMatrix = function() {
 		]);
 	}
 
-	return makeXRotation().x(makeYRotation()).x(makeZRotation());
+	return makeXRotation().x(makeYRotation()).x(makeZRotation()).x(makeTranslation());
 };
