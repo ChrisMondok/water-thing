@@ -69,6 +69,7 @@ function start() {
 		actors.push(b);
 
 		new MaterialEditor(b.material, 'Red Buoy');
+		new MaterialEditor(b.lightMaterial, 'Red Buoy Light');
 
 		var waterSurface = window.waterSurface = new WaterSurface(gl, water, 512, 64);
 		renderer.sceneRoot.addComponent(waterSurface);
