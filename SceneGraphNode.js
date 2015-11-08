@@ -4,13 +4,17 @@ function SceneGraphNode() {
 	this.rotation = Vector.create([0, 0, 0]);
 }
 
-SceneGraphNode.prototype.draw = function(renderer, timestamp, transform) {
-	var localRotation = this.getRotationMatrix();
-	transform = transform.x(localRotation).x(this.getTranslationMatrix());
-	renderer.transform(transform);
+SceneGraphNode.prototype.walk = function(renderer, timestamp) {
+	renderer.pushTransform(this.getRotationMatrix().x(this.getTranslationMatrix()));
 
+	this.draw(renderer, timestamp);
 	for(var i = 0; i < this.components.length; i++)
-		this.components[i].draw(renderer, timestamp, transform);
+		this.components[i].walk(renderer, timestamp);
+
+	renderer.popTransform();
+};
+
+SceneGraphNode.prototype.draw = function(renderer, timestamp) {
 };
 
 SceneGraphNode.prototype.addComponent = function(c) {

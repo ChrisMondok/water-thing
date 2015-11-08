@@ -26,14 +26,9 @@ function Renderer(gl, program) {
 	this.sunPosition = Vector.create([1, 2, 5]).normalize();
 
 	this.sceneRoot = new SceneGraphNode();
-}
 
-var identity = Matrix.create([
-	[1, 0, 0, 0],
-	[0, 1, 0, 0],
-	[0, 0, 1, 0],
-	[0, 0, 0, 1]
-]);
+	this.transformStack = [Matrix.I(4)];
+}
 
 Renderer.prototype.render = function(camera, timestamp) {
 	this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
@@ -46,11 +41,18 @@ Renderer.prototype.render = function(camera, timestamp) {
 	this.gl.uniform3f(this.u_ambient_light, 0.1, 0.1, 0.1);
 	this.gl.uniform3f(this.u_camera, camera.x, camera.y, camera.z);
 
-	this.sceneRoot.draw(this, timestamp, identity);
+	this.sceneRoot.walk(this, timestamp);
 };
 
-Renderer.prototype.transform = function(translation) {
-	this.gl.uniformMatrix4fv(this.u_transform, false, translation.toArray());
+Renderer.prototype.pushTransform = function(transform) {
+	//shift and unshift for easier peek
+	this.transformStack.unshift(this.transformStack[0].x(transform));
+	this.gl.uniformMatrix4fv(this.u_transform, false, this.transformStack[0].toArray());
+};
+
+Renderer.prototype.popTransform = function() {
+	this.transformStack.shift();
+	this.gl.uniformMatrix4fv(this.u_transform, false, this.transformStack[0].toArray());
 };
 
 Renderer.prototype.setMaterial = function(material) {
@@ -62,7 +64,7 @@ Renderer.prototype.setMaterial = function(material) {
 	this.gl.uniform1f(this.u_shininess, material.shininess);
 };
 
-Renderer.prototype.drawTriangleStrip= function(vertBuffer, normalBuffer, numVerts) {
+Renderer.prototype.drawTriangleStrip = function(vertBuffer, normalBuffer, numVerts) {
 	this.gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
 	this.gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0);
 

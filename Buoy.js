@@ -23,7 +23,7 @@ Buoy.prototype.radius = 15;
 Buoy.prototype.facetRes = 24;
 Buoy.prototype.height = 50;
 
-Buoy.prototype.draw = function(renderer, timestamp, translation, rotation) {
+Buoy.prototype.draw = function(renderer, timestamp) {
 	Actor.prototype.draw.apply(this, arguments);
 	renderer.setMaterial(this.material);
 	renderer.drawTriangleStrip(this.vertexBuffer, this.normalBuffer, this.vertices.length / 3);
