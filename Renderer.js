@@ -46,7 +46,7 @@ Renderer.prototype.render = function(camera, timestamp) {
 
 Renderer.prototype.pushTransform = function(transform) {
 	//shift and unshift for easier peek
-	this.transformStack.unshift(this.transformStack[0].x(transform));
+	this.transformStack.unshift(transform.x(this.transformStack[0]));
 	this.gl.uniformMatrix4fv(this.u_transform, false, this.transformStack[0].toArray());
 };
 
