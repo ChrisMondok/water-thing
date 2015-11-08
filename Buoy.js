@@ -23,13 +23,14 @@ Buoy.prototype.radius = 15;
 Buoy.prototype.facetRes = 24;
 Buoy.prototype.height = 50;
 
-Buoy.prototype.draw = function(renderer, timestamp) {
+Buoy.prototype.draw = function(renderer, timestamp, translation, rotation) {
+	Actor.prototype.draw.apply(this, arguments);
 	renderer.setMaterial(this.material);
 	renderer.drawTriangleStrip(this.vertexBuffer, this.normalBuffer, this.vertices.length / 3);
 };
 
 Buoy.prototype.tick = function(timestamp) {
-	var xy = this.getVector2D().elements;
+	var xy = [this.x, this.y];
 	this.z = this.water.getZ(timestamp, xy);
 	var normal = this.water.getNormal(timestamp, xy);
 	this.rotation.setElements([normal[1], normal[0], 0]);

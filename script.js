@@ -11,8 +11,6 @@ var pyramidVerts = new Float32Array([
 	 0.5, -0.5,  0.0 //lower right
 ]);
 
-var drawables = [];
-
 function start() {
 	var canvas = document.querySelector('canvas');
 	var gl = window.gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -59,21 +57,21 @@ function start() {
 		water.waveSources.push(pws);
 
 		var b = new Buoy(gl, water, [0, 0.5, 0.2]);
-		renderer.drawables.push(b);
+		renderer.sceneRoot.addComponent(b);
 		b.x = -100;
 		actors.push(b);
 
 		new MaterialEditor(b.material, 'Green Buoy');
 
 		b = new Buoy(gl, water, [0.8, 0, 0]);
-		renderer.drawables.push(b);
+		renderer.sceneRoot.addComponent(b);
 		b.x = 100;
 		actors.push(b);
 
 		new MaterialEditor(b.material, 'Red Buoy');
 
 		var waterSurface = window.waterSurface = new WaterSurface(gl, water, 512, 64);
-		renderer.drawables.push(waterSurface);
+		renderer.sceneRoot.addComponent(waterSurface);
 		actors.push(waterSurface);
 
 		new MaterialEditor(waterSurface.material);

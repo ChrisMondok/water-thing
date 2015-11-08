@@ -1,7 +1,6 @@
 function Renderer(gl, program) {
 	this.gl = gl;
 	this.program = program;
-	this.drawables = [];
 
 	this.gl.enable(gl.DEPTH_TEST);
 	this.gl.enable(gl.CULL_FACE);
@@ -11,8 +10,7 @@ function Renderer(gl, program) {
 	this.u_ambient_light = gl.getUniformLocation(program, 'u_ambient_light');
 	this.u_camera = gl.getUniformLocation(program, 'u_camera');
 
-	this.u_translation = gl.getUniformLocation(program, 'u_translation');
-	this.u_rotation = gl.getUniformLocation(program, 'u_rotation');
+	this.u_transform = gl.getUniformLocation(program, 'u_transform');
 
 	this.u_diffuse = gl.getUniformLocation(program, 'u_diffuse');
 	this.u_emissive = gl.getUniformLocation(program, 'u_emissive');
@@ -26,7 +24,16 @@ function Renderer(gl, program) {
 	this.gl.enableVertexAttribArray(this.a_normal);
 
 	this.sunPosition = Vector.create([1, 2, 5]).normalize();
+
+	this.sceneRoot = new SceneGraphNode();
 }
+
+var identity = Matrix.create([
+	[1, 0, 0, 0],
+	[0, 1, 0, 0],
+	[0, 0, 1, 0],
+	[0, 0, 0, 1]
+]);
 
 Renderer.prototype.render = function(camera, timestamp) {
 	this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
@@ -39,12 +46,11 @@ Renderer.prototype.render = function(camera, timestamp) {
 	this.gl.uniform3f(this.u_ambient_light, 0.1, 0.1, 0.1);
 	this.gl.uniform3f(this.u_camera, camera.x, camera.y, camera.z);
 
-	for(var i = 0; i < this.drawables.length; i++) {
-		var d = this.drawables[i];
-		this.gl.uniformMatrix4fv(this.u_rotation, false, d.getRotationMatrix().toArray());
-		this.gl.uniformMatrix4fv(this.u_translation, false, d.getTranslationMatrix().toArray());
-		this.drawables[i].draw(this, timestamp);
-	}
+	this.sceneRoot.draw(this, timestamp, identity);
+};
+
+Renderer.prototype.transform = function(translation) {
+	this.gl.uniformMatrix4fv(this.u_transform, false, translation.toArray());
 };
 
 Renderer.prototype.setMaterial = function(material) {

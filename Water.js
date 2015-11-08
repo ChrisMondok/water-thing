@@ -31,11 +31,11 @@ Water.prototype.getNormal = function(timestamp, xy) {
 };
 
 function WaveSource(fluid) {
-	Actor2D.apply(this);
+	Actor.apply(this);
 	this.fluid = fluid;
 }
 
-WaveSource.prototype = Object.create(Actor2D.prototype);
+WaveSource.prototype = Object.create(Actor.prototype);
 WaveSource.prototype.amplitude = 4;
 WaveSource.prototype.period = 1;
 WaveSource.prototype.phase = 0;
