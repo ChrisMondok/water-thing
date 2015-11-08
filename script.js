@@ -57,6 +57,7 @@ function start() {
 		water.waveSources.push(pws);
 
 		var b = new Buoy(gl, water, [0, 0.5, 0.2]);
+		window.b = b;
 		renderer.sceneRoot.addComponent(b);
 		b.x = -100;
 		actors.push(b);
@@ -69,9 +70,8 @@ function start() {
 		actors.push(b);
 
 		new MaterialEditor(b.material, 'Red Buoy');
-		new MaterialEditor(b.lightMaterial, 'Red Buoy Light');
 
-		var waterSurface = window.waterSurface = new WaterSurface(gl, water, 512, 64);
+		var waterSurface = window.waterSurface = new WaterSurface(gl, water, 512, 16);
 		renderer.sceneRoot.addComponent(waterSurface);
 		actors.push(waterSurface);
 
@@ -82,7 +82,6 @@ function start() {
 		console.error(e);
 	});
 }
-
 
 function getProgram(gl) {
 	var program = gl.createProgram();

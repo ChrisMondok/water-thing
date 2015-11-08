@@ -73,3 +73,13 @@ Renderer.prototype.drawTriangleStrip = function(vertBuffer, normalBuffer, numVer
 
 	this.gl.drawArrays(gl.TRIANGLE_STRIP, 0, numVerts);
 };
+
+Renderer.prototype.drawTriangles = function(vertBuffer, normalBuffer, numVerts) {
+	this.gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
+	this.gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0);
+
+	this.gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+	this.gl.vertexAttribPointer(this.a_normal, 3, gl.FLOAT, false, 0, 0);
+
+	this.gl.drawArrays(gl.TRIANGLES, 0, numVerts);
+};

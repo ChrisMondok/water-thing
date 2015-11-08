@@ -2,6 +2,7 @@ function SceneGraphNode() {
 	this.components = [];
 	this.position = Vector.create([0, 0, 0]);
 	this.rotation = Vector.create([0, 0, 0]);
+	this.scale = Vector.create([1, 1, 1]);
 }
 
 SceneGraphNode.prototype.walk = function(renderer, timestamp) {
@@ -23,6 +24,18 @@ SceneGraphNode.prototype.addComponent = function(c) {
 
 SceneGraphNode.prototype.getTransformMatrix = function() {
 	var self = this;
+
+	function makeScale() {
+		var sx = self.scale.elements[0];
+		var sy = self.scale.elements[1];
+		var sz = self.scale.elements[2];
+		return Matrix.create([
+			[sx, 0, 0, 0],
+			[0, sy, 0, 0],
+			[0, 0, sz, 0],
+			[0, 0, 0,  1]
+		]);
+	}
 
 	function makeTranslation() {
 		var x = self.position.elements[0];
@@ -69,5 +82,7 @@ SceneGraphNode.prototype.getTransformMatrix = function() {
 		]);
 	}
 
-	return makeXRotation().x(makeYRotation()).x(makeZRotation()).x(makeTranslation());
+	var rotation = makeXRotation().x(makeYRotation()).x(makeZRotation());
+
+	return makeScale().x(rotation).x(makeTranslation());
 };
