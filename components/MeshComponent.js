@@ -31,3 +31,12 @@ MeshComponent.prototype.draw = function(renderer, timestamp) {
 	renderer.setMaterial(this.material);
 	renderer.draw(this.drawMode, this.vertexBuffer, this.normalBuffer, this.numVertices);
 };
+
+function StaticMeshComponent(mesh, material) {
+	this.createMesh = function() {return mesh;};
+
+	MeshComponent.call(this, material);
+	this.drawMode = gl.TRIANGLES;
+}
+
+StaticMeshComponent.prototype = Object.create(MeshComponent.prototype);
