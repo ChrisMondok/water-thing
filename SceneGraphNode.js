@@ -15,8 +15,7 @@ SceneGraphNode.prototype.walk = function(renderer, timestamp) {
 	renderer.popTransform();
 };
 
-SceneGraphNode.prototype.draw = function(renderer, timestamp) {
-};
+SceneGraphNode.prototype.draw = function(renderer, timestamp) {};
 
 SceneGraphNode.prototype.addComponent = function(c) {
 	this.components.push(c);

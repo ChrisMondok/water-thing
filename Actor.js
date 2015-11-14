@@ -4,8 +4,7 @@ function Actor() {
 
 Actor.prototype = Object.create(SceneGraphNode.prototype);
 
-Actor.prototype.tick = function() {
-};
+Actor.prototype.tick = function() {};
 
 Object.defineProperty(Actor.prototype, 'x', {
 	get: function() { return this.position.elements[0]; },

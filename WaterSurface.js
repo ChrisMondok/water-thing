@@ -67,7 +67,7 @@ WaterSurface.prototype.draw = function(renderer, timestamp) {
 
 	renderer.setMaterial(this.material);
 
-	renderer.drawTriangleStrip(this.vertexBuffer, this.normalBuffer, this.triangleStripArray.length / 3);
+	renderer.draw(gl.TRIANGLE_STRIP, this.vertexBuffer, this.normalBuffer, this.triangleStripArray.length / 3);
 };
 
 WaterSurface.prototype.updateBuffers = function(timestamp) {

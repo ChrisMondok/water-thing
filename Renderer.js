@@ -64,22 +64,12 @@ Renderer.prototype.setMaterial = function(material) {
 	this.gl.uniform1f(this.u_shininess, material.shininess);
 };
 
-Renderer.prototype.drawTriangleStrip = function(vertBuffer, normalBuffer, numVerts) {
+Renderer.prototype.draw = function(mode, vertBuffer, normalBuffer, numVerts) {
 	this.gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
 	this.gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0);
 
 	this.gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
 	this.gl.vertexAttribPointer(this.a_normal, 3, gl.FLOAT, false, 0, 0);
 
-	this.gl.drawArrays(gl.TRIANGLE_STRIP, 0, numVerts);
-};
-
-Renderer.prototype.drawTriangles = function(vertBuffer, normalBuffer, numVerts) {
-	this.gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
-	this.gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0);
-
-	this.gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-	this.gl.vertexAttribPointer(this.a_normal, 3, gl.FLOAT, false, 0, 0);
-
-	this.gl.drawArrays(gl.TRIANGLES, 0, numVerts);
+	this.gl.drawArrays(mode, 0, numVerts);
 };

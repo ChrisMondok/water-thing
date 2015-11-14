@@ -2,17 +2,12 @@ function PrismComponent(material, sides, smooth) {
 	this.sides = sides || 4;
 
 	MeshComponent.apply(this, arguments);
+
+	this.drawMode = gl.TRIANGLES;
 }
 
 PrismComponent.prototype = Object.create(MeshComponent.prototype);
 PrismComponent.prototype.constructor = PrismComponent;
-
-//Don't call MeshComponent.draw here, we've got a triangle list.
-PrismComponent.prototype.draw = function(renderer, timestamp) {
-	Actor.prototype.draw.apply(this, arguments);
-	renderer.setMaterial(this.material);
-	renderer.drawTriangles(this.vertexBuffer, this.normalBuffer, this.numVertices);
-};
 
 PrismComponent.prototype.createMesh = function() {
 	var verts = [];

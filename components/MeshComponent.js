@@ -15,6 +15,8 @@ function MeshComponent(material) {
 	gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW);
 
 	this.numVertices = vertices.length / 3;
+
+	this.drawMode = gl.TRIANGLE_STRIP;
 }
 
 MeshComponent.prototype = Object.create(SceneGraphNode.prototype);
@@ -27,5 +29,5 @@ MeshComponent.prototype.createMesh = function() {
 MeshComponent.prototype.draw = function(renderer, timestamp) {
 	SceneGraphNode.prototype.draw.apply(this, arguments);
 	renderer.setMaterial(this.material);
-	renderer.drawTriangleStrip(this.vertexBuffer, this.normalBuffer, this.numVertices);
+	renderer.draw(this.drawMode, this.vertexBuffer, this.normalBuffer, this.numVertices);
 };
