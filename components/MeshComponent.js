@@ -25,7 +25,7 @@ MeshComponent.prototype.createMesh = function() {
 };
 
 MeshComponent.prototype.draw = function(renderer, timestamp) {
-	Actor.prototype.draw.apply(this, arguments);
+	SceneGraphNode.prototype.draw.apply(this, arguments);
 	renderer.setMaterial(this.material);
 	renderer.drawTriangleStrip(this.vertexBuffer, this.normalBuffer, this.numVertices);
 };
