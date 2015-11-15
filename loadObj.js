@@ -71,6 +71,8 @@ function parseObj(data) {
 		objData.faces.push(face);
 	}
 
+	console.log("Obj loaded with %d vertices and %d faces", objData.vertices.length, objData.faces.length);
+
 	return objData;
 }
 
@@ -97,6 +99,8 @@ function convertToMesh(obj) {
 	function addNorm(normIndex) {
 		norms.push(obj.normals[normIndex][0], obj.normals[normIndex][1], obj.normals[normIndex][2]);
 	}
+
+	console.log("Mesh created with %d vertices", verts.length);
 
 	return {
 		vertices: new Float32Array(verts),

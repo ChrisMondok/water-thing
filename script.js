@@ -77,6 +77,16 @@ function start() {
 
 		new MaterialEditor(waterSurface.material);
 
+		loadMesh("models/dinghy.obj").then(function(mesh) {
+			Boat.mesh = mesh;
+			var boat = window.boat = new Boat(gl, water);
+			actors.push(boat);
+			renderer.sceneRoot.addComponent(boat);
+			new MaterialEditor(boat.material);
+		}, function(error) {
+			debugger;
+		});
+
 		requestAnimationFrame(tick);
 	}).then(null, function(e) {
 		console.error(e);
