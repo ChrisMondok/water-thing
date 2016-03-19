@@ -13,7 +13,7 @@ var pyramidVerts = new Float32Array([
 
 function start() {
 	var canvas = document.querySelector('canvas');
-	var gl = window.gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+	var gl = window.gl = canvas.getContext('webgl', {stencil: true}) || canvas.getContext('experimental-webgl', {stencil: true});
 
 	var renderer;
 
@@ -38,7 +38,7 @@ function start() {
 		camera.z = Math.sin(ts / 7000) * 50 + 75;
 	}
 
-	getProgram(gl).then(function(program) {
+	getProgram(gl, 'vertex.glsl', 'fragment.glsl').then(function(program) {
 		window.renderer = renderer = new Renderer(gl, program);
 
 		var water = window.water = new Water();
@@ -93,12 +93,12 @@ function start() {
 	});
 }
 
-function getProgram(gl) {
+function getProgram(gl, pathToVertex, pathToFragment) {
 	var program = gl.createProgram();
 
 	return Promise.all([
-		getShader(gl, 'vertex.glsl', gl.VERTEX_SHADER),
-		getShader(gl, 'fragment.glsl', gl.FRAGMENT_SHADER)
+		getShader(gl, pathToVertex, gl.VERTEX_SHADER),
+		getShader(gl, pathToFragment, gl.FRAGMENT_SHADER)
 	]).then(function(shaders) {
 		shaders.forEach(function(shader) {
 			gl.attachShader(program, shader);

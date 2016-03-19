@@ -5,6 +5,8 @@ function Renderer(gl, program) {
 	this.gl.enable(gl.DEPTH_TEST);
 	this.gl.enable(gl.CULL_FACE);
 
+	this.u_reflection = gl.getUniformLocation(program, 'u_reflection');
+
 	this.u_sun = gl.getUniformLocation(program, 'u_sun');
 	this.u_projection = gl.getUniformLocation(program, 'u_projection');
 	this.u_ambient_light = gl.getUniformLocation(program, 'u_ambient_light');
@@ -31,7 +33,7 @@ function Renderer(gl, program) {
 }
 
 Renderer.prototype.render = function(camera, timestamp) {
-	this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+	this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT | this.gl.STENCIL_BUFFER_BIT);
 
 	this.gl.useProgram(this.program);
 
@@ -71,5 +73,40 @@ Renderer.prototype.draw = function(mode, vertBuffer, normalBuffer, numVerts) {
 	this.gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
 	this.gl.vertexAttribPointer(this.a_normal, 3, gl.FLOAT, false, 0, 0);
 
+	this.gl.cullFace(gl.BACK);
+	this.gl.uniform1i(this.u_reflection, 0);
+
+	//draw geometry
 	this.gl.drawArrays(mode, 0, numVerts);
+
+	//draw reflection
+	if(true) {
+		this.gl.enable(gl.STENCIL_TEST);
+		this.gl.stencilFunc(gl.ALWAYS, 1, 0xFF);
+		this.gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
+		this.gl.stencilMask(0xFF);
+
+		this.gl.cullFace(gl.FRONT);
+		this.gl.uniform1i(this.u_reflection, 1);
+		this.gl.drawArrays(mode, 0, numVerts);
+		this.gl.disable(gl.STENCIL_TEST);
+	}
+};
+
+Renderer.prototype.drawWater = function(mode, vertBuffer, normalBuffer, numVerts) {
+	this.gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
+	this.gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0);
+
+	this.gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+	this.gl.vertexAttribPointer(this.a_normal, 3, gl.FLOAT, false, 0, 0);
+
+	this.gl.cullFace(gl.BACK);
+	this.gl.uniform1i(this.u_reflection, 0);
+
+	this.gl.enable(gl.STENCIL_TEST);
+	this.gl.stencilFunc(this.gl.NOTEQUAL, 1, 0xFF);
+	this.gl.depthMask(false);
+	this.gl.drawArrays(mode, 0, numVerts);
+	this.gl.depthMask(true);
+	this.gl.disable(gl.STENCIL_TEST);
 };

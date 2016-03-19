@@ -58,6 +58,7 @@ WaterSurface.prototype.tick = function(timestamp) {
 };
 
 WaterSurface.prototype.draw = function(renderer, timestamp) {
+	var gl = renderer.gl;
 	Actor.prototype.draw.apply(this, arguments);
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, this.triangleStripArray, gl.DYNAMIC_DRAW);
@@ -67,7 +68,7 @@ WaterSurface.prototype.draw = function(renderer, timestamp) {
 
 	renderer.setMaterial(this.material);
 
-	renderer.draw(gl.TRIANGLE_STRIP, this.vertexBuffer, this.normalBuffer, this.triangleStripArray.length / 3);
+	renderer.drawWater(gl.TRIANGLE_STRIP, this.vertexBuffer, this.normalBuffer, this.triangleStripArray.length / 3);
 };
 
 WaterSurface.prototype.updateBuffers = function(timestamp) {

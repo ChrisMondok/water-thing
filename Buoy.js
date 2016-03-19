@@ -75,6 +75,18 @@ Buoy.prototype.tick = function(timestamp) {
 	this.rotation.setElements([normal[1], normal[0], 0]);
 };
 
+Buoy.prototype.mirrorwalk = function(renderer, timestamp) {
+	Actor.prototype.walk.apply(this, arguments);
+	renderer.pushTransform(Matrix.create([
+		[1, 0, 0, 0],
+		[0, 1, 0, 0],
+		[0, 0, -1, 0],
+		[0, 0, -this.z, 1]
+	]));
+	Actor.prototype.walk.apply(this, arguments);
+	renderer.popTransform();
+};
+
 function BuoyMaterial(color) {
 	Material.apply(this);
 	this.diffuse = new Float32Array(color);
