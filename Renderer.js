@@ -4,6 +4,8 @@ function Renderer(gl, program) {
 
 	this.gl.enable(gl.DEPTH_TEST);
 	this.gl.enable(gl.CULL_FACE);
+	this.gl.enable(gl.BLEND);
+	this.gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
 	this.u_sun = gl.getUniformLocation(program, 'u_sun');
 	this.u_projection = gl.getUniformLocation(program, 'u_projection');
@@ -16,6 +18,7 @@ function Renderer(gl, program) {
 	this.u_emissive = gl.getUniformLocation(program, 'u_emissive');
 	this.u_reflectivity = gl.getUniformLocation(program, 'u_reflectivity');
 	this.u_shininess = gl.getUniformLocation(program, 'u_shininess');
+	this.u_transparency = gl.getUniformLocation(program, 'u_transparency');
 
 	this.a_position = gl.getAttribLocation(program, 'a_position');
 	this.gl.enableVertexAttribArray(this.a_position);
@@ -31,6 +34,7 @@ function Renderer(gl, program) {
 }
 
 Renderer.prototype.render = function(camera, timestamp) {
+	this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
 	this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
 	this.gl.useProgram(this.program);
@@ -62,6 +66,7 @@ Renderer.prototype.setMaterial = function(material) {
 	this.gl.uniform3fv(this.u_emissive, material.emissive);
 	this.gl.uniform1f(this.u_reflectivity, material.reflectivity);
 	this.gl.uniform1f(this.u_shininess, material.shininess);
+	this.gl.uniform1f(this.u_transparency, material.transparency);
 };
 
 Renderer.prototype.draw = function(mode, vertBuffer, normalBuffer, numVerts) {

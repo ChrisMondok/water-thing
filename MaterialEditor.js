@@ -17,6 +17,10 @@ function MaterialEditor(material, materialName) {
 		material.shininess = v;
 	}, material.shininess, 0, 50, 1));
 
+	container.appendChild(makeRange('Transparency', function(v) {
+		material.transparency = v;
+	}, material.transparency, 0, 1, 0.01));
+
 	container.appendChild(makeColorPicker('Diffuse', material.diffuse));
 	container.appendChild(makeColorPicker('Emissive', material.emissive));
 

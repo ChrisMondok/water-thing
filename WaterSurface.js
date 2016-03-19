@@ -110,10 +110,11 @@ WaterSurface.prototype.updateBuffers = function(timestamp) {
 
 function WaterMaterial() {
 	Material.apply(this);
-	this.diffuse = new Float32Array([0, 0.2, 0.3]);
+	this.diffuse = new Float32Array([0, 0.1, 0.22]);
 	this.emissive = new Float32Array([0, 0, 0]);
 }
 WaterMaterial.prototype = Object.create(Material.prototype);
 WaterMaterial.prototype.reflectivity = 0.8;
 WaterMaterial.prototype.shininess = 24;
 WaterMaterial.prototype.constructor = WaterMaterial;
+WaterMaterial.prototype.transparency = 0.2;

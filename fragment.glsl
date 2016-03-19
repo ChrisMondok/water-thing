@@ -8,6 +8,7 @@ uniform vec3 u_diffuse;
 uniform vec3 u_emissive;
 uniform float u_shininess;
 uniform float u_reflectivity;
+uniform float u_transparency;
 
 varying vec3 v_vertex_normal;
 varying vec3 v_vertex_pos;
@@ -48,5 +49,5 @@ mediump vec3 compute_specular() {
 void main() {
 	vec3 color_linear = vec3(u_emissive) + compute_ambient() + compute_diffuse() + compute_specular();
 	vec3 color_gamma_corrected = pow(color_linear, vec3(1.0/screen_gamma));
-	gl_FragColor = vec4(color_gamma_corrected, 1);
+	gl_FragColor = vec4(color_gamma_corrected, 1.0 - u_transparency);
 }
