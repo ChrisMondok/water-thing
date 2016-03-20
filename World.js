@@ -1,6 +1,5 @@
 function World(canvas) {
 	this.renderers = [];
-	this.materials = {};
 	this.actors = [];
 
 	this.gl = window.gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
