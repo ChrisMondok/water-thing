@@ -32,10 +32,15 @@ MeshComponent.prototype.draw = function(renderer, timestamp) {
 	renderer.draw(this.drawMode, this.vertexBuffer, this.normalBuffer, this.numVertices);
 };
 
-function StaticMeshComponent(mesh, material) {
-	this.createMesh = function() {return mesh;};
+function StaticMeshComponent(staticMeshDefinition) {
+	this.createMesh = function() {
+		return {
+			vertices: staticMeshDefinition.vertices,
+			normals: staticMeshDefinition.normals
+		};
+	};
 
-	MeshComponent.call(this, material);
+	MeshComponent.call(this, staticMeshDefinition.material);
 	this.drawMode = gl.TRIANGLES;
 }
 

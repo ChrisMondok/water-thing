@@ -5,22 +5,23 @@ function Boat(gl, water) {
 
 	this.scale.setElements([15, 15, 15]);
 
-	this.material = new DinghyMaterial();
-
 	this.createComponents();
 }
-Boat.mesh = null;
+Boat.meshes = null;
 
 Boat.prototype = Object.create(Actor.prototype);
 Boat.prototype.constructor = Boat;
 
 Boat.prototype.createComponents = function() {
-	if(!Boat.mesh)
+	if(!Boat.meshes)
 		throw new Error("Boat instantiated before mesh was set.");
 
-	var dinghy = new StaticMeshComponent(Boat.mesh, this.material);
-	dinghy.position.setElements([0, 0, 0.1]);
-	this.addComponent(dinghy);
+	Boat.meshes.forEach(function(m) {
+		var mesh = new StaticMeshComponent(m);
+		mesh.position.setElements([0, 0, 0.1]);
+		this.addComponent(mesh);
+	}, this);
+
 };
 
 Boat.prototype.tick = function(timestamp) {
@@ -29,15 +30,3 @@ Boat.prototype.tick = function(timestamp) {
 	var normal = this.water.getNormal(timestamp, xy);
 	this.rotation.setElements([normal[1], normal[0], 0]);
 };
-
-function DinghyMaterial(color) {
-	Material.apply(this);
-	this.diffuse = new Float32Array([0.85, 0.85, 0.1]);
-	this.emissive = new Float32Array([0, 0, 0]);
-}
-
-DinghyMaterial.prototype = Object.create(Material.prototype);
-DinghyMaterial.prototype.constructor = DinghyMaterial;
-
-DinghyMaterial.prototype.specular = new Float32Array([0.15, 0.15, 0.15]);
-DinghyMaterial.prototype.shininess = 9.8;

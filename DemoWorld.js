@@ -43,12 +43,22 @@ DemoWorld.prototype.createComponents = function() {
 
 	new MaterialEditor(waterSurface.material);
 
-	loadMesh("models/dinghy.obj").then(function(mesh) {
-		Boat.mesh = mesh;
+	loadMesh("models", "dinghy.obj").then(function(meshes) {
+		Boat.meshes = meshes;
 		var boat = window.boat = new Boat(this.gl, water);
 		this.actors.push(boat);
 		this.sceneRoot.addComponent(boat);
-		new MaterialEditor(boat.material);
+
+		var allmats = [];
+
+		for(var i = 0; i < meshes.length; i++) {
+			if(allmats.indexOf(meshes[i].material) == -1)
+				allmats.push(meshes[i].material);
+		}
+
+		allmats.forEach(function(mat) {
+			new MaterialEditor(mat);
+		});
 	}.bind(this), function(error) {
 		debugger;
 	});
