@@ -9,16 +9,13 @@ function MaterialEditor(material, materialName) {
 
 	container.appendChild(summary);
 
-	container.appendChild(makeRange('Reflectivity', function(v) {
-		material.reflectivity = v;
-	}, material.reflectivity));
+	container.appendChild(makeColorPicker('Diffuse', material.diffuse));
+	container.appendChild(makeColorPicker('Emissive', material.emissive));
 
+	container.appendChild(makeColorPicker('Specular', material.specular));
 	container.appendChild(makeRange('Shininess', function(v) {
 		material.shininess = v;
 	}, material.shininess, 0, 50, 1));
-
-	container.appendChild(makeColorPicker('Diffuse', material.diffuse));
-	container.appendChild(makeColorPicker('Emissive', material.emissive));
 
 	document.querySelector('#toolbox').appendChild(container);
 }

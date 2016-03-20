@@ -84,7 +84,7 @@ function BuoyMaterial(color) {
 BuoyMaterial.prototype = Object.create(Material.prototype);
 BuoyMaterial.prototype.constructor = BuoyMaterial;
 
-BuoyMaterial.prototype.reflectivity = 0.3;
+BuoyMaterial.prototype.specular = new Float32Array([0.3, 0.3, 0.3]);
 BuoyMaterial.prototype.shininess = 6;
 
 function BuoyLight(color) {
@@ -92,7 +92,7 @@ function BuoyLight(color) {
 	this.color = color.slice().normalize();
 
 	this.material = new Material();
-	this.material.reflectivity = 0.4;
+	this.material.specular = new Float32Array([0.4, 0.4, 0.4]);
 	this.material.shininess = 12;
 	this.material.diffuse = new Float32Array([color[0], color[1], color[2]]);
 	this.material.emissive = new Float32Array([0, 0, 0]);

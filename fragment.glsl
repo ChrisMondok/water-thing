@@ -6,8 +6,8 @@ uniform vec3 u_camera;
 
 uniform vec3 u_diffuse;
 uniform vec3 u_emissive;
+uniform vec3 u_specular;
 uniform float u_shininess;
-uniform float u_reflectivity;
 
 varying vec3 v_vertex_normal;
 varying vec3 v_vertex_pos;
@@ -27,6 +27,7 @@ mediump vec3 compute_ambient() {
 }
 
 mediump vec3 compute_specular() {
+	//TODO: return 0 when there's no specular.
 	vec3 normal = normalize(v_vertex_normal);
 	vec3 light_direction = normalize(u_sun);
 
@@ -42,7 +43,7 @@ mediump vec3 compute_specular() {
 		power = pow(spec_angle, u_shininess);
 	}
 
-	return vec3(u_reflectivity * power);
+	return u_specular * power;
 }
 
 void main() {

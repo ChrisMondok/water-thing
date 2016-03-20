@@ -39,5 +39,5 @@ function DinghyMaterial(color) {
 DinghyMaterial.prototype = Object.create(Material.prototype);
 DinghyMaterial.prototype.constructor = DinghyMaterial;
 
-DinghyMaterial.prototype.reflectivity = 0.15;
-DinghyMaterial.prototype.shininess = 6;
+DinghyMaterial.prototype.specular = new Float32Array([0.15, 0.15, 0.15]);
+DinghyMaterial.prototype.shininess = 9.8;
