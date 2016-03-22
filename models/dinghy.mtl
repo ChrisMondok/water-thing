@@ -1,10 +1,12 @@
 # Blender MTL File: 'dinghy.blend'
 # Material Count: 1
 
-newmtl None
-Ns 0
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-d 1
+newmtl DinghyMaterial
+Ns 9.803922
+Ka 1.000000 1.000000 1.000000
+Kd 0.680000 0.680000 0.080000
+Ks 0.150000 0.150000 0.150000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
 illum 2

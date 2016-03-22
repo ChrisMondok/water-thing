@@ -1,18 +1,38 @@
+function EnvironmentEditor(world) {
+	var container = document.createElement('details');
+
+	var summary = document.createElement('summary');
+
+	summary.textContent = "Environment";
+
+	container.appendChild(summary);
+
+	container.appendChild(makeRange('Time of Day', function(v) {
+		world.timeOfDay = v;
+	}, world.timeOfDay, 0, 1));
+
+	container.appendChild(makeRange('Latitude', function(v) {
+		world.latitude = v;
+	}, world.latitude, -90, 90));
+
+	document.querySelector('#toolbox').appendChild(container);
+}
+
 function MaterialEditor(material, materialName) {
 	var container = document.createElement('details');
 
 	var summary = document.createElement('summary');
 
-	materialName = materialName || material.constructor.name;
+	materialName = materialName || material.name || material.constructor.name;
 
 	summary.textContent = "Material Editor ("+materialName+")";
 
 	container.appendChild(summary);
 
-	container.appendChild(makeRange('Reflectivity', function(v) {
-		material.reflectivity = v;
-	}, material.reflectivity));
+	container.appendChild(makeColorPicker('Diffuse', material.diffuse));
+	container.appendChild(makeColorPicker('Emissive', material.emissive));
 
+	container.appendChild(makeColorPicker('Specular', material.specular));
 	container.appendChild(makeRange('Shininess', function(v) {
 		material.shininess = v;
 	}, material.shininess, 0, 50, 1));

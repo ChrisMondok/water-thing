@@ -65,3 +65,9 @@ Array.prototype.subtract = function(other) {
 		this[i] -= other[i];
 	return this;
 };
+
+Array.prototype.unique = function() {
+	return this.filter(function(value, index, array) {
+		return array.indexOf(value) == index;
+	});
+};

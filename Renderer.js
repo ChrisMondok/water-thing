@@ -1,11 +1,15 @@
-function Renderer(gl, program) {
-	this.gl = gl;
+//There should be a 1:1 relationship between renderers and programs.
+//Perhaps this is a poor name.
+function Renderer(world, program) {
+	this.world = world;
 	this.program = program;
 
-	this.gl.enable(gl.DEPTH_TEST);
-	this.gl.enable(gl.CULL_FACE);
-	this.gl.enable(gl.BLEND);
-	this.gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	var gl = world.gl;
+
+	//TODO: these should be moved into draw or something
+	//      so that multiple renderers won't break each other
+	gl.enable(gl.DEPTH_TEST);
+	gl.enable(gl.CULL_FACE);
 
 	this.u_sun = gl.getUniformLocation(program, 'u_sun');
 	this.u_projection = gl.getUniformLocation(program, 'u_projection');
@@ -16,65 +20,75 @@ function Renderer(gl, program) {
 
 	this.u_diffuse = gl.getUniformLocation(program, 'u_diffuse');
 	this.u_emissive = gl.getUniformLocation(program, 'u_emissive');
-	this.u_reflectivity = gl.getUniformLocation(program, 'u_reflectivity');
+	this.u_specular = gl.getUniformLocation(program, 'u_specular');
 	this.u_shininess = gl.getUniformLocation(program, 'u_shininess');
 	this.u_transparency = gl.getUniformLocation(program, 'u_transparency');
 
 	this.a_position = gl.getAttribLocation(program, 'a_position');
-	this.gl.enableVertexAttribArray(this.a_position);
+	gl.enableVertexAttribArray(this.a_position);
 
 	this.a_normal = gl.getAttribLocation(program, 'a_normal');
-	this.gl.enableVertexAttribArray(this.a_normal);
-
-	this.sunPosition = Vector.create([1, 2, 5]).normalize();
-
-	this.sceneRoot = new SceneGraphNode();
+	gl.enableVertexAttribArray(this.a_normal);
 
 	this.transformStack = [Matrix.I(4)];
 }
 
-Renderer.prototype.render = function(camera, timestamp) {
-	this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
-	this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+Renderer.prototype.render = function(sceneRoot, camera, timestamp) {
+	var gl = this.world.gl;
+	gl.clearColor(0.0, 0.0, 0.0, 0.0);
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	this.gl.useProgram(this.program);
+	gl.useProgram(this.program);
 
-	this.gl.uniformMatrix4fv(this.u_projection, false, camera.getMatrix().toArray());
+	gl.uniformMatrix4fv(this.u_projection, false, camera.getMatrix().toArray());
 
-	this.gl.uniform3f(this.u_sun, this.sunPosition.e(1), this.sunPosition.e(2), this.sunPosition.e(3));
-	this.gl.uniform3f(this.u_ambient_light, 0.1, 0.1, 0.1);
-	this.gl.uniform3f(this.u_camera, camera.x, camera.y, camera.z);
+	gl.uniform3fv(this.u_sun, this.world.sun.elements);
+	gl.uniform3fv(this.u_ambient_light, new Float32Array([0.1, 0.1, 0.1]));
+	gl.uniform3f(this.u_camera, camera.x, camera.y, camera.z);
 
-	this.sceneRoot.walk(this, timestamp);
+	sceneRoot.walk(this, timestamp);
 };
 
 Renderer.prototype.pushTransform = function(transform) {
 	//shift and unshift for easier peek
 	this.transformStack.unshift(transform.x(this.transformStack[0]));
-	this.gl.uniformMatrix4fv(this.u_transform, false, this.transformStack[0].toArray());
+	this.world.gl.uniformMatrix4fv(this.u_transform, false, this.transformStack[0].toArray());
 };
 
 Renderer.prototype.popTransform = function() {
 	this.transformStack.shift();
-	this.gl.uniformMatrix4fv(this.u_transform, false, this.transformStack[0].toArray());
+	this.world.gl.uniformMatrix4fv(this.u_transform, false, this.transformStack[0].toArray());
 };
 
 Renderer.prototype.setMaterial = function(material) {
+	var gl = this.world.gl;
 	if(!material.isComplete())
 		throw new Error("Material is incomplete!");
-	this.gl.uniform3fv(this.u_diffuse, material.diffuse);
-	this.gl.uniform3fv(this.u_emissive, material.emissive);
-	this.gl.uniform1f(this.u_reflectivity, material.reflectivity);
-	this.gl.uniform1f(this.u_shininess, material.shininess);
-	this.gl.uniform1f(this.u_transparency, material.transparency);
+
+	gl.uniform3fv(this.u_diffuse, material.diffuse);
+	gl.uniform3fv(this.u_emissive, material.emissive);
+	gl.uniform3fv(this.u_specular, material.specular);
+	gl.uniform1f(this.u_shininess, material.shininess);
+	gl.uniform1f(this.u_transparency, material.transparency);
+
+	if(material.transparency) {
+		gl.enable(gl.BLEND);
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+		gl.depthMask(0);
+	}
+	else {
+		gl.disable(gl.BLEND);
+		gl.depthMask(0xFF);
+	}
 };
 
 Renderer.prototype.draw = function(mode, vertBuffer, normalBuffer, numVerts) {
-	this.gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
-	this.gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0);
+	var gl = this.world.gl;
+	gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
+	gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0);
 
-	this.gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-	this.gl.vertexAttribPointer(this.a_normal, 3, gl.FLOAT, false, 0, 0);
+	gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+	gl.vertexAttribPointer(this.a_normal, 3, gl.FLOAT, false, 0, 0);
 
-	this.gl.drawArrays(mode, 0, numVerts);
+	gl.drawArrays(mode, 0, numVerts);
 };

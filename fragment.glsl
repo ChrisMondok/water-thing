@@ -6,8 +6,8 @@ uniform vec3 u_camera;
 
 uniform vec3 u_diffuse;
 uniform vec3 u_emissive;
+uniform vec3 u_specular;
 uniform float u_shininess;
-uniform float u_reflectivity;
 uniform float u_transparency;
 
 varying vec3 v_vertex_normal;
@@ -34,7 +34,7 @@ mediump vec3 compute_specular() {
 	float lambertian = compute_lambertian();
 	float power = 0.0;
 
-	if(lambertian > 0.0 || lambertian <= 0.0) {
+	if(lambertian > 0.0) {
 		vec3 view_direction = normalize(u_camera);
 
 		vec3 half_dir = normalize(light_direction + view_direction);
@@ -43,7 +43,7 @@ mediump vec3 compute_specular() {
 		power = pow(spec_angle, u_shininess);
 	}
 
-	return vec3(u_reflectivity * power);
+	return u_specular * power;
 }
 
 void main() {
