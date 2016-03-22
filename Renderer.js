@@ -27,8 +27,6 @@ function Renderer(world, program) {
 	this.a_normal = gl.getAttribLocation(program, 'a_normal');
 	world.gl.enableVertexAttribArray(this.a_normal);
 
-	this.sunPosition = Vector.create([1, 2, 5]).normalize();
-
 	this.transformStack = [Matrix.I(4)];
 }
 
@@ -40,8 +38,8 @@ Renderer.prototype.render = function(sceneRoot, camera, timestamp) {
 
 	gl.uniformMatrix4fv(this.u_projection, false, camera.getMatrix().toArray());
 
-	gl.uniform3f(this.u_sun, this.sunPosition.e(1), this.sunPosition.e(2), this.sunPosition.e(3));
-	gl.uniform3f(this.u_ambient_light, 0.1, 0.1, 0.1);
+	gl.uniform3fv(this.u_sun, this.world.sun.elements);
+	gl.uniform3fv(this.u_ambient_light, new Float32Array([0.1, 0.1, 0.1]));
 	gl.uniform3f(this.u_camera, camera.x, camera.y, camera.z);
 
 	sceneRoot.walk(this, timestamp);

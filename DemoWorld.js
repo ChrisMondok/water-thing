@@ -8,6 +8,8 @@ DemoWorld.prototype.constructor = DemoWorld;
 DemoWorld.prototype.createComponents = function() {
 	World.prototype.createComponents.apply(this, arguments);
 
+	new EnvironmentEditor(this);
+
 	var water = window.water = new Water();
 
 	var pws = new PointWaveSource(water);

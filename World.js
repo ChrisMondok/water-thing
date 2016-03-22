@@ -8,23 +8,44 @@ function World(canvas) {
 
 	this.createComponents();
 
+	this.ambient = [0.1, 0.1, 0.1];
+
 	requestAnimationFrame(this._tick);
 }
 
 World.prototype.sceneRoot = null;
 World.prototype.camera = null;
 
+World.prototype.latitude = 40;
+World.prototype.timeOfDay = 0.6; //0-1 => 0h-24h
+
 World.prototype.createComponents = function() {
 	this.camera = new Camera();
 	this.sceneRoot = new SceneGraphNode();
 };
 
-World.prototype.tick = function tick(ts) {
-	for(var i = 0; i < this.actors.length; i++)
-		this.actors[i].tick(ts);
-	this.draw(ts);
-	requestAnimationFrame(this._tick);
-};
+(function() {
+	var northVector = Line.create([0, 0, 0], [0, 1, 0]);
+	var eastVector = Line.create([0, 0, 0], [1, 0, 0]);
+
+	function computeSunIntensity(timeOfDay) {
+		var c = -1 * Math.cos(Math.PI * 2 * timeOfDay);
+		if(c < 0)
+			return 0;
+		return Math.pow(c, 0.25);
+	}
+
+	World.prototype.tick = function tick(ts) {
+		this.sun = Vector.create([0, 0, -1 * computeSunIntensity(this.timeOfDay)])
+			.rotate(-this.timeOfDay * Math.PI * 2, northVector)
+			.rotate(this.latitude / 180 * Math.PI, eastVector);
+
+		for(var i = 0; i < this.actors.length; i++)
+			this.actors[i].tick(ts);
+		this.draw(ts);
+		requestAnimationFrame(this._tick);
+	};
+})();
 
 World.prototype.draw = function draw(ts) {
 	for(var i = 0; i < this.renderers.length; i++)
