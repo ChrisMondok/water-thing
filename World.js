@@ -18,6 +18,7 @@ World.prototype.camera = null;
 
 World.prototype.latitude = 40;
 World.prototype.timeOfDay = 0.6; //0-1 => 0h-24h
+World.prototype.timeScale = 1;
 
 World.prototype.createComponents = function() {
 	this.camera = new Camera();
@@ -36,6 +37,7 @@ World.prototype.createComponents = function() {
 	}
 
 	World.prototype.tick = function tick(ts) {
+		ts *= this.timeScale;
 		this.sun = Vector.create([0, 0, -1 * computeSunIntensity(this.timeOfDay)])
 			.rotate(-this.timeOfDay * Math.PI * 2, northVector)
 			.rotate(this.latitude / 180 * Math.PI, eastVector);

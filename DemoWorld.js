@@ -25,6 +25,8 @@ DemoWorld.prototype.createComponents = function() {
 	pws.period = 2;
 	water.waveSources.push(pws);
 
+	new WaterEditor(water);
+
 	var b = new OldBuoy(this.gl, water, [0, 0.5, 0.2]);
 	this.sceneRoot.addComponent(b);
 	b.x = -100;

@@ -15,7 +15,58 @@ function EnvironmentEditor(world) {
 		world.latitude = v;
 	}, world.latitude, -90, 90));
 
+	container.appendChild(makeRange('Timescale', function(v) {
+		world.timeScale = v;
+	}, world.timeScale, 0, 2));
+
 	document.querySelector('#toolbox').appendChild(container);
+}
+
+function PointWaveSourceEditor(pointWaveSource, name) {
+	var container = document.createElement('details');
+
+	var summary = document.createElement('summary');
+
+	summary.textContent = name || 'Point Wave Source';
+
+	container.appendChild(summary);
+
+	container.appendChild(makePositionEditor('Position', pointWaveSource));
+
+	container.appendChild(makeRange('Phase', function(v) {
+		pointWaveSource.phase = v;
+	}, pointWaveSource.phase, 0, 2 * Math.PI));
+
+	container.appendChild(makeRange('Amplitude', function(v) {
+		pointWaveSource.amplitude = v;
+	}, pointWaveSource.amplitude, 0, 50));
+
+	container.appendChild(makeRange('Frequency', function(v) {
+		pointWaveSource.frequency = v;
+	}, pointWaveSource.frequency, 0, 1, 0.01));
+
+	document.querySelector('#toolbox').appendChild(container);
+}
+
+function WaterEditor(water) {
+	var container = document.createElement('details');
+
+	var summary = document.createElement('summary');
+
+	summary.textContent = 'Water';
+
+	container.appendChild(summary);
+
+	container.appendChild(makeRange('viscosity', function(v) {
+		water.viscosity = v;
+	}, water.viscosity, 1, 100));
+
+	document.querySelector('#toolbox').appendChild(container);
+
+	water.waveSources.forEach(function(source, index) {
+		if(source instanceof PointWaveSource)
+			new PointWaveSourceEditor(source, 'Wave source '+index);
+	});
 }
 
 function MaterialEditor(material, materialName) {
@@ -67,6 +118,25 @@ function makeRange(name, callback, initialValue, min, max, step) {
 	label.appendChild(input);
 
 	return label;
+}
+
+function makePositionEditor(name, model) {
+	var container = document.createElement('section');
+	var header = document.createElement('header');
+	header.textContent = name;
+	container.appendChild(header);
+
+	container.appendChild(makeRange('x', function(x) {
+		model.x = x;
+	}, model.x, -200, 200));
+	container.appendChild(makeRange('y', function(y) {
+		model.y = y;
+	}, model.y, -200, 200));
+	container.appendChild(makeRange('z', function(z) {
+		model.z = z;
+	}, model.z, -200, 200));
+
+	return container;
 }
 
 function makeColorPicker(name, colorArray) {

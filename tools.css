@@ -2,9 +2,11 @@
 	position: absolute;
 	right: 0;
 	top: 0;
+	max-height: 100%;
 	color: white;
 	background-color: rgba(0, 0, 0, 0.5);
 	font-family: sans;
+	overflow-y: scroll;
 }
 
 #toolbox > details {
