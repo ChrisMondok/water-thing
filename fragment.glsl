@@ -27,14 +27,13 @@ mediump vec3 compute_ambient() {
 }
 
 mediump vec3 compute_specular() {
-	//TODO: return 0 when there's no specular.
 	vec3 normal = normalize(v_vertex_normal);
 	vec3 light_direction = normalize(u_sun);
 
 	float lambertian = compute_lambertian();
 	float power = 0.0;
 
-	if(lambertian > 0.0 || lambertian <= 0.0) {
+	if(lambertian > 0.0) {
 		vec3 view_direction = normalize(u_camera);
 
 		vec3 half_dir = normalize(light_direction + view_direction);
