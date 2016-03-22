@@ -12,3 +12,12 @@ Material.prototype.isComplete = function() {
 		&& this.specular instanceof Float32Array
 		&& typeof(this.shininess) == 'number';
 };
+
+Material.prototype.clone = function() {
+	var clone = new Material();
+	clone.diffuse = this.diffuse && new Float32Array(this.diffuse);
+	clone.emissive = this.emissive && new Float32Array(this.emissive);
+	clone.specular = this.specular && new Float32Array(this.specular);
+	clone.shininess = this.shininess;
+	return clone;
+};

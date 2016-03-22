@@ -23,19 +23,12 @@ DemoWorld.prototype.createComponents = function() {
 	pws.period = 2;
 	water.waveSources.push(pws);
 
-	var b = new Buoy(this.gl, water, [0, 0.5, 0.2]);
+	var b = new OldBuoy(this.gl, water, [0, 0.5, 0.2]);
 	this.sceneRoot.addComponent(b);
 	b.x = -100;
 	this.actors.push(b);
 
 	new MaterialEditor(b.material, 'Green Buoy');
-
-	b = new Buoy(this.gl, water, [0.8, 0, 0]);
-	this.sceneRoot.addComponent(b);
-	b.x = 100;
-	this.actors.push(b);
-
-	new MaterialEditor(b.material, 'Red Buoy');
 
 	var waterSurface = window.waterSurface = new WaterSurface(this.gl, water, 512, 16);
 	this.sceneRoot.addComponent(waterSurface);
@@ -43,12 +36,31 @@ DemoWorld.prototype.createComponents = function() {
 
 	new MaterialEditor(waterSurface.material);
 
+	loadMesh("models", "buoy.obj").then(function(meshes) {
+		Buoy.meshes = meshes;
+		var b2 = window.b2 = new Buoy(this.gl, water);
+
+		b2.x = 100;
+
+		this.actors.push(b2);
+		this.sceneRoot.addComponent(b2);
+
+		addMaterialEditorsForMeshes(meshes);
+	}.bind(this));
+
 	loadMesh("models", "dinghy.obj").then(function(meshes) {
 		Boat.meshes = meshes;
 		var boat = window.boat = new Boat(this.gl, water);
 		this.actors.push(boat);
 		this.sceneRoot.addComponent(boat);
 
+		addMaterialEditorsForMeshes(meshes);
+
+	}.bind(this), function(error) {
+		debugger;
+	});
+
+	function addMaterialEditorsForMeshes(meshes) {
 		var allmats = [];
 
 		for(var i = 0; i < meshes.length; i++) {
@@ -59,9 +71,7 @@ DemoWorld.prototype.createComponents = function() {
 		allmats.forEach(function(mat) {
 			new MaterialEditor(mat);
 		});
-	}.bind(this), function(error) {
-		debugger;
-	});
+	}
 };
 
 DemoWorld.prototype.tick = function tick(ts) {
