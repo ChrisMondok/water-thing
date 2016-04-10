@@ -27,13 +27,6 @@ DemoWorld.prototype.createComponents = function() {
 
 	new WaterEditor(water);
 
-	var b = new OldBuoy(this.gl, water, [0, 0.5, 0.2]);
-	this.sceneRoot.addComponent(b);
-	b.x = -100;
-	this.actors.push(b);
-
-	new MaterialEditor(b.material, 'Green Buoy');
-
 	var waterSurface = window.waterSurface = new WaterSurface(this.gl, water, 512, 16);
 	this.sceneRoot.addComponent(waterSurface);
 	this.actors.push(waterSurface);

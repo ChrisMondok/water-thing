@@ -22,19 +22,6 @@ Camera.prototype = Object.create(Actor.prototype);
 		return viewMatrix.x(perspectiveMatrix(this.fov, 4/3, this.near, this.far));
 	};
 
-	function lookAt(position, target, up) {
-		var zAxis = position.subtract(target).normalize();
-		var xAxis = up.cross(zAxis);
-		var yAxis = zAxis.cross(xAxis);
-
-		return Matrix.create([
-			xAxis.elements.concat(0),
-			yAxis.elements.concat(0),
-			zAxis.elements.concat(0),
-			position.elements.concat(1)
-		]);
-	}
-
 	function perspectiveMatrix(fov, aspect, near, far) {
 		var f = Math.tan(Math.PI * 0.5 - 0.5 * fov);
 

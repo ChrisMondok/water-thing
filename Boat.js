@@ -28,5 +28,5 @@ Boat.prototype.tick = function(timestamp) {
 	var xy = [this.x, this.y];
 	this.z = this.water.getZ(timestamp, xy);
 	var normal = this.water.getNormal(timestamp, xy);
-	this.rotation.setElements([normal[1], normal[0], 0]);
+	this.rotation = lookAt(Vector.create([normal[0], normal[1], normal[2]]), Vector.create([0, 0, 0]), Vector.create([0, 1, 0]));
 };

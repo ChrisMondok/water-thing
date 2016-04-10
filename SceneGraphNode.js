@@ -1,7 +1,7 @@
 function SceneGraphNode() {
 	this.components = [];
 	this.position = Vector.create([0, 0, 0]);
-	this.rotation = Vector.create([0, 0, 0]);
+	this.rotation = Matrix.I(4);
 	this.scale = Vector.create([1, 1, 1]);
 }
 
@@ -48,40 +48,5 @@ SceneGraphNode.prototype.getTransformMatrix = function() {
 		]);
 	}
 
-	function makeXRotation() {
-		var c = Math.cos(self.rotation.e(1));
-		var s = Math.sin(self.rotation.e(1));
-		return Matrix.create([
-			[1,  0, 0, 0],
-			[0,  c, s, 0],
-			[0, -s, c, 0],
-			[0,  0, 0, 1]
-		]);
-	}
-
-	function makeYRotation() {
-		var c = Math.cos(self.rotation.e(2));
-		var s = Math.sin(self.rotation.e(2));
-		return Matrix.create([
-			[c, 0, -s, 0],
-			[0, 1,  0, 0],
-			[s, 0,  c, 0],
-			[0, 0,  0, 1]
-		]);
-	}
-
-	function makeZRotation() {
-		var c = Math.cos(self.rotation.e(3));
-		var s = Math.sin(self.rotation.e(3));
-		return Matrix.create([
-			[ c, s, 0, 0],
-			[-s, c, 0, 0],
-			[ 0, 0, 1, 0],
-			[ 0, 0, 0, 1]
-		]);
-	}
-
-	var rotation = makeXRotation().x(makeYRotation()).x(makeZRotation());
-
-	return makeScale().x(rotation).x(makeTranslation());
+	return makeScale().x(this.rotation).x(makeTranslation());
 };
