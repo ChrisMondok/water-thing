@@ -4,15 +4,22 @@ function World(canvas) {
 
 	this.gl = window.gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 
-	this._tick = this.tick.bind(this);
+	var tick = this._tick = this.tick.bind(this);
 
 	this.createComponents();
 
 	this.ambient = [0.1, 0.1, 0.1];
 
-	requestAnimationFrame(this._tick);
+	this.lightmap = createTexture(this.gl, 1024, 1024);
 
-	this.ready = this.addRenderer(SceneRenderer);
+	this.ready = this.addRenderer(LightmapRenderer)
+		.then(this.addRenderer.bind(this, SceneRenderer))
+		.then(this.addRenderer.bind(this, TextureRenderer))
+		.then(function() {
+		requestAnimationFrame(tick);
+	}, function(error) {
+		debugger;
+	});
 }
 
 World.prototype.sceneRoot = null;
@@ -56,8 +63,9 @@ World.prototype.createComponents = function() {
 })();
 
 World.prototype.draw = function draw(ts) {
-	for(var i = 0; i < this.renderers.length; i++)
+	for(var i = 0; i < this.renderers.length; i++) {
 		this.renderers[i].render(this.sceneRoot, this.camera, ts);
+	}
 };
 
 World.prototype.addRenderer = function(type) {

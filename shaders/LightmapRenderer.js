@@ -1,5 +1,11 @@
 function LightmapRenderer(world, program) {
 	Renderer.apply(this, arguments);
+
+	this.u_projection = gl.getUniformLocation(program, 'u_projection');
+	this.u_transform = gl.getUniformLocation(program, 'u_transform');
+
+	this.framebuffer = createFramebuffer(world.gl, world.lightmap, 1024, 1024);
+	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 }
 
 LightmapRenderer.prototype = Object.create(Renderer.prototype);
@@ -9,15 +15,14 @@ LightmapRenderer.prototype.render = function(sceneRoot, camera, timestamp) {
 	Renderer.prototype.render.apply(this, arguments);
 	var gl = this.world.gl;
 
+	gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
+	gl.viewport(0, 0, 1024, 1024);
+
 	gl.enable(gl.DEPTH_TEST);
 	gl.enable(gl.CULL_FACE);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	gl.uniformMatrix4fv(this.u_projection, false, this.lightMatrix.toArray());
-
-	gl.uniform3fv(this.u_sun, this.world.sun.elements);
-	gl.uniform3fv(this.u_ambient_light, new Float32Array([0.1, 0.1, 0.1]));
-	gl.uniform3f(this.u_camera, camera.x, camera.y, camera.z);
 
 	sceneRoot.walk(this, timestamp);
 };
@@ -28,6 +33,8 @@ LightmapRenderer.prototype.draw = function(mode, vertBuffer, normalBuffer, numVe
 	gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0);
 
 	gl.drawArrays(mode, 0, numVerts);
+
+	var e = gl.getError();
 };
 
 LightmapRenderer.vertex = "shaders/lightmapVertex.glsl";

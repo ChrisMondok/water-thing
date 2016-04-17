@@ -4,9 +4,6 @@ function Renderer(world, program) {
 	this.world = world;
 	this.program = program;
 
-	this.u_projection = gl.getUniformLocation(program, 'u_projection');
-	this.u_transform = gl.getUniformLocation(program, 'u_transform');
-
 	this.a_position = gl.getAttribLocation(program, 'a_position');
 	world.gl.enableVertexAttribArray(this.a_position);
 
@@ -17,8 +14,8 @@ Renderer.prototype.render = function(sceneRoot, camera, timestamp) {
 	this.world.gl.useProgram(this.program);
 
 	//TODO: determine size in an intelligent manner.
-	var depth = camera.target.distanceFrom(camera.position) * 2;
-	this.lightMatrix = lookAt(world.sun, camera.target, this.world.up).inverse().x(orthoMatrix(400, 300, depth));
+	var depth = camera.target.distanceFrom(camera.position);
+	this.lightMatrix = lookAt(world.sun.normalize().x(100), camera.target, this.world.up).inverse().x(orthoMatrix(512, 512, 512));
 };
 
 Renderer.prototype.pushTransform = function(transform) {
