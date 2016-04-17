@@ -11,6 +11,26 @@ function lookAt(position, target, up) {
 	]);
 }
 
+function perspectiveMatrix(fov, aspect, near, far) {
+	var f = Math.tan(Math.PI * 0.5 - 0.5 * fov);
+
+	return Matrix.create([
+		[f / aspect, 0, 0, 0],
+		[0, f, 0, 0],
+		[0, 0, (near + far) / (near - far), -1],
+		[0, 0, near * far / (near - far) * 2, 0]
+	]);
+}
+
+function orthoMatrix(width, height, depth) {
+	return Matrix.create([
+		[2/width, 0, 0, 0],
+		[0, 2/height, 0, 0],
+		[0, 0, -2/depth, 0],
+		[0, 0, 0, 1]
+	]);
+}
+
 function eulerToRotation(eulerAngles) {
 	function makeXRotation() {
 		var c = Math.cos(eulerAngles.e(1));

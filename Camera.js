@@ -20,16 +20,6 @@ Camera.prototype = Object.create(Actor.prototype);
 		var cameraMatrix = lookAt(this.position, this.target, this.up);
 		var viewMatrix = cameraMatrix.inverse();
 		return viewMatrix.x(perspectiveMatrix(this.fov, 4/3, this.near, this.far));
+		//return viewMatrix.x(orthoMatrix(400, 300, 1000));
 	};
-
-	function perspectiveMatrix(fov, aspect, near, far) {
-		var f = Math.tan(Math.PI * 0.5 - 0.5 * fov);
-
-		return Matrix.create([
-			[f / aspect, 0, 0, 0],
-			[0, f, 0, 0],
-			[0, 0, (near + far) / (near - far), -1],
-			[0, 0, near * far / (near - far) * 2, 0]
-		]);
-	}
 })();

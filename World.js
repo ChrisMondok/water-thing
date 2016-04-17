@@ -11,6 +11,8 @@ function World(canvas) {
 	this.ambient = [0.1, 0.1, 0.1];
 
 	requestAnimationFrame(this._tick);
+
+	this.ready = this.addRenderer(SceneRenderer);
 }
 
 World.prototype.sceneRoot = null;
@@ -20,14 +22,18 @@ World.prototype.latitude = 40;
 World.prototype.timeOfDay = 0.6; //0-1 => 0h-24h
 World.prototype.timeScale = 1;
 
+World.prototype.east = Vector.create([1, 0, 0]);
+World.prototype.north = Vector.create([0, 1, 0]);
+World.prototype.up = Vector.create([0, 0, 1]);
+
 World.prototype.createComponents = function() {
 	this.camera = new Camera();
 	this.sceneRoot = new SceneGraphNode();
 };
 
 (function() {
-	var northVector = Line.create([0, 0, 0], [0, 1, 0]);
-	var eastVector = Line.create([0, 0, 0], [1, 0, 0]);
+	var northLine = Line.create([0, 0, 0], World.prototype.north);
+	var eastLine = Line.create([0, 0, 0], World.prototype.east);
 
 	function computeSunIntensity(timeOfDay) {
 		var c = -1 * Math.cos(Math.PI * 2 * timeOfDay);
@@ -39,8 +45,8 @@ World.prototype.createComponents = function() {
 	World.prototype.tick = function tick(ts) {
 		ts *= this.timeScale;
 		this.sun = Vector.create([0, 0, -1 * computeSunIntensity(this.timeOfDay)])
-			.rotate(-this.timeOfDay * Math.PI * 2, northVector)
-			.rotate(this.latitude / 180 * Math.PI, eastVector);
+			.rotate(-this.timeOfDay * Math.PI * 2, northLine)
+			.rotate(this.latitude / 180 * Math.PI, eastLine);
 
 		for(var i = 0; i < this.actors.length; i++)
 			this.actors[i].tick(ts);
@@ -54,43 +60,9 @@ World.prototype.draw = function draw(ts) {
 		this.renderers[i].render(this.sceneRoot, this.camera, ts);
 };
 
-(function() {
-	World.prototype.addRenderer = function(vertexPath, fragmentPath) {
-		var self = this;
+World.prototype.addRenderer = function(type) {
 
-		return Promise.all([
-			getShader(gl, vertexPath, gl.VERTEX_SHADER),
-			getShader(gl, fragmentPath, gl.FRAGMENT_SHADER)
-		]).then(function(shaders) {
-			var program = gl.createProgram();
-			shaders.forEach(function(shader) {
-				gl.attachShader(program, shader);
-			});
-			return program;
-		}).then(function(program) {
-			gl.linkProgram(program);
-			return program;
-		}).then(function(program) {
-			if(!gl.getProgramParameter(program, gl.LINK_STATUS))
-				throw "Error in program: "+gl.getProgramInfoLog(program);
-			return program;
-		}).then(function(program) {
-			var renderer = new Renderer(self, program);
-			self.renderers.push(renderer);
-			return renderer;
-		});
-	};
-
-	function getShader(gl, url, type) {
-		return http.get(url).then(function(glsl) {
-			var shader = gl.createShader(type);
-			gl.shaderSource(shader, glsl);
-			gl.compileShader(shader);
-
-			if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
-				throw "Error in shader "+url+": "+gl.getShaderInfoLog(shader);
-
-			return shader;
-		});
-	}
-})();
+	return Renderer.create(type, this).then(function(r) {
+		this.renderers.push(r);
+	}.bind(this));
+};

@@ -4,45 +4,21 @@ function Renderer(world, program) {
 	this.world = world;
 	this.program = program;
 
-	//TODO: these should be moved into draw or something
-	//      so that multiple renderers won't break each other
-	world.gl.enable(gl.DEPTH_TEST);
-	world.gl.enable(gl.CULL_FACE);
-
-	this.u_sun = gl.getUniformLocation(program, 'u_sun');
 	this.u_projection = gl.getUniformLocation(program, 'u_projection');
-	this.u_ambient_light = gl.getUniformLocation(program, 'u_ambient_light');
-	this.u_camera = gl.getUniformLocation(program, 'u_camera');
-
 	this.u_transform = gl.getUniformLocation(program, 'u_transform');
-
-	this.u_diffuse = gl.getUniformLocation(program, 'u_diffuse');
-	this.u_emissive = gl.getUniformLocation(program, 'u_emissive');
-	this.u_specular = gl.getUniformLocation(program, 'u_specular');
-	this.u_shininess = gl.getUniformLocation(program, 'u_shininess');
 
 	this.a_position = gl.getAttribLocation(program, 'a_position');
 	world.gl.enableVertexAttribArray(this.a_position);
-
-	this.a_normal = gl.getAttribLocation(program, 'a_normal');
-	world.gl.enableVertexAttribArray(this.a_normal);
 
 	this.transformStack = [Matrix.I(4)];
 }
 
 Renderer.prototype.render = function(sceneRoot, camera, timestamp) {
-	var gl = this.world.gl;
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	this.world.gl.useProgram(this.program);
 
-	gl.useProgram(this.program);
-
-	gl.uniformMatrix4fv(this.u_projection, false, camera.getMatrix().toArray());
-
-	gl.uniform3fv(this.u_sun, this.world.sun.elements);
-	gl.uniform3fv(this.u_ambient_light, new Float32Array([0.1, 0.1, 0.1]));
-	gl.uniform3f(this.u_camera, camera.x, camera.y, camera.z);
-
-	sceneRoot.walk(this, timestamp);
+	//TODO: determine size in an intelligent manner.
+	var depth = camera.target.distanceFrom(camera.position) * 2;
+	this.lightMatrix = lookAt(world.sun, camera.target, this.world.up).inverse().x(orthoMatrix(400, 300, depth));
 };
 
 Renderer.prototype.pushTransform = function(transform) {
@@ -60,19 +36,43 @@ Renderer.prototype.setMaterial = function(material) {
 	var gl = this.world.gl;
 	if(!material.isComplete())
 		throw new Error("Material is incomplete!");
-	gl.uniform3fv(this.u_diffuse, material.diffuse);
-	gl.uniform3fv(this.u_emissive, material.emissive);
-	gl.uniform3fv(this.u_specular, material.specular);
-	gl.uniform1f(this.u_shininess, material.shininess);
 };
 
 Renderer.prototype.draw = function(mode, vertBuffer, normalBuffer, numVerts) {
-	var gl = this.world.gl;
-	gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
-	gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0);
+	throw new Error("Override me");
+};
 
-	gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-	gl.vertexAttribPointer(this.a_normal, 3, gl.FLOAT, false, 0, 0);
+Renderer.create = function(type, world) {
+	return Promise.all([
+		getShader(gl, type.vertex, gl.VERTEX_SHADER),
+		getShader(gl, type.fragment, gl.FRAGMENT_SHADER)
+	]).then(function(shaders) {
+		var program = gl.createProgram();
+		shaders.forEach(function(shader) {
+			gl.attachShader(program, shader);
+		});
+		return program;
+	}).then(function(program) {
+		gl.linkProgram(program);
+		return program;
+	}).then(function(program) {
+		if(!gl.getProgramParameter(program, gl.LINK_STATUS))
+			throw "Error in program: "+gl.getProgramInfoLog(program);
+		return program;
+	}).then(function(program) {
+		return new type(world, program);
+	});
 
-	gl.drawArrays(mode, 0, numVerts);
+	function getShader(gl, url, type) {
+		return http.get(url).then(function(glsl) {
+			var shader = gl.createShader(type);
+			gl.shaderSource(shader, glsl);
+			gl.compileShader(shader);
+
+			if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
+				throw "Error in shader "+url+": "+gl.getShaderInfoLog(shader);
+
+			return shader;
+		});
+	}
 };

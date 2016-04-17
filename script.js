@@ -16,5 +16,7 @@ function start() {
 
 	var world = window.world = new DemoWorld(canvas);
 
-	world.addRenderer('vertex.glsl', 'fragment.glsl').then(function() { });
+	world.ready.then(function() {
+		console.log("WORLD READY");
+	});
 }
