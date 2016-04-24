@@ -25,7 +25,7 @@ bool is_in_shadow() {
 	if(v_lightmap_pos.x < 0.0 || v_lightmap_pos.x > 1.0 || v_lightmap_pos.y < 0.0 || v_lightmap_pos.y > 1.0)
 		return false;
 
-	return tc.x + shadow_fudge_factor < v_lightmap_pos.z;
+	return tc.w == 1.0 && tc.x + shadow_fudge_factor < v_lightmap_pos.z;
 }
 
 mediump float compute_lambertian() {
