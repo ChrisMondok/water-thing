@@ -4,7 +4,7 @@ function LightmapRenderer(world, program) {
 	this.u_projection = gl.getUniformLocation(program, 'u_projection');
 	this.u_transform = gl.getUniformLocation(program, 'u_transform');
 
-	this.framebuffer = createFramebuffer(world.gl, world.lightmap, 1024, 1024);
+	this.framebuffer = createFramebuffer(world.gl, world.lightmap, world.lightmap.width, world.lightmap.height);
 	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 }
 
@@ -16,7 +16,7 @@ LightmapRenderer.prototype.render = function(sceneRoot, camera, timestamp) {
 	var gl = this.world.gl;
 
 	gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
-	gl.viewport(0, 0, 1024, 1024);
+	gl.viewport(0, 0, this.world.lightmap.width, this.world.lightmap.height);
 
 	gl.enable(gl.DEPTH_TEST);
 	gl.enable(gl.CULL_FACE);
