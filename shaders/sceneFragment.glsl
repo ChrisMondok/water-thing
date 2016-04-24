@@ -22,7 +22,7 @@ const float shadow_fudge_factor = 0.005;
 bool is_in_shadow() {
 	vec4 tc = texture2D(u_lightmap_sampler, v_lightmap_pos.xy);
 
-	if(tc.x < 0.0 || tc.x > 1.0 || tc.y < 0.0 || tc.y > 1.0)
+	if(v_lightmap_pos.x < 0.0 || v_lightmap_pos.x > 1.0 || v_lightmap_pos.y < 0.0 || v_lightmap_pos.y > 1.0)
 		return false;
 
 	return tc.x + shadow_fudge_factor < v_lightmap_pos.z;
