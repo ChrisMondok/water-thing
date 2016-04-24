@@ -13,9 +13,11 @@ function Renderer(world, program) {
 Renderer.prototype.render = function(sceneRoot, camera, timestamp) {
 	this.world.gl.useProgram(this.program);
 
-	//TODO: determine size in an intelligent manner.
-	var depth = camera.target.distanceFrom(camera.position);
-	this.lightMatrix = lookAt(world.sun.normalize().x(100), camera.target, this.world.up).inverse().x(orthoMatrix(512, 512, 512));
+	var n_sun = world.sun.normalize();
+
+	this.lightMatrix = lookAt(n_sun, camera.target, getUpVector(n_sun))
+		.inverse()
+		.x(orthoMatrix(camera.target.distanceFrom(camera.position) * 2));
 };
 
 Renderer.prototype.pushTransform = function(transform) {

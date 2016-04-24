@@ -23,11 +23,26 @@ function perspectiveMatrix(fov, aspect, near, far) {
 }
 
 function orthoMatrix(width, height, depth) {
+	if(height === undefined && depth === undefined)
+		height = depth = width;
+
 	return Matrix.create([
 		[2/width, 0, 0, 0],
 		[0, 2/height, 0, 0],
 		[0, 0, -2/depth, 0],
 		[0, 0, 0, 1]
+	]);
+}
+
+function getUpVector(lookVector) {
+	var declination = Math.asin(lookVector.e(3));
+
+	var xyAngle = Math.PI + Math.atan2(lookVector.e(2), lookVector.e(1));
+
+	return Vector.create([
+		Math.cos(xyAngle) * Math.sin(declination),
+		Math.sin(xyAngle) * Math.sin(declination),
+		Math.cos(declination)
 	]);
 }
 
