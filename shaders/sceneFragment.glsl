@@ -60,13 +60,12 @@ mediump vec3 compute_specular() {
 }
 
 void main() {
-	vec3 color_linear;
+	vec3 color;
 
 	if(is_in_shadow())
-		color_linear = vec3(u_emissive) + compute_ambient();
+		color = vec3(u_emissive) + compute_ambient();
 	else
-		color_linear = vec3(u_emissive) + compute_ambient() + compute_diffuse() + compute_specular();
-	vec3 color_gamma_corrected = pow(color_linear, vec3(1.0/screen_gamma));
+		color = vec3(u_emissive) + compute_ambient() + compute_diffuse() + compute_specular();
 
-	gl_FragColor = vec4(color_gamma_corrected.xyz, 1);
+	gl_FragColor = vec4(pow(color, vec3(1.0/screen_gamma)), 1);
 }
