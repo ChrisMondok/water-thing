@@ -11,6 +11,7 @@ function SceneRenderer(world, program) {
 	this.u_mat_diffuse = gl.getUniformLocation(program, 'u_mat_diffuse');
 	this.u_mat_emissive = gl.getUniformLocation(program, 'u_mat_emissive');
 	this.u_mat_specular = gl.getUniformLocation(program, 'u_mat_specular');
+	this.u_mat_ambient = gl.getUniformLocation(program, 'u_mat_ambient');
 	this.u_mat_shininess = gl.getUniformLocation(program, 'u_mat_shininess');
 
 	this.u_lightmap_sampler = gl.getUniformLocation(program, 'u_lightmap_sampler');
@@ -57,6 +58,7 @@ SceneRenderer.prototype.setMaterial = function(material) {
 	gl.uniform3fv(this.u_mat_diffuse, material.diffuse);
 	gl.uniform3fv(this.u_mat_emissive, material.emissive);
 	gl.uniform3fv(this.u_mat_specular, material.specular);
+	gl.uniform3fv(this.u_mat_ambient, material.ambient);
 	gl.uniform1f(this.u_mat_shininess, material.shininess);
 };
 

@@ -82,6 +82,7 @@ function MaterialEditor(material, materialName) {
 
 	container.appendChild(makeColorPicker('Diffuse', material.diffuse));
 	container.appendChild(makeColorPicker('Emissive', material.emissive));
+	container.appendChild(makeColorPicker('Ambient', material.ambient));
 
 	container.appendChild(makeColorPicker('Specular', material.specular));
 	container.appendChild(makeRange('Shininess', function(v) {

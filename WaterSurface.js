@@ -112,6 +112,7 @@ function WaterMaterial() {
 	Material.apply(this);
 	this.diffuse = new Float32Array([0, 0.2, 0.3]);
 	this.emissive = new Float32Array([0, 0, 0]);
+	this.ambient = new Float32Array([1, 1, 1]);
 }
 WaterMaterial.prototype = Object.create(Material.prototype);
 WaterMaterial.prototype.specular = new Float32Array([0.8, 0.8, 0.8]);

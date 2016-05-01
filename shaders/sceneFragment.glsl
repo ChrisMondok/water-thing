@@ -9,6 +9,7 @@ uniform sampler2D u_lightmap_sampler;
 uniform vec3 u_mat_diffuse;
 uniform vec3 u_mat_emissive;
 uniform vec3 u_mat_specular;
+uniform vec3 u_mat_ambient;
 uniform float u_mat_shininess;
 
 varying vec3 v_vertex_normal;
@@ -56,7 +57,7 @@ mediump vec3 compute_diffuse() {
 }
 
 mediump vec3 compute_ambient() {
-	return u_mat_diffuse * u_ambient_light;
+	return u_mat_diffuse * u_mat_ambient * u_ambient_light;
 }
 
 mediump vec3 compute_specular() {

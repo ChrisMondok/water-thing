@@ -48,7 +48,7 @@ function parseMaterials(materialDefinition) {
 				setSpecular(words);
 				return;
 			case 'Ka':
-				console.warn("Ambient color not supported.");
+				setAmbient(words);
 				return;
 			case 'Ns':
 				setShininess(words);
@@ -78,6 +78,13 @@ function parseMaterials(materialDefinition) {
 		if(words.length != 4)
 			throw new Error("Unrecognized Ks directive");
 		currentMaterial.specular = new Float32Array(words.slice(1));
+	}
+
+	//Ka r g b
+	function setAmbient(words) {
+		if(words.length != 4)
+			throw new Error("Unrecognized Ks directive");
+		currentMaterial.ambient = new Float32Array(words.slice(1));
 	}
 
 	//Ns s
