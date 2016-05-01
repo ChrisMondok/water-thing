@@ -28,7 +28,26 @@ bool is_in_shadow() {
 	return tc.w == 1.0 && tc.x + shadow_fudge_factor < v_lightmap_pos.z;
 }
 
+float get_unshadow() {
+	float sum = 0.0;
+	vec2 duv;
+	const float pcf_size = 4.0;
+
+	if(texture2D(u_lightmap_sampler, v_lightmap_pos.xy).a != 1.0)
+		return 1.0;
+
+	for(float pcf_x=-(pcf_size-1.0)/2.0; pcf_x <= (pcf_size-1.0)/2.0; pcf_x += 1.0)
+		for(float pcf_y=-(pcf_size-1.0)/2.0; pcf_y <= (pcf_size-1.0)/2.0; pcf_y += 1.0)
+			sum += texture2D(u_lightmap_sampler, v_lightmap_pos.xy + duv).r;
+
+	sum /= (pcf_size * pcf_size);
+
+	return 1.0 - smoothstep(0.001, 0.02, v_lightmap_pos.z - sum);
+}
+
 mediump float compute_lambertian() {
+	if(u_sun.z < 0.0)
+		return 0.0;
 	return max(dot(normalize(v_vertex_normal), u_sun), 0.0);
 }
 
@@ -62,10 +81,9 @@ mediump vec3 compute_specular() {
 void main() {
 	vec3 color;
 
-	if(is_in_shadow())
-		color = vec3(u_emissive) + compute_ambient();
-	else
-		color = vec3(u_emissive) + compute_ambient() + compute_diffuse() + compute_specular();
+	float s = get_unshadow();
+
+	color = vec3(u_emissive) + compute_ambient() + s * (compute_diffuse() + compute_specular());
 
 	gl_FragColor = vec4(pow(color, vec3(1.0/screen_gamma)), 1);
 }
