@@ -45,7 +45,8 @@ SceneRenderer.prototype.render = function(sceneRoot, camera, timestamp) {
 	gl.uniformMatrix4fv(this.u_sun_projection, false, this.lightMatrix.toArray());
 
 	gl.uniform3fv(this.u_sun, this.world.sun.elements);
-	gl.uniform3fv(this.u_ambient_light, new Float32Array([0.1, 0.1, 0.1]));
+	var ambient = Math.max(0.1 * this.world.sun.e(3), 0);
+	gl.uniform3fv(this.u_ambient_light, new Float32Array([ambient, ambient, ambient]));
 	gl.uniform3f(this.u_camera, camera.x, camera.y, camera.z);
 
 	sceneRoot.walk(this, timestamp);
