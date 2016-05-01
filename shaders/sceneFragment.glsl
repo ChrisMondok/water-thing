@@ -6,10 +6,10 @@ uniform vec3 u_camera;
 
 uniform sampler2D u_lightmap_sampler;
 
-uniform vec3 u_diffuse;
-uniform vec3 u_emissive;
-uniform vec3 u_specular;
-uniform float u_shininess;
+uniform vec3 u_mat_diffuse;
+uniform vec3 u_mat_emissive;
+uniform vec3 u_mat_specular;
+uniform float u_mat_shininess;
 
 varying vec3 v_vertex_normal;
 varying vec3 v_vertex_pos;
@@ -52,11 +52,11 @@ mediump float compute_lambertian() {
 }
 
 mediump vec3 compute_diffuse() {
-	return u_diffuse * compute_lambertian();
+	return u_mat_diffuse * compute_lambertian();
 }
 
 mediump vec3 compute_ambient() {
-	return u_diffuse * u_ambient_light;
+	return u_mat_diffuse * u_ambient_light;
 }
 
 mediump vec3 compute_specular() {
@@ -72,10 +72,10 @@ mediump vec3 compute_specular() {
 		vec3 half_dir = normalize(light_direction + view_direction);
 
 		float spec_angle = max(dot(half_dir, normal), 0.0);
-		power = pow(spec_angle, u_shininess);
+		power = pow(spec_angle, u_mat_shininess);
 	}
 
-	return u_specular * power;
+	return u_mat_specular * power;
 }
 
 void main() {
@@ -83,7 +83,7 @@ void main() {
 
 	float s = get_unshadow();
 
-	color = vec3(u_emissive) + compute_ambient() + s * (compute_diffuse() + compute_specular());
+	color = vec3(u_mat_emissive) + compute_ambient() + s * (compute_diffuse() + compute_specular());
 
 	gl_FragColor = vec4(pow(color, vec3(1.0/screen_gamma)), 1);
 }
