@@ -44,6 +44,7 @@ World.prototype.createComponents = function() {
 	var eastLine = Line.create([0, 0, 0], World.prototype.east);
 
 	function computeSunIntensity(timeOfDay) {
+		return 1.0;
 		var c = -1 * Math.cos(Math.PI * 2 * timeOfDay);
 		if(c < 0)
 			return 0;
