@@ -10,7 +10,8 @@ function World(canvas) {
 
 	this.ambient = [0.1, 0.1, 0.1];
 
-	this.lightmap = createTexture(this.gl, 1024, 1024);
+	var size = Math.min(2048, gl.MAX_RENDERBUFFER_SIZE, gl.MAX_VIEWPORT_DIMS);
+	this.lightmap = createTexture(this.gl, size, size);
 
 	this.ready = this.addRenderer(LightmapRenderer)
 		.then(this.addRenderer.bind(this, SceneRenderer))
