@@ -36,7 +36,7 @@ RadarRenderer.prototype.render = function(sceneRoot, camera, timestamp) {
 
 	gl.uniform3f(this.u_camera, camera.x, camera.y, camera.z);
 
-	gl.uniform1f(this.u_pulse_radius, (timestamp / 10) % 500);
+	gl.uniform1f(this.u_pulse_radius, (timestamp / 7) % 700);
 
 	sceneRoot.walk(this, timestamp);
 };
