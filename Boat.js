@@ -24,11 +24,15 @@ Boat.prototype.createComponents = function() {
 
 };
 
-Boat.prototype.tick = function(timestamp) {
-	var xy = [this.x, this.y];
-	this.z = this.water.getZ(timestamp, xy);
+(function() {
+	var up = vec3.fromValues(0, 0, 1)
 
-	var normal = this.water.getNormal(timestamp, xy);
+	Boat.prototype.tick = function(timestamp) {
+		var xy = [this.x, this.y];
+		this.z = this.water.getZ(timestamp, xy);
 
-	quat.fromMat3(this.rotation, lookAt3(normal, vec3.create(), vec3.fromValues(0, 1, 0)))
-};
+		var normal = this.water.getNormal(timestamp, xy);
+
+		quat.rotationTo(this.rotation, up, normal)
+	};
+})()

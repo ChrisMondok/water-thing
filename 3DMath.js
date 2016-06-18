@@ -1,7 +1,6 @@
 function lookAt(position, target, up) {
 	//TODO: don't create so many vec3s.
 	
-	
 	var z = vec3.subtract(vec3.create(), position, target)
 	vec3.normalize(z, z)
 	var x = vec3.cross(vec3.create(), up, z)
@@ -12,23 +11,6 @@ function lookAt(position, target, up) {
 		y[0], y[1], y[2], 0,
 		z[0], z[1], z[2], 0,
 		position[0], position[1], position[2], 1
-	);
-
-}
-
-function lookAt3(position, target, up) {
-	//TODO: don't create so many vec3s.
-	
-	
-	var z = vec3.subtract(vec3.create(), position, target)
-	vec3.normalize(z, z)
-	var x = vec3.cross(vec3.create(), up, z)
-	var y = vec3.cross(vec3.create(), z, x)
-
-	return mat3.fromValues(
-		x[0], x[1], x[2],
-		y[0], y[1], y[2],
-		z[0], z[1], z[2]
 	);
 
 }

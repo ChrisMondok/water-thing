@@ -43,13 +43,16 @@ Buoy.prototype.createComponents = function() {
 	}
 };
 
-Buoy.prototype.tick = function(timestamp) {
-	var xy = [this.x, this.y];
-	this.z = this.water.getZ(timestamp, xy);
-	var normal = this.water.getNormal(timestamp, xy);
-	quat.fromMat3(this.rotation, lookAt3(normal, vec3.create(), vec3.fromValues(0, 1, 0)))
-	this.updateLampMaterial(timestamp);
-};
+(function() {
+	var up = vec3.fromValues(0, 0, 1)
+	Buoy.prototype.tick = function(timestamp) {
+		var xy = [this.x, this.y];
+		this.z = this.water.getZ(timestamp, xy);
+		var normal = this.water.getNormal(timestamp, xy);
+		quat.rotationTo(this.rotation, up, normal)
+		this.updateLampMaterial(timestamp);
+	};
+})()
 
 Buoy.prototype.updateLampMaterial = function(timestamp) {
 	var l = (timestamp/this.period + this.phase) % 1 < 0.25 ? 1 : 0;
