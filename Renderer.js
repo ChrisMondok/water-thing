@@ -26,9 +26,6 @@ Renderer.prototype.render = function(sceneRoot, camera, timestamp) {
 };
 
 Renderer.prototype.pushTransform = function(transform) {
-	if(!window.logged)
-		console.log("Pushing transformation %O", transform)
-
 	this.transformStack.unshift(mat4.mul(mat4.create(), this.transformStack[0], transform))
 	this.world.gl.uniformMatrix4fv(this.u_transform, false, this.transformStack[0]);
 }
