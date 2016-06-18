@@ -61,9 +61,9 @@ DebugWorld.prototype.tick = function tick(ts) {
 DebugWorld.prototype.log = function() {
 	if(!window.logged) {
 		console.log("Boat matrix")
-		printMat4(this.boat.getTransformMatrix().toArray())
+		printMat4(this.boat.transformMatrix)
 		console.log("Camera matrix")
-		printMat4(this.camera.getMatrix().toArray())
+		printMat4(this.camera.getMatrix())
 	}
 	window.logged = true;
 }

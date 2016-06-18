@@ -14,7 +14,7 @@ Camera.prototype = Object.create(Actor.prototype);
 
 (function() {
 	Camera.prototype.getMatrix = function() {
-		var matrix = lookAt(this.position, this.target, this.up);
+		var matrix = lookAt(this.position, this.target, this.up)
 		mat4.invert(matrix, matrix)
 		mat4.multiply(matrix, perspectiveMatrix(this.fov, 4/3, this.near, this.far), matrix)
 		return matrix
