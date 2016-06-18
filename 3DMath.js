@@ -22,7 +22,7 @@ function perspectiveMatrix(fov, aspect, near, far) {
 	return mat4.fromValues(
 		f/aspect, 0, 0, 0,
 		0, f, 0, 0,
-		0, 0, (near + far / near - far), -1,
+		0, 0, (near + far) / (near - far), -1,
 		0, 0, near * far / (near - far) * 2, 0
 	);
 
