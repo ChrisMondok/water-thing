@@ -71,45 +71,49 @@ WaterSurface.prototype.draw = function(renderer, timestamp) {
 	renderer.draw(gl.TRIANGLE_STRIP, this.vertexBuffer, this.normalBuffer, this.triangleStripArray.length / 3);
 };
 
-WaterSurface.prototype.updateBuffers = function(timestamp) {
-	var self = this
-	var columns, rows
-	columns = rows = this.cellsPerSide + 1;
-	var pointsPerRow = columns * 2;
-	var duplicatePoints = (rows - 2) * 2;
-	var numPoints = (rows - 1) * pointsPerRow + duplicatePoints;
-
-	var verts = this.getVertices(timestamp);
-
-	var s = 0, n = 0
+(function() {
 	var vv = vec2.create()
 	var normal = vec3.create()
-	function addVertex(x, y) {
-		var v = verts[y][x];
-		self.triangleStripArray[s+0] = v[0];
-		self.triangleStripArray[s+1] = v[1];
-		self.triangleStripArray[s+2] = v[2];
-		s += 3;
 
-		self.water.getNormal(normal, timestamp, v);
-		self.normalArray[n+0] = normal[0];
-		self.normalArray[n+1] = normal[1];
-		self.normalArray[n+2] = normal[2];
-		n += 3;
-	}
+	var columns, rows
 
-	for(var y = 0; y < rows - 1; y++) {
-		for(var x = 0; x < columns; x++) {
-			addVertex(x, y + 1);
-			addVertex(x, y);
+	WaterSurface.prototype.updateBuffers = function(timestamp) {
+		var self = this
+		columns = rows = this.cellsPerSide + 1;
+		var pointsPerRow = columns * 2;
+		var duplicatePoints = (rows - 2) * 2;
+		var numPoints = (rows - 1) * pointsPerRow + duplicatePoints;
+
+		var verts = this.getVertices(timestamp);
+
+		var s = 0, n = 0
+		function addVertex(x, y) {
+			var v = verts[y][x];
+			self.triangleStripArray[s+0] = v[0];
+			self.triangleStripArray[s+1] = v[1];
+			self.triangleStripArray[s+2] = v[2];
+			s += 3;
+
+			self.water.getNormal(normal, timestamp, v);
+			self.normalArray[n+0] = normal[0];
+			self.normalArray[n+1] = normal[1];
+			self.normalArray[n+2] = normal[2];
+			n += 3;
 		}
 
-		if(y < rows - 2) {
-			addVertex(columns - 1, y);
-			addVertex(0, y + 2);
+		for(var y = 0; y < rows - 1; y++) {
+			for(var x = 0; x < columns; x++) {
+				addVertex(x, y + 1);
+				addVertex(x, y);
+			}
+
+			if(y < rows - 2) {
+				addVertex(columns - 1, y);
+				addVertex(0, y + 2);
+			}
 		}
-	}
-};
+	};
+})()
 
 function WaterMaterial() {
 	Material.apply(this);

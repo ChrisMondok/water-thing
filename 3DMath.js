@@ -1,19 +1,27 @@
-function lookAt(position, target, up) {
-	//TODO: don't create so many vec3s.
-	
-	var z = vec3.subtract(vec3.create(), position, target)
-	vec3.normalize(z, z)
-	var x = vec3.cross(vec3.create(), up, z)
-	var y = vec3.cross(vec3.create(), z, x)
+(function(scope) {
 
-	return mat4.fromValues(
-		x[0], x[1], x[2], 0,
-		y[0], y[1], y[2], 0,
-		z[0], z[1], z[2], 0,
-		position[0], position[1], position[2], 1
-	);
+	var x = vec3.create()
+	var y = vec3.create()
+	var z = vec3.create()
 
-}
+	function lookAt(position, target, up) {
+		//TODO: don't create so many vec3s.
+		
+		vec3.subtract(z, position, target)
+		vec3.normalize(z, z)
+		vec3.cross(x, up, z)
+		vec3.cross(y, z, x)
+
+		return mat4.fromValues(
+			x[0], x[1], x[2], 0,
+			y[0], y[1], y[2], 0,
+			z[0], z[1], z[2], 0,
+			position[0], position[1], position[2], 1
+		);
+	}
+
+	scope.lookAt = lookAt;
+})(window)
 
 function perspectiveMatrix(fov, aspect, near, far) {
 	var f = Math.tan(Math.PI * 0.5 - 0.5 * fov);

@@ -1,3 +1,4 @@
+//
 //There should be a 1:1 relationship between renderers and programs.
 //Perhaps this is a poor name.
 function Renderer(world, program) {
@@ -12,18 +13,22 @@ function Renderer(world, program) {
 	this.lightMatrix = mat4.create()
 }
 
-Renderer.prototype.render = function(sceneRoot, camera, timestamp) {
-	this.world.gl.useProgram(this.program);
+(function() {
+	var n_sun = vec3.create()
 
-	//TODO: don't create a new vec3 here
-	var n_sun = vec3.normalize(vec3.create(), world.sun)
+	Renderer.prototype.render = function(sceneRoot, camera, timestamp) {
+		this.world.gl.useProgram(this.program);
 
-	this.lightMatrix = lookAt(n_sun, camera.target, getUpVector(n_sun))
+		//TODO: don't create a new vec3 here
+		vec3.normalize(n_sun, world.sun)
 
-	mat4.invert(this.lightMatrix, this.lightMatrix)
+		this.lightMatrix = lookAt(n_sun, camera.target, getUpVector(n_sun))
 
-	mat4.multiply(this.lightMatrix, orthoMatrix(vec3.distance(camera.target, camera.position) * 2), this.lightMatrix)
-};
+		mat4.invert(this.lightMatrix, this.lightMatrix)
+
+		mat4.multiply(this.lightMatrix, orthoMatrix(vec3.distance(camera.target, camera.position) * 2), this.lightMatrix)
+	};
+})()
 
 Renderer.prototype.transform = function(transform) {
 	mat4.multiply(this.transformMatrix, this.transformMatrix, transform)
