@@ -22,7 +22,7 @@ LightmapRenderer.prototype.render = function(sceneRoot, camera, timestamp) {
 	gl.enable(gl.CULL_FACE);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	gl.uniformMatrix4fv(this.u_projection, false, this.lightMatrix.toArray());
+	gl.uniformMatrix4fv(this.u_projection, false, this.lightMatrix);
 
 	sceneRoot.walk(this, timestamp);
 };

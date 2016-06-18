@@ -74,7 +74,5 @@ DemoWorld.prototype.createComponents = function() {
 DemoWorld.prototype.tick = function tick(ts) {
 	World.prototype.tick.apply(this, arguments);
 	var angle = ts / 10000;
-	this.camera.x = Math.sin(angle) * 200;
-	this.camera.y = Math.cos(angle) * 200;
-	this.camera.z = Math.sin(ts / 7000) * 50 + 75;
+	vec3.set(this.camera, Math.sin(angle) * 200, Math.cos(angle) * 200, Math.sin(ts / 7000) * 50 + 75);
 };

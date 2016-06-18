@@ -14,13 +14,11 @@ PointWaveSource.prototype.slopeFunction = function(x) {
 };
 
 (function() {
-	var workArray2d = [0, 0];
+	var workArray = vec2.create();
 
 	PointWaveSource.prototype.getPhase = function(timestamp, xy) {
-		workArray2d[0] = 0;
-		workArray2d[1] = 0;
-		workArray2d.add(this.position.elements).subtract(xy);
-		return -workArray2d.magnitude() / this.getWavelength() + 2 * Math.PI * (timestamp/ (1000 * this.period)) + this.phase;
+		vec2.subtract(workArray, this.position, xy);
+		return -vec2.length(workArray) / this.getWavelength() + 2 * Math.PI * (timestamp/ (1000 * this.period)) + this.phase;
 	};
 })();
 
@@ -34,5 +32,5 @@ PointWaveSource.prototype.getSlope = function(timestamp, xy) {
 	var phase = this.getPhase(timestamp, xy);
 	var slope =  this.slopeFunction(phase) / this.getWavelength();
 	var angle = Math.atan2(xy[1] - this.y, xy[0] - this.x);
-	return [ Math.cos(angle) * slope, Math.sin(angle) * slope ];
+	return vec2.fromValues(Math.cos(angle) * slope, Math.sin(angle) * slope);
 };

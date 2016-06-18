@@ -7,28 +7,27 @@ function Renderer(world, program) {
 	this.a_position = gl.getAttribLocation(program, 'a_position');
 	world.gl.enableVertexAttribArray(this.a_position);
 
-	this.transformStack = [Matrix.I(4)];
+	this.transformMatrix = mat4.identity(mat4.create())
+
+	this.lightMatrix = mat4.create()
 }
 
 Renderer.prototype.render = function(sceneRoot, camera, timestamp) {
 	this.world.gl.useProgram(this.program);
 
-	var n_sun = world.sun.normalize();
+	//TODO: don't create a new vec3 here
+	var n_sun = vec3.normalize(vec3.create(), world.sun)
 
 	this.lightMatrix = lookAt(n_sun, camera.target, getUpVector(n_sun))
-		.inverse()
-		.x(orthoMatrix(camera.target.distanceFrom(camera.position) * 2));
+
+	mat4.invert(this.lightMatrix, this.lightMatrix)
+
+	mat4.multiply(this.lightMatrix, orthoMatrix(vec3.distance(camera.target, camera.position) * 2), this.lightMatrix)
 };
 
-Renderer.prototype.pushTransform = function(transform) {
-	//shift and unshift for easier peek
-	this.transformStack.unshift(transform.x(this.transformStack[0]));
-	this.world.gl.uniformMatrix4fv(this.u_transform, false, this.transformStack[0].toArray());
-};
-
-Renderer.prototype.popTransform = function() {
-	this.transformStack.shift();
-	this.world.gl.uniformMatrix4fv(this.u_transform, false, this.transformStack[0].toArray());
+Renderer.prototype.transform = function(transform) {
+	mat4.multiply(this.transformMatrix, transform, this.transformMatrix);
+	this.world.gl.uniformMatrix4fv(this.u_transform, false, this.transformMatrix);
 };
 
 Renderer.prototype.setMaterial = function(material) {

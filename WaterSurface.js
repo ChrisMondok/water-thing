@@ -80,7 +80,7 @@ WaterSurface.prototype.updateBuffers = function(timestamp) {
 	var verts = this.getVertices(timestamp);
 
 	var s = 0, n = 0;
-	var vv = Vector.Zero(2);
+	var vv = vec2.create();
 	function addVertex(x, y) {
 		var v = verts[y][x];
 		self.triangleStripArray[s+0] = v[0];

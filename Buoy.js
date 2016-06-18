@@ -3,7 +3,7 @@ function Buoy(gl, water) {
 
 	this.water = water;
 
-	this.scale.setElements([15, 15, 15]);
+	vec3.set(this.scale, 15, 15, 15);
 
 	this.createComponents();
 }
@@ -31,7 +31,7 @@ Buoy.prototype.createComponents = function() {
 			m.material = this.lampMaterial;
 		}
 		var mesh = new StaticMeshComponent(m);
-		mesh.position.setElements([0, 0, 0.1]);
+		vec3.set(mesh.position, 0, 0, 0.1);
 		this.addComponent(mesh);
 	}, this);
 
@@ -47,7 +47,7 @@ Buoy.prototype.tick = function(timestamp) {
 	var xy = [this.x, this.y];
 	this.z = this.water.getZ(timestamp, xy);
 	var normal = this.water.getNormal(timestamp, xy);
-	this.rotation = lookAt(Vector.create([normal[0], normal[1], normal[2]]), Vector.create([0, 0, 0]), Vector.create([0, 1, 0]));
+	this.rotation = lookAt(normal, vec3.create(), vec3.fromValues(0, 1, 0));
 	this.updateLampMaterial(timestamp);
 };
 
