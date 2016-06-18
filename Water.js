@@ -13,21 +13,13 @@ Water.prototype.getZ = function(timestamp, xy) {
 	return z;
 };
 
-Water.prototype.getSlope = function(timestamp, xy) {
-	var slope = vec2.create();
-
-	for(var i = 0; i < this.waveSources.length; i++) {
-		var wss = this.waveSources[i].getSlope(timestamp, xy);
-		vec2.add(slope, slope, wss)
-	}
-
-	return slope;
-};
-
 Water.prototype.getNormal = function(timestamp, xy) {
-	var slope = this.getSlope(timestamp, xy);
-	var slope3d = vec3.fromValues(slope[0], slope[1], 1)
-	return vec3.normalize(slope3d, slope3d)
+	var out = vec3.fromValues(0, 0, 1)
+
+	for(var i = 0; i < this.waveSources.length; i++)
+		this.waveSources[i].accumulateNormal(out, timestamp, xy);
+
+	return vec3.normalize(out, out)
 };
 
 function WaveSource(fluid) {
@@ -57,6 +49,5 @@ WaveSource.prototype.getZ = function(timestamp, xy) {
 	return 0;
 };
 
-WaveSource.prototype.getSlope = function(timestamp, xy) {
-	return vec2.create();
+WaveSource.prototype.accumulateNormal = function(out, timestamp, xy) {
 };

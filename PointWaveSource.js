@@ -28,9 +28,10 @@ PointWaveSource.prototype.getZ = function(timestamp, xy) {
 	return this.waveFunction(phase);
 };
 
-PointWaveSource.prototype.getSlope = function(timestamp, xy) {
-	var phase = this.getPhase(timestamp, xy);
-	var slope =  this.slopeFunction(phase) / this.getWavelength();
-	var angle = Math.atan2(xy[1] - this.y, xy[0] - this.x);
-	return vec2.fromValues(Math.cos(angle) * slope, Math.sin(angle) * slope);
-};
+PointWaveSource.prototype.accumulateNormal = function(out, timestamp, xy) {
+	var phase = this.getPhase(timestamp, xy)
+	var slope =  this.slopeFunction(phase) / this.getWavelength()
+	var angle = Math.atan2(xy[1] - this.y, xy[0] - this.x)
+	out[0] += Math.cos(angle) * slope
+	out[1] += Math.sin(angle) * slope
+}
