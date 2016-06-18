@@ -51,8 +51,8 @@ World.prototype.createComponents = function() {
 		ts *= this.timeScale;
 
 		vec3.set(this.sun, 0, 0, -1 * computeSunIntensity(this.timeOfDay))
-		vec3.rotateX(this.sun, this.sun, origin, -this.timeOfDay * Math.PI * 2)
-		vec3.rotateY(this.sun, this.sun, origin, this.latitude / 180 * Math.PI)
+		vec3.rotateX(this.sun, this.sun, origin, this.timeOfDay * Math.PI * 2)
+		vec3.rotateY(this.sun, this.sun, origin, -this.latitude / 180 * Math.PI)
 
 		for(var i = 0; i < this.actors.length; i++)
 			this.actors[i].tick(ts);
