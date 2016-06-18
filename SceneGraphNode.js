@@ -6,18 +6,17 @@ function SceneGraphNode() {
 	this.scale.set([1, 1, 1])
 
 	this.transformMatrix = mat4.create()
-	this.inverseTransformMatrix = mat4.create()
 }
 
 SceneGraphNode.prototype.walk = function(renderer, timestamp) {
 	this.updateTransformMatrix()
-	renderer.transform(this.transformMatrix)
+	renderer.pushTransform(this.transformMatrix)
 
 	this.draw(renderer, timestamp);
 	for(var i = 0; i < this.components.length; i++)
 		this.components[i].walk(renderer, timestamp)
 
-	renderer.transform(this.inverseTransformMatrix)
+	renderer.popTransform()
 };
 
 SceneGraphNode.prototype.draw = function(renderer, timestamp) {};
@@ -28,13 +27,4 @@ SceneGraphNode.prototype.addComponent = function(c) {
 
 SceneGraphNode.prototype.updateTransformMatrix = function() {
 	mat4.fromRotationTranslationScale(this.transformMatrix, this.rotation, this.position, this.scale)
-	mat4.invert(this.inverseTransformMatrix, this.transformMatrix)
-
-//	mat4.identity(this.transformMatrix)
-//
-//	mat4.scale(this.transformMatrix, this.transformMatrix, this.scale)
-//
-//	mat4.multiply(this.transformMatrix, this.rotation, this.transformMatrix)
-//
-//	mat4.translate(this.transformMatrix, this.transformMatrix, this.position)
 };
