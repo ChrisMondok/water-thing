@@ -22,6 +22,9 @@ Renderer.prototype.render = function(sceneRoot, camera, timestamp) {
 
 Renderer.prototype.pushTransform = function(transform) {
 	//shift and unshift for easier peek
+	if(!window.logged)
+		console.log("Pushing transformation %O", transform.toArray())
+
 	this.transformStack.unshift(transform.x(this.transformStack[0]));
 	this.world.gl.uniformMatrix4fv(this.u_transform, false, this.transformStack[0].toArray());
 };

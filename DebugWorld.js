@@ -59,10 +59,26 @@ DebugWorld.prototype.tick = function tick(ts) {
 };
 
 DebugWorld.prototype.log = function() {
-	if(!this.logged) {
-		console.log("Boat matrix: \n", this.boat.getTransformMatrix().toArray())
-		console.log("Camera matrix: \n", this.camera.getMatrix().toArray())
+	if(!window.logged) {
+		console.log("Boat matrix")
+		printMat4(this.boat.getTransformMatrix().toArray())
+		console.log("Camera matrix")
+		printMat4(this.camera.getMatrix().toArray())
 	}
-	this.logged = true;
+	window.logged = true;
+}
 
+printMat4 = function(array) {
+	var columns = {};
+
+	var dim = Math.sqrt(array.length);
+
+	for(var row = 0; row < dim; row ++) {
+		var list = columns['row'+row] = {};
+		for(var col = 0; col < dim; col++) {
+			list['col'+col] = array[row * dim + col]
+		}
+	}
+
+	console.table(columns)
 }
