@@ -7,7 +7,7 @@ function Renderer(world, program) {
 	this.a_position = gl.getAttribLocation(program, 'a_position');
 	world.gl.enableVertexAttribArray(this.a_position);
 
-	this.transformStack = [mat4.identity(mat4.create())]
+	this.transformMatrix = mat4.identity(mat4.create())
 
 	this.lightMatrix = mat4.create()
 }
@@ -25,14 +25,9 @@ Renderer.prototype.render = function(sceneRoot, camera, timestamp) {
 	mat4.multiply(this.lightMatrix, orthoMatrix(vec3.distance(camera.target, camera.position) * 2), this.lightMatrix)
 };
 
-Renderer.prototype.pushTransform = function(transform) {
-	this.transformStack.unshift(mat4.mul(mat4.create(), this.transformStack[0], transform))
-	this.world.gl.uniformMatrix4fv(this.u_transform, false, this.transformStack[0]);
-}
-
-Renderer.prototype.popTransform = function() {
-	this.transformStack.shift()
-	this.world.gl.uniformMatrix4fv(this.u_transform, false, this.transformStack[0]);
+Renderer.prototype.transform = function(transform) {
+	mat4.multiply(this.transformMatrix, this.transformMatrix, transform)
+	this.world.gl.uniformMatrix4fv(this.u_transform, false, this.transformMatrix);
 }
 
 Renderer.prototype.setMaterial = function(material) {
