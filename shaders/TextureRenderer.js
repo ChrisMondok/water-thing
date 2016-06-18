@@ -45,7 +45,6 @@ TextureRenderer.prototype.render = function(sceneRoot, camera, timestamp) {
 	gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0);
 
 	gl.drawArrays(gl.TRIANGLES, 0, 6);
-	var e = gl.getError();
 };
 
 TextureRenderer.prototype.draw = function(mode, vertBuffer, normalBuffer, numVerts) {

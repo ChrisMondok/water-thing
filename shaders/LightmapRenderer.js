@@ -33,8 +33,6 @@ LightmapRenderer.prototype.draw = function(mode, vertBuffer, normalBuffer, numVe
 	gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0);
 
 	gl.drawArrays(mode, 0, numVerts);
-
-	var e = gl.getError();
 };
 
 LightmapRenderer.vertex = "shaders/lightmapVertex.glsl";
