@@ -41,14 +41,14 @@ SceneRenderer.prototype.render = function(sceneRoot, camera, timestamp) {
 	gl.bindTexture(gl.TEXTURE_2D, this.world.lightmap);
 	gl.uniform1i(this.u_lightmap_sampler, 0);
 
-	gl.uniformMatrix4fv(this.u_projection, false, camera.getMatrix().toArray());
+	gl.uniformMatrix4fv(this.u_projection, false, camera.getMatrix());
 
-	gl.uniformMatrix4fv(this.u_sun_projection, false, this.lightMatrix.toArray());
+	gl.uniformMatrix4fv(this.u_sun_projection, false, this.lightMatrix);
 
-	gl.uniform3fv(this.u_sun, this.world.sun.elements);
+	gl.uniform3fv(this.u_sun, this.world.sun);
 	var ambient = 0.4;
 	gl.uniform3fv(this.u_ambient_light, new Float32Array([ambient, ambient, ambient]));
-	gl.uniform3f(this.u_camera, camera.x, camera.y, camera.z);
+	gl.uniform3fv(this.u_camera, camera.position);
 
 	sceneRoot.walk(this, timestamp);
 };

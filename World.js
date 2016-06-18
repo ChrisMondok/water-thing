@@ -2,6 +2,8 @@ function World(canvas) {
 	this.renderers = [];
 	this.actors = [];
 
+	this.sun = vec3.create()
+
 	this.gl = window.gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 
 	var tick = this._tick = this.tick.bind(this);
@@ -28,18 +30,14 @@ World.prototype.latitude = 40;
 World.prototype.timeOfDay = 0.6; //0-1 => 0h-24h
 World.prototype.timeScale = 1;
 
-World.prototype.east = Vector.create([1, 0, 0]);
-World.prototype.north = Vector.create([0, 1, 0]);
-World.prototype.up = Vector.create([0, 0, 1]);
-
 World.prototype.createComponents = function() {
 	this.camera = new Camera();
 	this.sceneRoot = new SceneGraphNode();
 };
 
 (function() {
-	var northLine = Line.create([0, 0, 0], World.prototype.north);
-	var eastLine = Line.create([0, 0, 0], World.prototype.east);
+
+	var origin = vec3.create()
 
 	function computeSunIntensity(timeOfDay) {
 		return 1.0;
@@ -51,9 +49,10 @@ World.prototype.createComponents = function() {
 
 	World.prototype.tick = function tick(ts) {
 		ts *= this.timeScale;
-		this.sun = Vector.create([0, 0, -1 * computeSunIntensity(this.timeOfDay)])
-			.rotate(-this.timeOfDay * Math.PI * 2, northLine)
-			.rotate(this.latitude / 180 * Math.PI, eastLine);
+
+		vec3.set(this.sun, 0, 0, -1 * computeSunIntensity(this.timeOfDay))
+		vec3.rotateX(this.sun, this.sun, origin, this.timeOfDay * Math.PI * 2)
+		vec3.rotateY(this.sun, this.sun, origin, -this.latitude / 180 * Math.PI)
 
 		for(var i = 0; i < this.actors.length; i++)
 			this.actors[i].tick(ts);
