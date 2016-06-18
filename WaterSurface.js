@@ -4,7 +4,8 @@ function WaterSurface(gl, water, size, cellsPerSide) {
 	this.cellsPerSide = cellsPerSide;
 	this.water = water;
 
-	var columns = rows = this.cellsPerSide + 1;
+	var columns, rows
+	columns = rows= this.cellsPerSide + 1;
 	var pointsPerRow = columns * 2;
 	var duplicatePoints = (rows - 2) * 2;
 	var numPoints = (rows - 1) * pointsPerRow + duplicatePoints;
@@ -71,16 +72,18 @@ WaterSurface.prototype.draw = function(renderer, timestamp) {
 };
 
 WaterSurface.prototype.updateBuffers = function(timestamp) {
-	var self = this;
-	var columns = rows = this.cellsPerSide + 1;
+	var self = this
+	var columns, rows
+	columns = rows = this.cellsPerSide + 1;
 	var pointsPerRow = columns * 2;
 	var duplicatePoints = (rows - 2) * 2;
 	var numPoints = (rows - 1) * pointsPerRow + duplicatePoints;
 
 	var verts = this.getVertices(timestamp);
 
-	var s = 0, n = 0;
-	var vv = vec2.create();
+	var s = 0, n = 0
+	var vv = vec2.create()
+	var normal = vec3.create()
 	function addVertex(x, y) {
 		var v = verts[y][x];
 		self.triangleStripArray[s+0] = v[0];
@@ -88,7 +91,7 @@ WaterSurface.prototype.updateBuffers = function(timestamp) {
 		self.triangleStripArray[s+2] = v[2];
 		s += 3;
 
-		var normal = self.water.getNormal(timestamp, v);
+		self.water.getNormal(normal, timestamp, v);
 		self.normalArray[n+0] = normal[0];
 		self.normalArray[n+1] = normal[1];
 		self.normalArray[n+2] = normal[2];

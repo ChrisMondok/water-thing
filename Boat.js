@@ -27,11 +27,12 @@ Boat.prototype.createComponents = function() {
 (function() {
 	var up = vec3.fromValues(0, 0, 1)
 
+	var normal = vec3.create()
 	Boat.prototype.tick = function(timestamp) {
 		var xy = [this.x, this.y];
 		this.z = this.water.getZ(timestamp, xy);
 
-		var normal = this.water.getNormal(timestamp, xy);
+		this.water.getNormal(normal, timestamp, xy);
 
 		quat.rotationTo(this.rotation, up, normal)
 	};

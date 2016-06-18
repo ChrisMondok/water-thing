@@ -13,8 +13,8 @@ Water.prototype.getZ = function(timestamp, xy) {
 	return z;
 };
 
-Water.prototype.getNormal = function(timestamp, xy) {
-	var out = vec3.fromValues(0, 0, 1)
+Water.prototype.getNormal = function(out, timestamp, xy) {
+	vec3.set(out, 0, 0, 1)
 
 	for(var i = 0; i < this.waveSources.length; i++)
 		this.waveSources[i].accumulateNormal(out, timestamp, xy);
