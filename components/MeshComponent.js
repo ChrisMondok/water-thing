@@ -1,47 +1,51 @@
-function MeshComponent(material) {
-	SceneGraphNode.apply(this, arguments);
-	this.material = material;
+/* globals SceneGraphNode, gl */
 
-	var mesh = this.createMesh();
-	var vertices = mesh.vertices;
-	var normals = mesh.normals;
+// TODO: get gl out of global scope
 
-	this.vertexBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+function MeshComponent (material) {
+  SceneGraphNode.apply(this, arguments)
+  this.material = material
 
-	this.normalBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW);
+  var mesh = this.createMesh()
+  var vertices = mesh.vertices
+  var normals = mesh.normals
 
-	this.numVertices = vertices.length / 3;
+  this.vertexBuffer = gl.createBuffer()
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer)
+  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
 
-	this.drawMode = gl.TRIANGLE_STRIP;
+  this.normalBuffer = gl.createBuffer()
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer)
+  gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW)
+
+  this.numVertices = vertices.length / 3
+
+  this.drawMode = gl.TRIANGLE_STRIP
 }
 
-MeshComponent.prototype = Object.create(SceneGraphNode.prototype);
-MeshComponent.prototype.constructor = MeshComponent;
+MeshComponent.prototype = Object.create(SceneGraphNode.prototype)
+MeshComponent.prototype.constructor = MeshComponent
 
-MeshComponent.prototype.createMesh = function() {
-	throw new Error("Cannot create abstract mesh.");
-};
-
-MeshComponent.prototype.draw = function(renderer, timestamp) {
-	SceneGraphNode.prototype.draw.apply(this, arguments);
-	renderer.setMaterial(this.material);
-	renderer.draw(this.drawMode, this.vertexBuffer, this.normalBuffer, this.numVertices);
-};
-
-function StaticMeshComponent(staticMeshDefinition) {
-	this.createMesh = function() {
-		return {
-			vertices: staticMeshDefinition.vertices,
-			normals: staticMeshDefinition.normals
-		};
-	};
-
-	MeshComponent.call(this, staticMeshDefinition.material);
-	this.drawMode = gl.TRIANGLES;
+MeshComponent.prototype.createMesh = function () {
+  throw new Error('Cannot create abstract mesh.')
 }
 
-StaticMeshComponent.prototype = Object.create(MeshComponent.prototype);
+MeshComponent.prototype.draw = function (renderer, timestamp) {
+  SceneGraphNode.prototype.draw.apply(this, arguments)
+  renderer.setMaterial(this.material)
+  renderer.draw(this.drawMode, this.vertexBuffer, this.normalBuffer, this.numVertices)
+}
+
+function StaticMeshComponent (staticMeshDefinition) {
+  this.createMesh = function () {
+    return {
+      vertices: staticMeshDefinition.vertices,
+      normals: staticMeshDefinition.normals
+    }
+  }
+
+  MeshComponent.call(this, staticMeshDefinition.material)
+  this.drawMode = gl.TRIANGLES
+}
+
+StaticMeshComponent.prototype = Object.create(MeshComponent.prototype)

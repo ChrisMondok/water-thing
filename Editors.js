@@ -1,160 +1,173 @@
-function EnvironmentEditor(world) {
-	var container = document.createElement('details');
+/* globals PointWaveSource */
 
-	var summary = document.createElement('summary');
+var Editors = window.Editors = {}
 
-	summary.textContent = "Environment";
+;(function () {
+  Editors.EnvironmentEditor = EnvironmentEditor
+  Editors.PointWaveSourceEditor = PointWaveSourceEditor
+  Editors.WaterEditor = WaterEditor
+  Editors.MaterialEditor = MaterialEditor
 
-	container.appendChild(summary);
+  function EnvironmentEditor (world) {
+    var container = window.document.createElement('details')
 
-	container.appendChild(makeRange('Time of Day', function(v) {
-		world.timeOfDay = v;
-	}, world.timeOfDay, 0, 1));
+    var summary = window.document.createElement('summary')
 
-	container.appendChild(makeRange('Latitude', function(v) {
-		world.latitude = v;
-	}, world.latitude, -90, 90));
+    summary.textContent = 'Environment'
 
-	container.appendChild(makeRange('Timescale', function(v) {
-		world.timeScale = v;
-	}, world.timeScale, 0, 2));
+    container.appendChild(summary)
 
-	document.querySelector('#toolbox').appendChild(container);
-}
+    container.appendChild(makeRange('Time of Day', function (v) {
+      world.timeOfDay = v
+    }, world.timeOfDay, 0, 1))
 
-function PointWaveSourceEditor(pointWaveSource, name) {
-	var container = document.createElement('details');
+    container.appendChild(makeRange('Latitude', function (v) {
+      world.latitude = v
+    }, world.latitude, -90, 90))
 
-	var summary = document.createElement('summary');
+    container.appendChild(makeRange('Timescale', function (v) {
+      world.timeScale = v
+    }, world.timeScale, 0, 2))
 
-	summary.textContent = name || 'Point Wave Source';
+    window.document.querySelector('#toolbox').appendChild(container)
+  }
 
-	container.appendChild(summary);
+  function PointWaveSourceEditor (pointWaveSource, name) {
+    var container = window.document.createElement('details')
 
-	container.appendChild(makePositionEditor('Position', pointWaveSource));
+    var summary = window.document.createElement('summary')
 
-	container.appendChild(makeRange('Phase', function(v) {
-		pointWaveSource.phase = v;
-	}, pointWaveSource.phase, 0, 2 * Math.PI));
+    summary.textContent = name || 'Point Wave Source'
 
-	container.appendChild(makeRange('Amplitude', function(v) {
-		pointWaveSource.amplitude = v;
-	}, pointWaveSource.amplitude, 0, 50));
+    container.appendChild(summary)
 
-	container.appendChild(makeRange('Frequency', function(v) {
-		pointWaveSource.frequency = v;
-	}, pointWaveSource.frequency, 0, 1, 0.01));
+    container.appendChild(makePositionEditor('Position', pointWaveSource))
 
-	document.querySelector('#toolbox').appendChild(container);
-}
+    container.appendChild(makeRange('Phase', function (v) {
+      pointWaveSource.phase = v
+    }, pointWaveSource.phase, 0, 2 * Math.PI))
 
-function WaterEditor(water) {
-	var container = document.createElement('details');
+    container.appendChild(makeRange('Amplitude', function (v) {
+      pointWaveSource.amplitude = v
+    }, pointWaveSource.amplitude, 0, 50))
 
-	var summary = document.createElement('summary');
+    container.appendChild(makeRange('Frequency', function (v) {
+      pointWaveSource.frequency = v
+    }, pointWaveSource.frequency, 0, 1, 0.01))
 
-	summary.textContent = 'Water';
+    window.document.querySelector('#toolbox').appendChild(container)
+  }
 
-	container.appendChild(summary);
+  function WaterEditor (water) {
+    var container = window.document.createElement('details')
 
-	container.appendChild(makeRange('viscosity', function(v) {
-		water.viscosity = v;
-	}, water.viscosity, 1, 100));
+    var summary = window.document.createElement('summary')
 
-	document.querySelector('#toolbox').appendChild(container);
+    summary.textContent = 'Water'
 
-	water.waveSources.forEach(function(source, index) {
-		if(source instanceof PointWaveSource)
-			new PointWaveSourceEditor(source, 'Wave source '+index);
-	});
-}
+    container.appendChild(summary)
 
-function MaterialEditor(material, materialName) {
-	var container = document.createElement('details');
+    container.appendChild(makeRange('viscosity', function (v) {
+      water.viscosity = v
+    }, water.viscosity, 1, 100))
 
-	var summary = document.createElement('summary');
+    window.document.querySelector('#toolbox').appendChild(container)
 
-	materialName = materialName || material.name || material.constructor.name;
+    water.waveSources.forEach(function (source, index) {
+      if (source instanceof PointWaveSource) {
+        // TODO: get rid of valueOf when these things don't manipulate the doucment directly
+        new PointWaveSourceEditor(source, 'Wave source ' + index).valueOf()
+      }
+    })
+  }
 
-	summary.textContent = "Material Editor ("+materialName+")";
+  function MaterialEditor (material, materialName) {
+    var container = window.document.createElement('details')
 
-	container.appendChild(summary);
+    var summary = window.document.createElement('summary')
 
-	container.appendChild(makeColorPicker('Diffuse', material.diffuse));
-	container.appendChild(makeColorPicker('Emissive', material.emissive));
-	container.appendChild(makeColorPicker('Ambient', material.ambient));
+    materialName = materialName || material.name || material.constructor.name
 
-	container.appendChild(makeColorPicker('Specular', material.specular));
-	container.appendChild(makeRange('Shininess', function(v) {
-		material.shininess = v;
-	}, material.shininess, 0, 50, 1));
+    summary.textContent = 'Material Editor (' + materialName + ')'
 
-	document.querySelector('#toolbox').appendChild(container);
-}
+    container.appendChild(summary)
 
-function makeRange(name, callback, initialValue, min, max, step) {
-	var label = document.createElement('label');
+    container.appendChild(makeColorPicker('Diffuse', material.diffuse))
+    container.appendChild(makeColorPicker('Emissive', material.emissive))
+    container.appendChild(makeColorPicker('Ambient', material.ambient))
 
-	var text = document.createElement('span');
-	function updateLabel(v) {
-		text.textContent = name+": "+v;
-	}
+    container.appendChild(makeColorPicker('Specular', material.specular))
+    container.appendChild(makeRange('Shininess', function (v) {
+      material.shininess = v
+    }, material.shininess, 0, 50, 1))
 
-	label.appendChild(text);
+    window.document.querySelector('#toolbox').appendChild(container)
+  }
 
-	var input = document.createElement('input');
-	input.type = 'range';
-	input.min = min === undefined ? 0 : min;
-	input.max = max === undefined ? 1 : max;
-	input.step = step === undefined ? 0.001 : step;
-	input.value = initialValue === undefined ? 0.5 : initialValue;
+  function makeRange (name, callback, initialValue, min, max, step) {
+    var label = window.document.createElement('label')
 
-	input.addEventListener('input', function() {
-		callback(Number(input.value));
-		updateLabel(input.value);
-	});
+    var text = window.document.createElement('span')
+    function updateLabel (v) {
+      text.textContent = name + ': ' + v
+    }
 
-	updateLabel(input.value);
+    label.appendChild(text)
 
-	label.appendChild(input);
+    var input = window.document.createElement('input')
+    input.type = 'range'
+    input.min = min === undefined ? 0 : min
+    input.max = max === undefined ? 1 : max
+    input.step = step === undefined ? 0.001 : step
+    input.value = initialValue === undefined ? 0.5 : initialValue
 
-	return label;
-}
+    input.addEventListener('input', function () {
+      callback(Number(input.value))
+      updateLabel(input.value)
+    })
 
-function makePositionEditor(name, model) {
-	var container = document.createElement('section');
-	var header = document.createElement('header');
-	header.textContent = name;
-	container.appendChild(header);
+    updateLabel(input.value)
 
-	container.appendChild(makeRange('x', function(x) {
-		model.x = x;
-	}, model.x, -200, 200));
-	container.appendChild(makeRange('y', function(y) {
-		model.y = y;
-	}, model.y, -200, 200));
-	container.appendChild(makeRange('z', function(z) {
-		model.z = z;
-	}, model.z, -200, 200));
+    label.appendChild(input)
 
-	return container;
-}
+    return label
+  }
 
-function makeColorPicker(name, colorArray) {
-	var container = document.createElement('section');
-	var header = document.createElement('header');
-	header.textContent = name;
-	container.appendChild(header);
+  function makePositionEditor (name, model) {
+    var container = window.document.createElement('section')
+    var header = window.document.createElement('header')
+    header.textContent = name
+    container.appendChild(header)
 
-	container.appendChild(makeRange('Red', function(c) {
-		colorArray[0] = c;
-	}, colorArray[0]));
-	container.appendChild(makeRange('Green', function(c) {
-		colorArray[1] = c;
-	}, colorArray[1]));
-	container.appendChild(makeRange('Blue', function(c) {
-		colorArray[2] = c;
-	}, colorArray[2]));
+    container.appendChild(makeRange('x', function (x) {
+      model.x = x
+    }, model.x, -200, 200))
+    container.appendChild(makeRange('y', function (y) {
+      model.y = y
+    }, model.y, -200, 200))
+    container.appendChild(makeRange('z', function (z) {
+      model.z = z
+    }, model.z, -200, 200))
 
-	return container;
-}
+    return container
+  }
+
+  function makeColorPicker (name, colorArray) {
+    var container = window.document.createElement('section')
+    var header = window.document.createElement('header')
+    header.textContent = name
+    container.appendChild(header)
+
+    container.appendChild(makeRange('Red', function (c) {
+      colorArray[0] = c
+    }, colorArray[0]))
+    container.appendChild(makeRange('Green', function (c) {
+      colorArray[1] = c
+    }, colorArray[1]))
+    container.appendChild(makeRange('Blue', function (c) {
+      colorArray[2] = c
+    }, colorArray[2]))
+
+    return container
+  }
+})()

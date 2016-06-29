@@ -1,56 +1,56 @@
-//renders a texture to the screen
-function TextureRenderer(world, program) {
-	Renderer.apply(this, arguments);
+/* globals Renderer, createFramebuffer */
 
-	this.framebuffer = createFramebuffer(world.gl, world.lightmap);
-	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+// renders a texture to the screen
+function TextureRenderer (world, program) {
+  Renderer.apply(this, arguments)
 
-	verts = new Float32Array([
-		0, 0, 0,
-		0, 1, 0,
-		1, 1, 0,
+  var gl = world.gl
+  this.framebuffer = createFramebuffer(gl, world.lightmap)
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null)
 
-		1, 1, 0,
-		1, 0, 0,
-		0, 0, 0
+  var verts = new Float32Array([
+    0, 0, 0,
+    0, 1, 0,
+    1, 1, 0,
 
-	]);
+    1, 1, 0,
+    1, 0, 0,
+    0, 0, 0
+  ])
 
-	this.vertexBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, verts, gl.STATIC_DRAW);
+  this.vertexBuffer = gl.createBuffer()
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer)
+  gl.bufferData(gl.ARRAY_BUFFER, verts, gl.STATIC_DRAW)
 }
 
-TextureRenderer.prototype = Object.create(Renderer.prototype);
-TextureRenderer.constructor = TextureRenderer;
+TextureRenderer.prototype = Object.create(Renderer.prototype)
+TextureRenderer.constructor = TextureRenderer
 
-TextureRenderer.prototype.render = function(sceneRoot, camera, timestamp) {
-	if(!window.debug)
-		return;
-	Renderer.prototype.render.apply(this, arguments);
-	var gl = this.world.gl;
+TextureRenderer.prototype.render = function (sceneRoot, camera, timestamp) {
+  if (!window.debug) return
+  Renderer.prototype.render.apply(this, arguments)
+  var gl = this.world.gl
 
-	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-	gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
-	gl.clear(gl.COLOR_BUFFER_BIT);
-	gl.disable(gl.DEPTH_TEST);
-	gl.disable(gl.CULL_FACE);
+  gl.clear(gl.COLOR_BUFFER_BIT)
+  gl.disable(gl.DEPTH_TEST)
+  gl.disable(gl.CULL_FACE)
 
-	gl.activeTexture(gl.TEXTURE0);
-	gl.bindTexture(gl.TEXTURE_2D, this.world.lightmap);
-	gl.uniform1i(this.u_sampler, 0);
+  gl.activeTexture(gl.TEXTURE0)
+  gl.bindTexture(gl.TEXTURE_2D, this.world.lightmap)
+  gl.uniform1i(this.u_sampler, 0)
 
-	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-	gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer)
+  gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0)
 
-	gl.drawArrays(gl.TRIANGLES, 0, 6);
-};
+  gl.drawArrays(gl.TRIANGLES, 0, 6)
+}
 
-TextureRenderer.prototype.draw = function(mode, vertBuffer, normalBuffer, numVerts) {
-	throw new Error("Not implemented");
-};
+TextureRenderer.prototype.draw = function (mode, vertBuffer, normalBuffer, numVerts) {
+  throw new Error('Not implemented')
+}
 
-TextureRenderer.vertex = "shaders/textureVertex.glsl";
-TextureRenderer.fragment = "shaders/textureFragment.glsl";
-
+TextureRenderer.vertex = 'shaders/textureVertex.glsl'
+TextureRenderer.fragment = 'shaders/textureFragment.glsl'

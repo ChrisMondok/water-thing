@@ -1,30 +1,29 @@
-Array.prototype.flatten = function() {
-	//yeah, this is ugly, but it's much faster than array.reduce(concat)
-	var i = 0, count = 0;
-	for(i = 0; i < this.length; i++)
-		count += this[i].length;
+Math.degToRad = Math.degToRad || function degToRad (deg) {
+  return deg / 180 * Math.PI
+}
 
-	var output = new Array(count);
+Math.radToDeg = Math.radToDeg || function radToDeg (rad) {
+  return rad / Math.PI * 180
+}
 
-	var o = 0;
-	for(var iA = 0; iA < this.length; iA++) {
-		for(i = 0; i < this[iA].length; i++)
-			output[o++] = this[iA][i];
-	}
+;(function () {
+  var x = vec3.create()
+  var y = vec3.create()
+  var z = vec3.create()
 
-	return output;
-};
+  mat4.lookAt = function lookAt (out, position, target, up) {
+    // TODO: don't create so many vec3s.
 
-Math.degToRad = Math.degToRad || function degToRad(deg) {
-	return deg / 180 * Math.PI;
-};
+    vec3.subtract(z, position, target)
+    vec3.normalize(z, z)
+    vec3.cross(x, up, z)
+    vec3.cross(y, z, x)
 
-Math.radToDeg = Math.radToDeg || function radToDeg(rad) {
-	return rad / Math.PI * 180;
-};
-
-Array.prototype.unique = function() {
-	return this.filter(function(value, index, array) {
-		return array.indexOf(value) == index;
-	});
-};
+    return mat4.set(out,
+      x[0], x[1], x[2], 0,
+      y[0], y[1], y[2], 0,
+      z[0], z[1], z[2], 0,
+      position[0], position[1], position[2], 1
+    )
+  }
+})()

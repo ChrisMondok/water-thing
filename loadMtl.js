@@ -1,96 +1,93 @@
-function loadMtl(path, fileName) {
-	return http.get([path, fileName].join('/')).then(parseMaterials);
-}
+/* globals http, Material */
 
-function parseMaterials(materialDefinition) {
-	var mtllib = [];
-	var currentMaterial = null;
+(function () {
+  window.loadMtl = function loadMtl (path, fileName) {
+    return http.get([path, fileName].join('/')).then(parseMaterials)
+  }
 
-	if("groupCollapsed" in console)
-		console.groupCollapsed("Parsing mtl");
+  function parseMaterials (materialDefinition) {
+    var mtllib = []
+    var currentMaterial = null
 
-	materialDefinition.split(/\r?\n/).forEach(handleLine);
+    if ('groupCollapsed' in console) console.groupCollapsed('Parsing mtl')
 
-	if("groupCollapsed" in console)
-		console.groupEnd();
+    materialDefinition.split(/\r?\n/).forEach(handleLine)
 
-	return mtllib;
+    if ('groupCollapsed' in console) console.groupEnd()
 
-	function addMaterial(name) {
-		console.info("New material %s", name);
+    return mtllib
 
-		var material = new Material();
+    function addMaterial (name) {
+      console.info('New material %s', name)
 
-		material.name = name;
-		material.emissive = new Float32Array([0, 0, 0]);
+      var material = new Material()
 
-		currentMaterial = material;
+      material.name = name
+      material.emissive = new Float32Array([0, 0, 0])
 
-		mtllib.push(material);
-	}
+      currentMaterial = material
 
-	function handleLine(line) {
-		var words = line.split('#')[0].trim().split(/\s+/);
-		switch(words[0]) {
-			case '':
-			case undefined:
-				return;
-			case 'newmtl':
-				addMaterial(line.replace(/\w+\s+/,''));
-				return;
-			case 'Kd':
-				setDiffuse(words);
-				return;
-			case 'Ke': //not in MTL spec, but blender uses it, and I want it.
-				setEmissive(words);
-				return;
-			case 'Ks':
-				setSpecular(words);
-				return;
-			case 'Ka':
-				setAmbient(words);
-				return;
-			case 'Ns':
-				setShininess(words);
-				return;
-			default:
-				console.warn("Unrecognized mtl directive %s", words[0]);
-				return;
-		}
-	}
+      mtllib.push(material)
+    }
 
-	//Kd r g b
-	function setDiffuse(words) {
-		if(words.length != 4)
-			throw new Error("Unrecognized Kd directive");
-		currentMaterial.diffuse = new Float32Array(words.slice(1));
-	}
+    function handleLine (line) {
+      var words = line.split('#')[0].trim().split(/\s+/)
+      switch (words[0]) {
+        case '':
+        case undefined:
+          return
+        case 'newmtl':
+          addMaterial(line.replace(/\w+\s+/, ''))
+          return
+        case 'Kd':
+          setDiffuse(words)
+          return
+        case 'Ke': // not in MTL spec, but blender uses it, and I want it.
+          setEmissive(words)
+          return
+        case 'Ks':
+          setSpecular(words)
+          return
+        case 'Ka':
+          setAmbient(words)
+          return
+        case 'Ns':
+          setShininess(words)
+          return
+        default:
+          console.warn('Unrecognized mtl directive %s', words[0])
+          return
+      }
+    }
 
-	//Ke r g b
-	function setEmissive(words) {
-		if(words.length != 4)
-			throw new Error("Unrecognized Ke directive");
-		currentMaterial.emissive = new Float32Array(words.slice(1));
-	}
+    // Kd r g b
+    function setDiffuse (words) {
+      if (words.length !== 4) throw new Error('Unrecognized Kd directive')
+      currentMaterial.diffuse = new Float32Array(words.slice(1))
+    }
 
-	//Ks r g b
-	function setSpecular(words) {
-		if(words.length != 4)
-			throw new Error("Unrecognized Ks directive");
-		currentMaterial.specular = new Float32Array(words.slice(1));
-	}
+    // Ke r g b
+    function setEmissive (words) {
+      if (words.length !== 4) throw new Error('Unrecognized Ke directive')
+      currentMaterial.emissive = new Float32Array(words.slice(1))
+    }
 
-	//Ka r g b
-	function setAmbient(words) {
-		if(words.length != 4)
-			throw new Error("Unrecognized Ks directive");
-		currentMaterial.ambient = new Float32Array(words.slice(1));
-	}
+    // Ks r g b
+    function setSpecular (words) {
+      if (words.length !== 4) throw new Error('Unrecognized Ks directive')
+      currentMaterial.specular = new Float32Array(words.slice(1))
+    }
 
-	//Ns s
-	function setShininess(words) {
-		if(words.length != 2)
-			throw new Error("Unrecognized Ke directive");
-		currentMaterial.shininess = Number(words[1]);
-	}
-}
+    // Ka r g b
+    function setAmbient (words) {
+      if (words.length !== 4) throw new Error('Unrecognized Ks directive')
+      currentMaterial.ambient = new Float32Array(words.slice(1))
+    }
+
+    // Ns s
+    function setShininess (words) {
+      if (words.length !== 2) throw new Error('Unrecognized Ke directive')
+      currentMaterial.shininess = Number(words[1])
+    }
+  }
+})()

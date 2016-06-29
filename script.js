@@ -1,11 +1,13 @@
-addEventListener('load', start);
+/* globals DemoWorld */
 
-function start() {
-	var canvas = document.querySelector('canvas');
+window.addEventListener('load', start)
 
-	var world = window.world = new DemoWorld(canvas);
+function start () {
+  var canvas = document.querySelector('canvas')
 
-	world.ready.then(function() {
-		console.log("WORLD READY");
-	});
+  var world = window.world = new DemoWorld(canvas)
+
+  world.ready.then(function () {
+    console.log('WORLD READY')
+  })
 }

@@ -1,78 +1,82 @@
-function DemoWorld() {
-	World.apply(this, arguments);
+/* globals World, Water, WaterSurface, PointWaveSource, Buoy, Boat, Editors, loadMesh */
+
+function DemoWorld () {
+  World.apply(this, arguments)
 }
 
-DemoWorld.prototype = Object.create(World.prototype);
-DemoWorld.prototype.constructor = DemoWorld;
+DemoWorld.prototype = Object.create(World.prototype)
+DemoWorld.prototype.constructor = DemoWorld
 
-DemoWorld.prototype.createComponents = function() {
-	World.prototype.createComponents.apply(this, arguments);
+DemoWorld.prototype.createComponents = function () {
+  World.prototype.createComponents.apply(this, arguments)
 
-	new EnvironmentEditor(this);
+  var editors = []
 
-	var water = window.water = new Water();
+  editors.push(new Editors.EnvironmentEditor(this))
 
-	var pws = new PointWaveSource(water);
-	pws.x = 200;
-	pws.y = 50;
-	pws.period = 3;
-	pws.amplitude = 10;
-	water.waveSources.push(pws);
+  var water = window.water = new Water()
 
-	pws = new PointWaveSource(water);
-	pws.x = -50;
-	pws.y = -100;
-	pws.period = 2;
-	water.waveSources.push(pws);
+  var pws = new PointWaveSource(water)
+  pws.x = 200
+  pws.y = 50
+  pws.period = 3
+  pws.amplitude = 10
+  water.waveSources.push(pws)
 
-	new WaterEditor(water);
+  pws = new PointWaveSource(water)
+  pws.x = -50
+  pws.y = -100
+  pws.period = 2
+  water.waveSources.push(pws)
 
-	var waterSurface = window.waterSurface = new WaterSurface(this.gl, water, 512, 16);
-	this.sceneRoot.addComponent(waterSurface);
-	this.actors.push(waterSurface);
+  editors.push(new Editors.WaterEditor(water))
 
-	new MaterialEditor(waterSurface.material);
+  var waterSurface = window.waterSurface = new WaterSurface(this.gl, water, 512, 16)
+  this.sceneRoot.addComponent(waterSurface)
+  this.actors.push(waterSurface)
 
-	loadMesh("models", "buoy.obj").then(function(meshes) {
-		Buoy.meshes = meshes;
-		var b2 = window.b2 = new Buoy(this.gl, water);
+  editors.push(new Editors.MaterialEditor(waterSurface.material))
 
-		b2.x = 100;
+  loadMesh('models', 'buoy.obj').then(function (meshes) {
+    Buoy.meshes = meshes
+    var b2 = window.b2 = new Buoy(this.gl, water)
 
-		this.actors.push(b2);
-		this.sceneRoot.addComponent(b2);
+    b2.x = 100
 
-		addMaterialEditorsForMeshes(meshes);
-	}.bind(this));
+    this.actors.push(b2)
+    this.sceneRoot.addComponent(b2)
 
-	loadMesh("models", "dinghy.obj").then(function(meshes) {
-		Boat.meshes = meshes;
-		var boat = window.boat = new Boat(this.gl, water);
-		this.actors.push(boat);
-		this.sceneRoot.addComponent(boat);
+    addMaterialEditorsForMeshes(meshes)
+  }.bind(this))
 
-		addMaterialEditorsForMeshes(meshes);
+  loadMesh('models', 'dinghy.obj').then(function (meshes) {
+    Boat.meshes = meshes
+    var boat = window.boat = new Boat(this.gl, water)
+    this.actors.push(boat)
+    this.sceneRoot.addComponent(boat)
 
-	}.bind(this), function(error) {
-		debugger;
-	});
+    addMaterialEditorsForMeshes(meshes)
+  }.bind(this), function (error) {
+    console.error(error)
+  })
 
-	function addMaterialEditorsForMeshes(meshes) {
-		var allmats = [];
+  function addMaterialEditorsForMeshes (meshes) {
+    var allmats = []
 
-		for(var i = 0; i < meshes.length; i++) {
-			if(allmats.indexOf(meshes[i].material) == -1)
-				allmats.push(meshes[i].material);
-		}
+    for (var i = 0; i < meshes.length; i++) {
+      if (allmats.indexOf(meshes[i].material) === -1) {
+        allmats.push(meshes[i].material)
+      }
+    }
 
-		allmats.forEach(function(mat) {
-			new MaterialEditor(mat);
-		});
-	}
-};
+    allmats.forEach(function (mat) {
+      editors.push(new Editors.MaterialEditor(mat))
+    })
+  }
+}
 
-DemoWorld.prototype.tick = function tick(ts) {
-	World.prototype.tick.apply(this, arguments);
-	var angle = ts / 10000;
-	vec3.set(this.camera.position, Math.sin(angle) * 200, Math.cos(angle) * 200, Math.sin(ts / 7000) * 50 + 75);
-};
+DemoWorld.prototype.tick = function tick (ts) {
+  World.prototype.tick.apply(this, arguments)
+  var angle = ts / 10000
+  vec3.set(this.camera.position, Math.sin(angle) * 200, Math.cos(angle) * 200, Math.sin(ts / 7000) * 50 + 75)
+}

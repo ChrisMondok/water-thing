@@ -1,68 +1,66 @@
-function CylinderComponent(material, facetRes) {
-	this.facetRes = facetRes || 24;
+/* globals MeshComponent */
 
-	MeshComponent.apply(this, arguments);
+function CylinderComponent (material, facetRes) {
+  this.facetRes = facetRes || 24
+
+  MeshComponent.apply(this, arguments)
 }
 
-CylinderComponent.prototype = Object.create(MeshComponent.prototype);
-CylinderComponent.prototype.constructor = CylinderComponent;
+CylinderComponent.prototype = Object.create(MeshComponent.prototype)
+CylinderComponent.prototype.constructor = CylinderComponent
 
-CylinderComponent.prototype.createMesh = function() {
-	var verts = [];
-	var norms = [];
-	var angle, x, y, i;
-	for(i = 0; i <= this.facetRes; i++) {
-		angle = (i/this.facetRes % 1) * 2 * Math.PI;
-		
-		x = Math.cos(angle) / 2;
-		y = Math.sin(angle) / 2;
+CylinderComponent.prototype.createMesh = function () {
+  var verts = []
+  var norms = []
+  var angle, x, y, i
+  for (i = 0; i <= this.facetRes; i++) {
+    angle = (i / this.facetRes % 1) * 2 * Math.PI
 
-		verts.push(x, y, 0.5);
-		norms.push(x * 2, y * 2, 0);
-		verts.push(x, y, -0.5);
-		norms.push(x * 2, y * 2, 0);
-	}
+    x = Math.cos(angle) / 2
+    y = Math.sin(angle) / 2
 
-	//degenerate triangle between side and lid
-	verts.push(x, y, -0.5);
-	norms.push(x * 2, y * 2, 0);
-	verts.push(x, y, 0.5);
-	norms.push(0, 0, 1);
+    verts.push(x, y, 0.5)
+    norms.push(x * 2, y * 2, 0)
+    verts.push(x, y, -0.5)
+    norms.push(x * 2, y * 2, 0)
+  }
 
-	for(i = 0; i <= this.facetRes; i++) {
-		angle = ((this.facetRes - i)/this.facetRes % 1) * 2 * Math.PI;
-		nx = 0;
-		ny = 0;
-		x = Math.cos(angle) / 2;
-		y = Math.sin(angle) / 2;
+  // degenerate triangle between side and lid
+  verts.push(x, y, -0.5)
+  norms.push(x * 2, y * 2, 0)
+  verts.push(x, y, 0.5)
+  norms.push(0, 0, 1)
 
-		verts.push(x, y, 0.5);
-		norms.push(0, 0, 1);
-		verts.push(0, 0, 0.5);
-		norms.push(0, 0, 1);
-	}
-	
-	//degenerate triangle between top and bottom
-	verts.push(0, 0, 0.5);
-	norms.push(0, 0, 1);
-	verts.push(x, y, -0.5);
-	norms.push(0, 0, -1);
+  for (i = 0; i <= this.facetRes; i++) {
+    angle = ((this.facetRes - i) / this.facetRes % 1) * 2 * Math.PI
+    x = Math.cos(angle) / 2
+    y = Math.sin(angle) / 2
 
-	for(i = 0; i <= this.facetRes; i++) {
-		angle = (i/this.facetRes % 1) * 2 * Math.PI;
-		nx = 0;
-		ny = 0;
-		x = Math.cos(angle) / 2;
-		y = Math.sin(angle) / 2;
+    verts.push(x, y, 0.5)
+    norms.push(0, 0, 1)
+    verts.push(0, 0, 0.5)
+    norms.push(0, 0, 1)
+  }
 
-		verts.push(x, y, -0.5);
-		norms.push(0, 0, -1);
-		verts.push(0, 0, -0.5);
-		norms.push(0, 0, -1);
-	}
+  // degenerate triangle between top and bottom
+  verts.push(0, 0, 0.5)
+  norms.push(0, 0, 1)
+  verts.push(x, y, -0.5)
+  norms.push(0, 0, -1)
 
-	return {
-		vertices: new Float32Array(verts),
-		normals: new Float32Array(norms)
-	};
-};
+  for (i = 0; i <= this.facetRes; i++) {
+    angle = (i / this.facetRes % 1) * 2 * Math.PI
+    x = Math.cos(angle) / 2
+    y = Math.sin(angle) / 2
+
+    verts.push(x, y, -0.5)
+    norms.push(0, 0, -1)
+    verts.push(0, 0, -0.5)
+    norms.push(0, 0, -1)
+  }
+
+  return {
+    vertices: new Float32Array(verts),
+    normals: new Float32Array(norms)
+  }
+}
