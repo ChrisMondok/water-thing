@@ -20,7 +20,6 @@ function Renderer (world, program) {
   Renderer.prototype.render = function (sceneRoot, camera, timestamp) {
     this.world.gl.useProgram(this.program)
 
-    // TODO: don't create a new vec3 here
     vec3.normalize(nSun, this.world.sun)
 
     mat4.lookAt(this.lightMatrix, nSun, camera.target, getUpVector(nSun))

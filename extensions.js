@@ -12,8 +12,6 @@ Math.radToDeg = Math.radToDeg || function radToDeg (rad) {
   var z = vec3.create()
 
   mat4.lookAt = function lookAt (out, position, target, up) {
-    // TODO: don't create so many vec3s.
-
     vec3.subtract(z, position, target)
     vec3.normalize(z, z)
     vec3.cross(x, up, z)
