@@ -12,8 +12,11 @@ function WaterSurface (gl, water, size, cellsPerSide) {
   var duplicatePoints = (rows - 2) * 2
   var numPoints = (rows - 1) * pointsPerRow + duplicatePoints
 
-  this.triangleStripArray = new Float32Array(numPoints * 3)
-  this.normalArray = new Float32Array(numPoints * 3)
+  this.vertexMap = new Array(Math.pow(cellsPerSide + 1, 2))
+  this.normalMap = new Array(Math.pow(cellsPerSide + 1, 2))
+
+  this.vertexBufferArray = new Float32Array(numPoints * 3)
+  this.normalBufferArray = new Float32Array(numPoints * 3)
 
   this.material = new WaterMaterial()
 
@@ -27,33 +30,9 @@ WaterSurface.prototype.constructor = WaterSurface
 WaterSurface.prototype.width = 100
 WaterSurface.prototype.height = 100
 
-WaterSurface.prototype.getVertices = function (timestamp) {
-  // TODO: stop making so many arrays!
+;(function () {
 
-  var self = this
-  var cps = this.cellsPerSide
-  var output = new Array(cps + 1)
-
-  var xyWorld = [0, 0]
-  for (var y = 0; y < cps + 1; y++) {
-    output[y] = new Array(cps + 1)
-    for (var x = 0; x < cps + 1; x++) {
-      output[y][x] = getVertex(x, y)
-    }
-  }
-
-  function getVertex (x, y) {
-    xyWorld[0] = (x - cps / 2) / cps * self.size + self.x
-    xyWorld[1] = (y - cps / 2) / cps * self.size + self.y
-    return [
-      xyWorld[0] - self.x,
-      xyWorld[1] - self.y,
-      self.water.getZ(timestamp, xyWorld)
-    ]
-  }
-
-  return output
-}
+})()
 
 WaterSurface.prototype.getWorldZ = function (xy) {
   return this.water.getZ(xy)
@@ -68,52 +47,69 @@ WaterSurface.prototype.draw = function (renderer, timestamp) {
   var gl = renderer.world.gl
 
   gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer)
-  gl.bufferData(gl.ARRAY_BUFFER, this.triangleStripArray, gl.DYNAMIC_DRAW)
+  gl.bufferData(gl.ARRAY_BUFFER, this.vertexBufferArray, gl.DYNAMIC_DRAW)
 
   gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer)
-  gl.bufferData(gl.ARRAY_BUFFER, this.normalArray, gl.DYNAMIC_DRAW)
+  gl.bufferData(gl.ARRAY_BUFFER, this.normalBufferArray, gl.DYNAMIC_DRAW)
 
   renderer.setMaterial(this.material)
 
-  renderer.draw(gl.TRIANGLE_STRIP, this.vertexBuffer, this.normalBuffer, this.triangleStripArray.length / 3)
+  renderer.draw(gl.TRIANGLE_STRIP, this.vertexBuffer, this.normalBuffer, this.vertexBufferArray.length / 3)
 }
 
 ;(function () {
+  var xyWorld = vec2.create()
   var normal = vec3.create()
-
-  var columns, rows
 
   WaterSurface.prototype.updateBuffers = function (timestamp) {
     var self = this
-    columns = rows = this.cellsPerSide + 1
+    var cps = this.cellsPerSide
 
-    var verts = this.getVertices(timestamp)
+    updateMaps()
 
-    var s = 0
-    var n = 0
-    function addVertex (x, y) {
-      var v = verts[y][x]
-      self.triangleStripArray[s + 0] = v[0]
-      self.triangleStripArray[s + 1] = v[1]
-      self.triangleStripArray[s + 2] = v[2]
-      s += 3
-
-      self.water.getNormal(normal, timestamp, v)
-      self.normalArray[n + 0] = normal[0]
-      self.normalArray[n + 1] = normal[1]
-      self.normalArray[n + 2] = normal[2]
-      n += 3
-    }
-
-    for (var y = 0; y < rows - 1; y++) {
-      for (var x = 0; x < columns; x++) {
+    var v = 0
+    for (var y = 0; y < cps; y++) {
+      for (var x = 0; x < cps + 1; x++) {
         addVertex(x, y + 1)
         addVertex(x, y)
       }
 
-      if (y < rows - 2) {
-        addVertex(columns - 1, y)
+      if (y < cps - 1) {
+        addVertex(cps, y)
         addVertex(0, y + 2)
+      }
+    }
+
+    function addVertex (x, y) {
+      var verts = self.vertexMap
+      var norms = self.normalMap
+      var i = y * (cps + 1) + x
+      self.vertexBufferArray[v + 0] = verts[i * 3 + 0]
+      self.vertexBufferArray[v + 1] = verts[i * 3 + 1]
+      self.vertexBufferArray[v + 2] = verts[i * 3 + 2]
+
+      self.normalBufferArray[v + 0] = norms[i * 3 + 0]
+      self.normalBufferArray[v + 1] = norms[i * 3 + 1]
+      self.normalBufferArray[v + 2] = norms[i * 3 + 2]
+
+      v += 3
+    }
+
+    function updateMaps () {
+      for (var y = 0; y < cps + 1; y++) {
+        for (var x = 0; x < cps + 1; x++) {
+          vec2.set(xyWorld, (x - cps / 2) / cps * self.size + self.x, (y - cps / 2) / cps * self.size + self.y)
+
+          var i = 3 * (y * (cps + 1) + x)
+          self.vertexMap[i] = xyWorld[0]
+          self.vertexMap[i + 1] = xyWorld[1]
+          self.vertexMap[i + 2] = self.water.getZ(timestamp, xyWorld)
+
+          self.water.getNormal(normal, timestamp, xyWorld)
+          self.normalMap[i] = normal[0]
+          self.normalMap[i + 1] = normal[1]
+          self.normalMap[i + 2] = normal[2]
+        }
       }
     }
   }
