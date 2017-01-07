@@ -1,7 +1,9 @@
-/* globals http, Material */
+/* globals http, Material, self */
 
-(function () {
-  window.loadMtl = function loadMtl (path, fileName) {
+(function (global) {
+  global.loadMtl = loadMtl
+
+  function loadMtl (path, fileName) {
     return http.get([path, fileName].join('/')).then(parseMaterials)
   }
 
@@ -90,4 +92,4 @@
       currentMaterial.shininess = Number(words[1])
     }
   }
-})()
+})(typeof window === 'undefined' ? self : window)

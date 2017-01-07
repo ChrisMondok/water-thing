@@ -1,7 +1,7 @@
-/* globals http, loadMtl */
+/* globals http, loadMtl, self */
 
-(function () {
-  window.loadMesh = loadMesh
+(function (global) {
+  global.loadMesh = loadMesh
 
   function loadMesh (path, fileName) {
     return http.get([path, fileName].join('/')).then(parseObj).then(function (objData) {
@@ -184,4 +184,4 @@
 
     return objData.objects.map(constructObject)
   }
-})()
+})(typeof window === 'undefined' ? self : window)

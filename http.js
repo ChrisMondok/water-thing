@@ -1,4 +1,8 @@
-window.http = {
+/* globals self */
+
+var global = typeof window === 'undefined' ? self : window
+
+global.http = {
   get: function (url) {
     return new Promise(function (resolve, reject) {
       var req = new XMLHttpRequest(url)
