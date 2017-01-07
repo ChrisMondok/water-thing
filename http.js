@@ -8,7 +8,10 @@ global.http = {
       var req = new XMLHttpRequest(url)
       req.open('GET', url, true)
       req.addEventListener('load', function (loadEvent) {
-        resolve(loadEvent.target.response)
+        if(loadEvent.target.status >= 200 && loadEvent.target.status <= 300)
+          resolve(loadEvent.target.response)
+        else
+          reject(loadEvent.target.status)
       })
       req.addEventListener('error', function (e) {
         reject(e)
