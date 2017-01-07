@@ -24,9 +24,7 @@
           loader.removeEventListener('message', listener)
 
           if ('resolve' in message.data) {
-            message.data.resolve.forEach(function (mesh) {
-              mesh.material = convertToMaterial(mesh.material)
-            })
+            convertMaterials(message.data.resolve)
 
             resolve(message.data.resolve)
           } else reject(message.data.reject)
@@ -40,6 +38,18 @@
 
       return promise
     }
+  }
+
+  function convertMaterials (meshes) {
+    var map = {}
+
+    meshes.forEach(function (mesh) {
+      if (!(mesh.material.name in map)) {
+        map[mesh.material.name] = convertToMaterial(mesh.material)
+      }
+
+      mesh.material = map[mesh.material.name]
+    })
   }
 
   function convertToMaterial (input) {
