@@ -26,30 +26,36 @@ function Renderer (world, program) {
 
     mat4.invert(this.lightMatrix, this.lightMatrix)
 
-    mat4.multiply(this.lightMatrix, orthoMatrix(vec3.distance(camera.target, camera.position) * 2), this.lightMatrix)
+    mat4.multiply(this.lightMatrix, getOrthoMatrix(vec3.distance(camera.target, camera.position) * 2), this.lightMatrix)
   }
 
-  function orthoMatrix (width, height, depth) {
+  var orthoMatrix = mat4.create()
+  function getOrthoMatrix (width, height, depth) {
     if (height === undefined && depth === undefined) height = depth = width
 
-    return mat4.fromValues(
+    mat4.set(orthoMatrix,
       2 / width, 0, 0, 0,
       0, 2 / height, 0, 0,
       0, 0, -2 / depth, 0,
       0, 0, 0, 1
     )
+
+    return orthoMatrix
   }
 
+  var upVector = vec3.create()
   function getUpVector (lookVector) {
     var declination = Math.asin(lookVector[2])
 
     var xyAngle = Math.PI + Math.atan2(lookVector[1], lookVector[0])
 
-    return vec3.fromValues(
+    vec3.set(upVector,
       Math.cos(xyAngle) * Math.sin(declination),
       Math.sin(xyAngle) * Math.sin(declination),
       Math.cos(declination)
     )
+
+    return upVector
   }
 })()
 

@@ -19,18 +19,22 @@ Camera.prototype = Object.create(Actor.prototype)
     var matrix = mat4.create()
     mat4.lookAt(matrix, this.position, this.target, this.up)
     mat4.invert(matrix, matrix)
-    mat4.multiply(matrix, perspectiveMatrix(this.fov, 4 / 3, this.near, this.far), matrix)
+    mat4.multiply(matrix, getPerspectiveMatrix(this.fov, 4 / 3, this.near, this.far), matrix)
     return matrix
   }
 
-  function perspectiveMatrix (fov, aspect, near, far) {
+  var perspectiveMatrix = mat4.create()
+
+  function getPerspectiveMatrix (fov, aspect, near, far) {
     var f = Math.tan(Math.PI * 0.5 - 0.5 * fov)
 
-    return mat4.fromValues(
+    mat4.set(perspectiveMatrix,
       f / aspect, 0, 0, 0,
       0, f, 0, 0,
       0, 0, (near + far) / (near - far), -1,
       0, 0, near * far / (near - far) * 2, 0
     )
+
+    return perspectiveMatrix
   }
 })()
