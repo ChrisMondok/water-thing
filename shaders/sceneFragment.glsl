@@ -20,7 +20,7 @@ const float screen_gamma = 2.2;
 
 const float shadow_fudge_factor = 0.005;
 
-float get_unshadow() {
+float get_light() {
 	float sum = 0.0;
 	vec2 duv;
 	const float pcf_size = 4.0;
@@ -73,9 +73,9 @@ mediump vec3 compute_specular() {
 void main() {
 	vec3 color;
 
-	float s = get_unshadow();
+	float l = get_light();
 
-	color = vec3(u_mat_emissive) + compute_ambient() + s * (compute_diffuse() + compute_specular());
+	color = vec3(u_mat_emissive) + compute_ambient() + l * (compute_diffuse() + compute_specular());
 
 	gl_FragColor = vec4(pow(color, vec3(1.0/screen_gamma)), 1);
 }
