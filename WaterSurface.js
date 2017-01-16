@@ -30,10 +30,6 @@ WaterSurface.prototype.constructor = WaterSurface
 WaterSurface.prototype.width = 100
 WaterSurface.prototype.height = 100
 
-;(function () {
-
-})()
-
 WaterSurface.prototype.getWorldZ = function (xy) {
   return this.water.getZ(xy)
 }
