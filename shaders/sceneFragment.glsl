@@ -20,15 +20,6 @@ const float screen_gamma = 2.2;
 
 const float shadow_fudge_factor = 0.005;
 
-bool is_in_shadow() {
-	vec4 tc = texture2D(u_lightmap_sampler, v_lightmap_pos.xy);
-
-	if(v_lightmap_pos.x < 0.0 || v_lightmap_pos.x > 1.0 || v_lightmap_pos.y < 0.0 || v_lightmap_pos.y > 1.0)
-		return false;
-
-	return tc.w == 1.0 && tc.x + shadow_fudge_factor < v_lightmap_pos.z;
-}
-
 float get_unshadow() {
 	float sum = 0.0;
 	vec2 duv;
