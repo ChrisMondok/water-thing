@@ -16,17 +16,22 @@
   },
   "homepage": "https://github.com/ChrisMondok/water-thing#readme",
   "devDependencies": {
-	  "standard": "*"
+    "standard": "*"
   },
   "standard": {
     "ignore": [
       "/lib/"
-	],
-	"globals": [
-		"mat3", "mat4",
-		"vec2", "vec3",
-		"quat",
-		"XMLHttpRequest"
-	]
+    ],
+    "globals": [
+      "mat3",
+      "mat4",
+      "vec2",
+      "vec3",
+      "quat",
+      "fetch"
+    ]
+  },
+  "dependencies": {
+    "whatwg-fetch": "^2.0.2"
   }
 }

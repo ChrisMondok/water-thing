@@ -1,5 +1,3 @@
-/* globals http */
-
 // There should be a 1:1 relationship between renderers and programs.
 // Perhaps this is a poor name.
 function Renderer (world, program) {
@@ -97,16 +95,18 @@ Renderer.create = function (type, world) {
   })
 
   function getShader (gl, url, type) {
-    return http.get(url).then(function (glsl) {
-      var shader = gl.createShader(type)
-      gl.shaderSource(shader, glsl)
-      gl.compileShader(shader)
+    return fetch(url)
+      .then(function (response) { return response.text() })
+      .then(function (glsl) {
+        var shader = gl.createShader(type)
+        gl.shaderSource(shader, glsl)
+        gl.compileShader(shader)
 
-      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        throw new Error('Error in shader ' + url + ': ' + gl.getShaderInfoLog(shader))
-      }
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          throw new Error('Error in shader ' + url + ': ' + gl.getShaderInfoLog(shader))
+        }
 
-      return shader
-    })
+        return shader
+      })
   }
 }

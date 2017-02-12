@@ -1,10 +1,12 @@
-/* globals http, Material, self */
+/* globals Material, self */
 
 (function (global) {
   global.loadMtl = loadMtl
 
   function loadMtl (path, fileName) {
-    return http.get([path, fileName].join('/')).then(parseMaterials)
+    return fetch([path, fileName].join('/'))
+      .then(function (response) { return response.text() })
+      .then(parseMaterials)
   }
 
   function parseMaterials (materialDefinition) {

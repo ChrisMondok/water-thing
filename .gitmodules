@@ -1,3 +1,6 @@
 [submodule "lib/gl-matrix"]
 	path = lib/gl-matrix
 	url = git@github.com:toji/gl-matrix
+[submodule "lib/fetch"]
+	path = lib/fetch
+	url = git@github.com:github/fetch

@@ -1,12 +1,14 @@
-/* globals http, loadMtl, self */
+/* globals loadMtl, self */
 
 (function (global) {
   global.loadMesh = loadMesh
 
   function loadMesh (path, fileName) {
-    return http.get([path, fileName].join('/')).then(parseObj).then(function (objData) {
-      return loadMaterials(path, objData)
-    }).then(convertToMesh)
+    return fetch([path, fileName].join('/'))
+      .then(function (response) { return response.text() })
+      .then(parseObj).then(function (objData) {
+        return loadMaterials(path, objData)
+      }).then(convertToMesh)
   }
 
   function parseObj (data) {
