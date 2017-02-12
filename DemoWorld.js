@@ -1,4 +1,4 @@
-/* globals World, Water, WaterSurface, PointWaveSource, Buoy, Boat, Editors */
+/* globals World, Water, WaterSurface, PointWaveSource, Buoy, Boat, Editors, Material */
 
 function DemoWorld () {
   World.apply(this, arguments)
@@ -35,7 +35,6 @@ DemoWorld.prototype.createComponents = function () {
   this.sceneRoot.addComponent(waterSurface)
   this.actors.push(waterSurface)
 
-  editors.push(new Editors.MaterialEditor(waterSurface.material))
   var buoy = window.buoy = new Buoy(this.gl, water)
 
   buoy.ready.then(function (buoy) {
@@ -53,18 +52,19 @@ DemoWorld.prototype.createComponents = function () {
     console.error(e)
   })
 
-  function addMaterialEditorsForMeshes (meshes) {
-    var allmats = []
+  Promise.all([boat.ready, buoy.ready]).then(function () {
+    addMaterialEditorsForNodeAndChildren(this.sceneRoot)
+  }.bind(this))
 
-    for (var i = 0; i < meshes.length; i++) {
-      if (allmats.indexOf(meshes[i].material) === -1) {
-        allmats.push(meshes[i].material)
-      }
+  var visitedMaterials = []
+  function addMaterialEditorsForNodeAndChildren (component) {
+    if (component.material instanceof Material &&
+      visitedMaterials.indexOf(component.material) === -1) {
+      visitedMaterials.push(component.material)
+      editors.push(new Editors.MaterialEditor(component.material))
     }
 
-    allmats.forEach(function (mat) {
-      editors.push(new Editors.MaterialEditor(mat))
-    })
+    component.components.forEach(addMaterialEditorsForNodeAndChildren)
   }
 }
 
