@@ -4,3 +4,6 @@
 [submodule "lib/fetch"]
 	path = lib/fetch
 	url = git@github.com:github/fetch
+[submodule "lib/promise-polyfill"]
+	path = lib/promise-polyfill
+	url = git@github.com:taylorhakes/promise-polyfill

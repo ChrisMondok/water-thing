@@ -3,7 +3,7 @@ if (!('console' in self)) {
   self.console = self.console || makeProxyConsole()
 }
 
-self.importScripts('loadMtl.js', 'loadMesh.js', 'Material.js', 'es6-promise.min.js', 'lib/fetch/fetch.js')
+self.importScripts('loadMtl.js', 'loadMesh.js', 'Material.js', 'lib/promise-polyfill/promise.min.js', 'lib/fetch/fetch.js')
 
 self.addEventListener('message', function (message) {
   self.console.log('going to load %s', message.data.key)
