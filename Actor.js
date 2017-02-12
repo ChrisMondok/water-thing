@@ -1,6 +1,7 @@
 /* global SceneGraphNode */
 
-function Actor () {
+function Actor (game) {
+  this.game = game
   SceneGraphNode.apply(this)
 }
 

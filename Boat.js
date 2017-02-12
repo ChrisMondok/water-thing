@@ -1,7 +1,7 @@
 /* global Actor, loadMesh, SceneGraphNode, StaticMeshComponent */
 
-function Boat (gl, water) {
-  Actor.apply(this)
+function Boat (game, water) {
+  Actor.call(this, game)
 
   this.water = water
 

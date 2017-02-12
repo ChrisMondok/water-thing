@@ -1,7 +1,7 @@
 /* globals Actor, StaticMeshComponent, loadMesh */
 
-function Buoy (gl, water) {
-  Actor.apply(this)
+function Buoy (game, water) {
+  Actor.call(this, game)
 
   this.water = water
 

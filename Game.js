@@ -1,8 +1,12 @@
 /* globals SceneRenderer, LightmapRenderer, Renderer, Camera, SceneGraphNode, createTexture, TextureRenderer */
 
-function World (canvas) {
+function Game (canvas) {
   this.renderers = []
   this.actors = []
+
+  this.lastTick = this.now = 0
+
+  this.origin = vec3.create()
 
   this.sun = vec3.create()
 
@@ -25,47 +29,52 @@ function World (canvas) {
     })
 }
 
-World.prototype.sceneRoot = null
-World.prototype.camera = null
+Game.prototype.sceneRoot = null
+Game.prototype.camera = null
 
-World.prototype.latitude = 40
-World.prototype.timeOfDay = 0.6 // 0-1 => 0h-24h
-World.prototype.timeScale = 1
+Game.prototype.latitude = 40
+Game.prototype.timeOfDay = 0.6 // 0-1 => 0h-24h
+Game.prototype.timeScale = 1
 
-World.prototype.createComponents = function () {
+Game.prototype.createComponents = function () {
   this.camera = new Camera()
   this.sceneRoot = new SceneGraphNode()
 }
 
-;(function () {
-  var origin = vec3.create()
+Game.prototype.tick = function tick (ts) {
+  this.now = ts
+  ts *= this.timeScale
 
+  this._updateSun()
+
+  for (var i = 0; i < this.actors.length; i++) {
+    this.actors[i].tick(ts)
+  }
+
+  this.draw(ts)
+
+  this.lastTick = this.now
+
+  window.requestAnimationFrame(this._tick)
+}
+
+Game.prototype._updateSun = function () {
   function computeSunIntensity (timeOfDay) {
     return 1.0
   }
 
-  World.prototype.tick = function tick (ts) {
-    ts *= this.timeScale
+  vec3.set(this.sun, 0, 0, -1 * computeSunIntensity(this.timeOfDay))
+  vec3.rotateX(this.sun, this.sun, this.origin, this.timeOfDay * Math.PI * 2)
+  vec3.rotateY(this.sun, this.sun, this.origin, -this.latitude / 180 * Math.PI)
+}
 
-    vec3.set(this.sun, 0, 0, -1 * computeSunIntensity(this.timeOfDay))
-    vec3.rotateX(this.sun, this.sun, origin, this.timeOfDay * Math.PI * 2)
-    vec3.rotateY(this.sun, this.sun, origin, -this.latitude / 180 * Math.PI)
-
-    for (var i = 0; i < this.actors.length; i++) {
-      this.actors[i].tick(ts)
-    }
-    this.draw(ts)
-    window.requestAnimationFrame(this._tick)
-  }
-})()
-
-World.prototype.draw = function draw (ts) {
+Game.prototype.draw = function draw (ts) {
   for (var i = 0; i < this.renderers.length; i++) {
     this.renderers[i].render(this.sceneRoot, this.camera, ts)
   }
 }
 
-World.prototype.addRenderer = function (type) {
+Game.prototype.addRenderer = function (type) {
   return Renderer.create(type, this).then(function (r) {
     this.renderers.push(r)
   }.bind(this))

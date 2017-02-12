@@ -1,15 +1,13 @@
 /* globals Renderer, createFramebuffer */
 
-function LightmapRenderer (world, program) {
+function LightmapRenderer (game, program) {
   Renderer.apply(this, arguments)
 
-  var gl = world.gl
+  this.u_projection = this.game.gl.getUniformLocation(program, 'u_projection')
+  this.u_transform = this.game.gl.getUniformLocation(program, 'u_transform')
 
-  this.u_projection = gl.getUniformLocation(program, 'u_projection')
-  this.u_transform = gl.getUniformLocation(program, 'u_transform')
-
-  this.framebuffer = createFramebuffer(world.gl, world.lightmap, world.lightmap.width, world.lightmap.height)
-  gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+  this.framebuffer = createFramebuffer(game.gl, game.lightmap, game.lightmap.width, game.lightmap.height)
+  this.game.gl.bindFramebuffer(this.game.gl.FRAMEBUFFER, null)
 }
 
 LightmapRenderer.prototype = Object.create(Renderer.prototype)
@@ -17,10 +15,10 @@ LightmapRenderer.constructor = LightmapRenderer
 
 LightmapRenderer.prototype.render = function (sceneRoot, camera, timestamp) {
   Renderer.prototype.render.apply(this, arguments)
-  var gl = this.world.gl
+  var gl = this.game.gl
 
   gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer)
-  gl.viewport(0, 0, this.world.lightmap.width, this.world.lightmap.height)
+  gl.viewport(0, 0, this.game.lightmap.width, this.game.lightmap.height)
 
   gl.enable(gl.DEPTH_TEST)
   gl.enable(gl.CULL_FACE)
@@ -32,7 +30,8 @@ LightmapRenderer.prototype.render = function (sceneRoot, camera, timestamp) {
 }
 
 LightmapRenderer.prototype.draw = function (mode, vertBuffer, normalBuffer, numVerts) {
-  var gl = this.world.gl
+  var gl = this.game.gl
+
   gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer)
   gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0)
 

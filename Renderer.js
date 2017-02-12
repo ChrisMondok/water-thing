@@ -1,11 +1,11 @@
 // There should be a 1:1 relationship between renderers and programs.
 // Perhaps this is a poor name.
-function Renderer (world, program) {
-  this.world = world
+function Renderer (game, program) {
+  this.game = game
   this.program = program
 
-  this.a_position = world.gl.getAttribLocation(program, 'a_position')
-  world.gl.enableVertexAttribArray(this.a_position)
+  this.a_position = game.gl.getAttribLocation(program, 'a_position')
+  game.gl.enableVertexAttribArray(this.a_position)
 
   this.transformMatrix = mat4.identity(mat4.create())
 
@@ -16,9 +16,9 @@ function Renderer (world, program) {
   var nSun = vec3.create()
 
   Renderer.prototype.render = function (sceneRoot, camera, timestamp) {
-    this.world.gl.useProgram(this.program)
+    this.game.gl.useProgram(this.program)
 
-    vec3.normalize(nSun, this.world.sun)
+    vec3.normalize(nSun, this.game.sun)
 
     mat4.lookAt(this.lightMatrix, nSun, camera.target, getUpVector(nSun))
 
@@ -59,7 +59,7 @@ function Renderer (world, program) {
 
 Renderer.prototype.transform = function (transform) {
   mat4.multiply(this.transformMatrix, this.transformMatrix, transform)
-  this.world.gl.uniformMatrix4fv(this.u_transform, false, this.transformMatrix)
+  this.game.gl.uniformMatrix4fv(this.u_transform, false, this.transformMatrix)
 }
 
 Renderer.prototype.setMaterial = function (material) {
@@ -70,8 +70,8 @@ Renderer.prototype.draw = function (mode, vertBuffer, normalBuffer, numVerts) {
   throw new Error('Override me')
 }
 
-Renderer.create = function (type, world) {
-  var gl = world.gl
+Renderer.create = function (type, game) {
+  var gl = game.gl
   return Promise.all([
     getShader(gl, type.vertex, gl.VERTEX_SHADER),
     getShader(gl, type.fragment, gl.FRAGMENT_SHADER)
@@ -91,7 +91,7 @@ Renderer.create = function (type, world) {
     return program
   }).then(function (program) {
     var TypeWithACapitalTToMakeStandardHappy = type
-    return new TypeWithACapitalTToMakeStandardHappy(world, program)
+    return new TypeWithACapitalTToMakeStandardHappy(game, program)
   })
 
   function getShader (gl, url, type) {

@@ -1,9 +1,9 @@
 /* globals Renderer */
 
-function SceneRenderer (world, program) {
+function SceneRenderer (game, program) {
   Renderer.apply(this, arguments)
 
-  var gl = world.gl
+  var gl = game.gl
   this.u_projection = gl.getUniformLocation(program, 'u_projection')
   this.u_transform = gl.getUniformLocation(program, 'u_transform')
 
@@ -29,7 +29,7 @@ SceneRenderer.constructor = SceneRenderer
 SceneRenderer.prototype.render = function (sceneRoot, camera, timestamp) {
   Renderer.prototype.render.apply(this, arguments)
 
-  var gl = this.world.gl
+  var gl = this.game.gl
 
   gl.bindFramebuffer(gl.FRAMEBUFFER, null)
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
@@ -41,14 +41,14 @@ SceneRenderer.prototype.render = function (sceneRoot, camera, timestamp) {
   gl.enableVertexAttribArray(this.a_normal)
 
   gl.activeTexture(gl.TEXTURE0)
-  gl.bindTexture(gl.TEXTURE_2D, this.world.lightmap)
+  gl.bindTexture(gl.TEXTURE_2D, this.game.lightmap)
   gl.uniform1i(this.u_lightmap_sampler, 0)
 
   gl.uniformMatrix4fv(this.u_projection, false, camera.getMatrix())
 
   gl.uniformMatrix4fv(this.u_sun_projection, false, this.lightMatrix)
 
-  gl.uniform3fv(this.u_sun, this.world.sun)
+  gl.uniform3fv(this.u_sun, this.game.sun)
   var ambient = 0.4
   gl.uniform3fv(this.u_ambient_light, new Float32Array([ambient, ambient, ambient]))
   gl.uniform3fv(this.u_camera, camera.position)
@@ -59,7 +59,7 @@ SceneRenderer.prototype.render = function (sceneRoot, camera, timestamp) {
 SceneRenderer.prototype.setMaterial = function (material) {
   Renderer.prototype.setMaterial.apply(this, arguments)
 
-  var gl = this.world.gl
+  var gl = this.game.gl
 
   gl.uniform3fv(this.u_mat_diffuse, material.diffuse)
   gl.uniform3fv(this.u_mat_emissive, material.emissive)
@@ -69,7 +69,7 @@ SceneRenderer.prototype.setMaterial = function (material) {
 }
 
 SceneRenderer.prototype.draw = function (mode, vertBuffer, normalBuffer, numVerts) {
-  var gl = this.world.gl
+  var gl = this.game.gl
   gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer)
   gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0)
 

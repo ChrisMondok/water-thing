@@ -1,7 +1,7 @@
 /* globals Actor, Material */
 
-function WaterSurface (gl, water, size, cellsPerSide) {
-  Actor.apply(this, gl)
+function WaterSurface (game, water, size, cellsPerSide) {
+  Actor.call(this, game)
   this.size = size
   this.cellsPerSide = cellsPerSide
   this.water = water
@@ -20,8 +20,8 @@ function WaterSurface (gl, water, size, cellsPerSide) {
 
   this.material = new WaterMaterial()
 
-  this.vertexBuffer = gl.createBuffer()
-  this.normalBuffer = gl.createBuffer()
+  this.vertexBuffer = game.gl.createBuffer()
+  this.normalBuffer = game.gl.createBuffer()
 }
 
 WaterSurface.prototype = Object.create(Actor.prototype)
@@ -40,7 +40,7 @@ WaterSurface.prototype.tick = function (timestamp) {
 
 WaterSurface.prototype.draw = function (renderer, timestamp) {
   Actor.prototype.draw.apply(this, arguments)
-  var gl = renderer.world.gl
+  var gl = renderer.game.gl
 
   gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer)
   gl.bufferData(gl.ARRAY_BUFFER, this.vertexBufferArray, gl.DYNAMIC_DRAW)

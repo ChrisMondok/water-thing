@@ -1,14 +1,14 @@
-/* globals World, Water, WaterSurface, PointWaveSource, Buoy, Boat, Editors, Material */
+/* globals Game, Water, WaterSurface, PointWaveSource, Buoy, Boat, Editors, Material */
 
-function DemoWorld () {
-  World.apply(this, arguments)
+function DemoGame () {
+  Game.apply(this, arguments)
 }
 
-DemoWorld.prototype = Object.create(World.prototype)
-DemoWorld.prototype.constructor = DemoWorld
+DemoGame.prototype = Object.create(Game.prototype)
+DemoGame.prototype.constructor = DemoGame
 
-DemoWorld.prototype.createComponents = function () {
-  World.prototype.createComponents.apply(this, arguments)
+DemoGame.prototype.createComponents = function () {
+  Game.prototype.createComponents.apply(this, arguments)
 
   var editors = []
 
@@ -31,11 +31,11 @@ DemoWorld.prototype.createComponents = function () {
 
   editors.push(new Editors.WaterEditor(water))
 
-  var waterSurface = window.waterSurface = new WaterSurface(this.gl, water, 512, 16)
+  var waterSurface = window.waterSurface = new WaterSurface(this, water, 512, 16)
   this.sceneRoot.addComponent(waterSurface)
   this.actors.push(waterSurface)
 
-  var buoy = window.buoy = new Buoy(this.gl, water)
+  var buoy = window.buoy = new Buoy(this, water)
 
   buoy.ready.then(function (buoy) {
     buoy.x = 100
@@ -44,7 +44,7 @@ DemoWorld.prototype.createComponents = function () {
     this.sceneRoot.addComponent(buoy)
   }.bind(this))
 
-  var boat = window.boat = new Boat(this.gl, water)
+  var boat = window.boat = new Boat(this, water)
   boat.ready.then(function () {
     this.actors.push(boat)
     this.sceneRoot.addComponent(boat)
@@ -68,8 +68,8 @@ DemoWorld.prototype.createComponents = function () {
   }
 }
 
-DemoWorld.prototype.tick = function tick (ts) {
-  World.prototype.tick.apply(this, arguments)
+DemoGame.prototype.tick = function tick (ts) {
+  Game.prototype.tick.apply(this, arguments)
   var angle = ts / 10000
   vec3.set(this.camera.position, Math.sin(angle) * 200, Math.cos(angle) * 200, Math.sin(ts / 7000) * 50 + 75)
 }

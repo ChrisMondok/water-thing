@@ -1,6 +1,6 @@
 /* globals Actor */
 
-function Camera (gl, program) {
+function Camera () {
   Actor.apply(this)
 
   this.fov = Math.degToRad(60)
