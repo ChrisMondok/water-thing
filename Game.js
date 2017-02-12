@@ -4,8 +4,6 @@ function Game (canvas) {
   this.renderers = []
   this.actors = []
 
-  this.lastTick = this.now = 0
-
   this.origin = vec3.create()
 
   this.sun = vec3.create()
@@ -36,27 +34,33 @@ Game.prototype.latitude = 40
 Game.prototype.timeOfDay = 0.6 // 0-1 => 0h-24h
 Game.prototype.timeScale = 1
 
+Game.prototype.now = 0
+Game.prototype.dt = 0
+
 Game.prototype.createComponents = function () {
   this.camera = new Camera()
   this.sceneRoot = new SceneGraphNode()
 }
 
-Game.prototype.tick = function tick (ts) {
-  this.now = ts
-  ts *= this.timeScale
+;(function () {
+  var lastTs = 0
+  Game.prototype.tick = function tick (ts) {
+    this.dt = this.timeScale * (ts - lastTs)
+    this.now += this.dt
 
-  this._updateSun()
+    this._updateSun()
 
-  for (var i = 0; i < this.actors.length; i++) {
-    this.actors[i].tick(ts)
+    for (var i = 0; i < this.actors.length; i++) {
+      this.actors[i].tick()
+    }
+
+    this.draw()
+
+    lastTs = ts
+
+    window.requestAnimationFrame(this._tick)
   }
-
-  this.draw(ts)
-
-  this.lastTick = this.now
-
-  window.requestAnimationFrame(this._tick)
-}
+})()
 
 Game.prototype._updateSun = function () {
   function computeSunIntensity (timeOfDay) {
@@ -68,9 +72,9 @@ Game.prototype._updateSun = function () {
   vec3.rotateY(this.sun, this.sun, this.origin, -this.latitude / 180 * Math.PI)
 }
 
-Game.prototype.draw = function draw (ts) {
+Game.prototype.draw = function draw () {
   for (var i = 0; i < this.renderers.length; i++) {
-    this.renderers[i].render(this.sceneRoot, this.camera, ts)
+    this.renderers[i].render(this.sceneRoot, this.camera, this.now)
   }
 }
 

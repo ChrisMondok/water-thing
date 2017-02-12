@@ -34,13 +34,13 @@ WaterSurface.prototype.getWorldZ = function (xy) {
   return this.water.getZ(xy)
 }
 
-WaterSurface.prototype.tick = function (timestamp) {
-  this.updateBuffers(timestamp)
+WaterSurface.prototype.tick = function () {
+  this.updateBuffers()
 }
 
-WaterSurface.prototype.draw = function (renderer, timestamp) {
+WaterSurface.prototype.draw = function (renderer) {
   Actor.prototype.draw.apply(this, arguments)
-  var gl = renderer.game.gl
+  var gl = this.game.gl
 
   gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer)
   gl.bufferData(gl.ARRAY_BUFFER, this.vertexBufferArray, gl.DYNAMIC_DRAW)
@@ -57,7 +57,7 @@ WaterSurface.prototype.draw = function (renderer, timestamp) {
   var xyWorld = vec2.create()
   var normal = vec3.create()
 
-  WaterSurface.prototype.updateBuffers = function (timestamp) {
+  WaterSurface.prototype.updateBuffers = function () {
     var self = this
     var cps = this.cellsPerSide
 
@@ -99,9 +99,9 @@ WaterSurface.prototype.draw = function (renderer, timestamp) {
           var i = 3 * (y * (cps + 1) + x)
           self.vertexMap[i] = xyWorld[0]
           self.vertexMap[i + 1] = xyWorld[1]
-          self.vertexMap[i + 2] = self.water.getZ(timestamp, xyWorld)
+          self.vertexMap[i + 2] = self.water.getZ(this.game.now, xyWorld)
 
-          self.water.getNormal(normal, timestamp, xyWorld)
+          self.water.getNormal(normal, this.game.now, xyWorld)
           self.normalMap[i] = normal[0]
           self.normalMap[i + 1] = normal[1]
           self.normalMap[i + 2] = normal[2]

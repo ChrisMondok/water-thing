@@ -45,17 +45,17 @@ Buoy.prototype.load = function () {
 ;(function () {
   var up = vec3.fromValues(0, 0, 1)
   var normal = vec3.create()
-  Buoy.prototype.tick = function (timestamp) {
+  Buoy.prototype.tick = function () {
     var xy = [this.x, this.y]
-    this.z = this.water.getZ(timestamp, xy)
-    this.water.getNormal(normal, timestamp, xy)
+    this.z = this.water.getZ(this.game.now, xy)
+    this.water.getNormal(normal, this.game.now, xy)
     quat.rotationTo(this.rotation, up, normal)
-    this.updateLampMaterial(timestamp)
+    this.updateLampMaterial(this.game.now)
   }
 })()
 
-Buoy.prototype.updateLampMaterial = function (timestamp) {
-  var l = (timestamp / this.period + this.phase) % 1 < 0.25 ? 1 : 0
+Buoy.prototype.updateLampMaterial = function () {
+  var l = (this.game.now / this.period + this.phase) % 1 < 0.25 ? 1 : 0
   this.lampMaterial.emissive[0] = l * 1
   this.lampMaterial.emissive[1] = l * 0
   this.lampMaterial.emissive[2] = l * 0

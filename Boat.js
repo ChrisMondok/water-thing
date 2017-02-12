@@ -53,16 +53,16 @@ Boat.prototype.load = function () {
   var noRotation = quat.create()
 
   var normal = vec3.create()
-  Boat.prototype.tick = function (timestamp) {
+  Boat.prototype.tick = function () {
     var xy = [this.x, this.y]
-    this.z = this.water.getZ(timestamp, xy)
+    this.z = this.water.getZ(this.game.now, xy)
 
-    this.water.getNormal(normal, timestamp, xy)
+    this.water.getNormal(normal, this.game.now, xy)
 
     quat.rotationTo(this.rotation, up, normal)
 
     quat.rotateZ(this.motor.rotation, noRotation, this.steeringAngle)
 
-    quat.rotateY(this.prop.rotation, noRotation, (timestamp / 500) % 2 * Math.PI)
+    quat.rotateY(this.prop.rotation, noRotation, (this.game.now / 500) % 2 * Math.PI)
   }
 })()
