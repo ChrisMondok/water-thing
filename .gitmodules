@@ -7,3 +7,6 @@
 [submodule "lib/promise-polyfill"]
 	path = lib/promise-polyfill
 	url = git@github.com:taylorhakes/promise-polyfill
+[submodule "lib/cannon"]
+	path = lib/cannon
+	url = git@github.com:schteppe/cannon.js

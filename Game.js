@@ -4,6 +4,9 @@ function Game (canvas) {
   this.renderers = []
   this.actors = []
 
+  this.world = new CANNON.World()
+  this.world.gravity.set(0, 0, -9.82)
+
   this.lastTick = this.now = 0
 
   this.origin = vec3.create()
