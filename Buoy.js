@@ -1,4 +1,4 @@
-/* globals Actor, StaticMeshComponent */
+/* globals Actor, StaticMeshComponent, loadMesh */
 
 function Buoy (gl, water) {
   Actor.apply(this)
@@ -6,8 +6,6 @@ function Buoy (gl, water) {
   this.water = water
 
   vec3.set(this.scale, 15, 15, 15)
-
-  this.createComponents()
 }
 
 Buoy.meshes = null
@@ -18,24 +16,26 @@ Buoy.prototype.constructor = Buoy
 Buoy.prototype.period = 2000
 Buoy.prototype.phase = 0
 
-Buoy.prototype.createComponents = function () {
-  if (!Buoy.meshes) throw new Error('Buoy instantiated before mesh was set.')
+Buoy.prototype.load = function () {
+  return loadMesh('models', 'buoy.obj').then(function (meshes) {
+    this.lampMaterial = meshes.map(function (m) { return m.material })
+      .filter(function (mat) { return mat.name === 'Lamp' })[0]
+      .clone()
 
-  this.lampMaterial = Buoy.meshes.map(function (m) { return m.material })
-    .filter(function (mat) { return mat.name === 'Lamp' })[0]
-    .clone()
+    meshes.forEach(function (m) {
+      if (isLampMesh(m)) {
+        m = Object.create(m)
+        m.material = this.lampMaterial
+      }
+      var mesh = new StaticMeshComponent(m)
+      vec3.set(mesh.position, 0, 0, 0.1)
+      this.addComponent(mesh)
+    }, this)
 
-  Buoy.meshes.forEach(function (m) {
-    if (isLampMesh(m)) {
-      m = Object.create(m)
-      m.material = this.lampMaterial
-    }
-    var mesh = new StaticMeshComponent(m)
-    vec3.set(mesh.position, 0, 0, 0.1)
-    this.addComponent(mesh)
-  }, this)
-
-  Buoy.meshes.filter(isLampMesh).forEach(function (m) {}, this)
+    meshes.filter(isLampMesh).forEach(function (m) {}, this)
+  }.bind(this)).then(function () {
+    return this
+  }.bind(this))
 
   function isLampMesh (mesh) {
     return mesh.name === 'Lamp_Cone'

@@ -6,8 +6,6 @@ function Boat (gl, water) {
   this.water = water
 
   vec3.set(this.scale, 15, 15, 15)
-
-  this.createComponents()
 }
 
 Boat.prototype = Object.create(Actor.prototype)
@@ -15,8 +13,8 @@ Boat.prototype.constructor = Boat
 
 Boat.prototype.steeringAngle = 0
 
-Boat.prototype.createComponents = function () {
-  loadMesh('models', 'dinghy.obj').then(function (meshes) {
+Boat.prototype.load = function () {
+  var dinghyPromise = loadMesh('models', 'dinghy.obj').then(function (meshes) {
     meshes.forEach(function (m) {
       var mesh = new StaticMeshComponent(m)
       vec3.set(mesh.position, 0, 0, 0.1)
@@ -30,7 +28,7 @@ Boat.prototype.createComponents = function () {
 
   this.addComponent(motor)
 
-  loadMesh('models', 'outboard-motor.obj').then(function (meshes) {
+  var motorPromise = loadMesh('models', 'outboard-motor.obj').then(function (meshes) {
     meshes.forEach(function (mesh) {
       motor.addComponent(new StaticMeshComponent(mesh))
     })
@@ -40,11 +38,13 @@ Boat.prototype.createComponents = function () {
   vec3.set(prop.position, 0, -0.1, -0.8)
   motor.addComponent(prop)
 
-  loadMesh('models', 'prop.obj').then(function (meshes) {
+  var propPromise = loadMesh('models', 'prop.obj').then(function (meshes) {
     meshes.forEach(function (mesh) {
       prop.addComponent(new StaticMeshComponent(mesh))
     }, this)
   }.bind(this))
+
+  return Promise.all([dinghyPromise, motorPromise, propPromise])
 }
 
 ;(function () {

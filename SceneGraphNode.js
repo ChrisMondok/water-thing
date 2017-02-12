@@ -7,6 +7,14 @@ function SceneGraphNode () {
 
   this.transformMatrix = mat4.create()
   this.inverseTransformMatrix = mat4.create()
+
+  this.ready = this.load()
+}
+
+SceneGraphNode.prototype.load = function () {
+  return new Promise(function (resolve, reject) {
+    resolve()
+  })
 }
 
 SceneGraphNode.prototype.walk = function (renderer, timestamp) {

@@ -1,4 +1,4 @@
-/* globals World, Water, WaterSurface, PointWaveSource, Buoy, Boat, Editors, loadMesh */
+/* globals World, Water, WaterSurface, PointWaveSource, Buoy, Boat, Editors */
 
 function DemoWorld () {
   World.apply(this, arguments)
@@ -36,28 +36,21 @@ DemoWorld.prototype.createComponents = function () {
   this.actors.push(waterSurface)
 
   editors.push(new Editors.MaterialEditor(waterSurface.material))
+  var buoy = window.buoy = new Buoy(this.gl, water)
 
-  loadMesh('models', 'buoy.obj').then(function (meshes) {
-    Buoy.meshes = meshes
-    var b2 = window.b2 = new Buoy(this.gl, water)
+  buoy.ready.then(function (buoy) {
+    buoy.x = 100
 
-    b2.x = 100
-
-    this.actors.push(b2)
-    this.sceneRoot.addComponent(b2)
-
-    addMaterialEditorsForMeshes(meshes)
+    this.actors.push(buoy)
+    this.sceneRoot.addComponent(buoy)
   }.bind(this))
 
-  loadMesh('models', 'dinghy.obj').then(function (meshes) {
-    Boat.meshes = meshes
-    var boat = window.boat = new Boat(this.gl, water)
+  var boat = window.boat = new Boat(this.gl, water)
+  boat.ready.then(function () {
     this.actors.push(boat)
     this.sceneRoot.addComponent(boat)
-
-    addMaterialEditorsForMeshes(meshes)
-  }.bind(this), function (error) {
-    console.error(error)
+  }.bind(this), function (e) {
+    console.error(e)
   })
 
   function addMaterialEditorsForMeshes (meshes) {
