@@ -1,17 +1,17 @@
-Math.degToRad = Math.degToRad || function degToRad (deg) {
+function degToRad(deg) {
   return deg / 180 * Math.PI
 }
 
-Math.radToDeg = Math.radToDeg || function radToDeg (rad) {
+function radToDeg(rad) {
   return rad / Math.PI * 180
 }
 
-;(function () {
+var lookAt = function() {
   var x = vec3.create()
   var y = vec3.create()
   var z = vec3.create()
 
-  mat4.lookAt = function lookAt (out, position, target, up) {
+  return function lookAt (out, position, target, up) {
     vec3.subtract(z, position, target)
     vec3.normalize(z, z)
     vec3.cross(x, up, z)
@@ -24,4 +24,4 @@ Math.radToDeg = Math.radToDeg || function radToDeg (rad) {
       position[0], position[1], position[2], 1
     )
   }
-})()
+}()

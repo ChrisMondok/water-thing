@@ -60,7 +60,6 @@
           return
         default:
           console.warn('Unrecognized mtl directive %s', words[0])
-          return
       }
     }
 

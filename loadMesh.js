@@ -73,7 +73,6 @@
           break
         default:
           console.warn('Unrecognized obj directive %s', words[0])
-          return
       }
     }
 
