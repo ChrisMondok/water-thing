@@ -9,7 +9,6 @@ interface RendererType<T extends Renderer> {
 
 abstract class Renderer {
   protected readonly a_position: number
-  protected u_transform: WebGLUniformLocation // TODO: push down
   protected readonly lightMatrix = mat4.create()
 
   protected readonly transformMatrix = mat4.identity(mat4.create())
@@ -25,7 +24,7 @@ abstract class Renderer {
   }
 
 
-  render (sceneRoot : SceneGraphNode, camera : Camera, timestamp : number) {
+  render (camera : Camera) {
     this.game.gl.useProgram(this.program)
 
     vec3.normalize(Renderer.scratch.nSun, this.game.sun)
@@ -65,18 +64,9 @@ abstract class Renderer {
     }
   })()
 
-  // TODO: push down
-  transform (transform : Float32Array) {
-    mat4.multiply(this.transformMatrix, this.transformMatrix, transform)
-    this.game.gl.uniformMatrix4fv(this.u_transform, false, this.transformMatrix)
-  }
-
   setMaterial (material : Material) {
     if (!material.isComplete()) throw new Error('Material is incomplete!')
   }
-
-  // TODO: push down
-  abstract draw (mode : number, vertBuffer : WebGLBuffer, normalBuffer : WebGLBuffer, numVerts : number) : void
 
   static create<T extends Renderer>(type : RendererType<T>, game : Game) : Promise<T> {
     var gl = game.gl
@@ -114,5 +104,16 @@ abstract class Renderer {
           return shader
         })
     }
+  }
+}
+
+abstract class GeometryRenderer extends Renderer {
+  protected u_transform: WebGLUniformLocation
+
+  abstract draw (mode : number, vertBuffer : WebGLBuffer, normalBuffer : WebGLBuffer, numVerts : number) : void
+
+  transform (transform : Float32Array) {
+    mat4.multiply(this.transformMatrix, this.transformMatrix, transform)
+    this.game.gl.uniformMatrix4fv(this.u_transform, false, this.transformMatrix)
   }
 }

@@ -1,4 +1,4 @@
-class SceneRenderer extends Renderer {
+class SceneRenderer extends GeometryRenderer {
   static vertex = 'shaders/sceneVertex.glsl'
   static fragment = 'shaders/sceneFragment.glsl'
 
@@ -41,8 +41,8 @@ class SceneRenderer extends Renderer {
     this.a_normal = notNull(gl.getAttribLocation(program, 'a_normal'))
   }
 
-  render (sceneRoot : SceneGraphNode, camera : Camera, timestamp : number) {
-    super.render(sceneRoot, camera, timestamp)
+  render (camera : Camera) {
+    super.render(camera)
 
     var gl = this.game.gl
 
@@ -68,7 +68,7 @@ class SceneRenderer extends Renderer {
     gl.uniform3fv(this.u_ambient_light, new Float32Array([ambient, ambient, ambient]))
     gl.uniform3fv(this.u_camera, camera.position)
 
-    sceneRoot.walk(this, timestamp)
+    this.game.sceneRoot.walk(this)
   }
 
   setMaterial (material : Material) {

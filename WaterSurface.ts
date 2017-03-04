@@ -1,5 +1,3 @@
-/* globals Actor, Material */
-
 class WaterSurface extends Actor{
   private vertexMap: Array<number>
   private normalMap: Array<number>
@@ -38,8 +36,8 @@ class WaterSurface extends Actor{
     this.updateBuffers()
   }
 
-  draw (renderer : Renderer, timestamp : number) {
-    super.draw(renderer, timestamp)
+  draw (renderer : GeometryRenderer) {
+    super.draw(renderer)
     Actor.prototype.draw.apply(this, arguments)
     var gl = this.game.gl
 

@@ -1,4 +1,4 @@
-class LightmapRenderer extends Renderer {
+class LightmapRenderer extends GeometryRenderer {
   static readonly vertex = 'shaders/lightmapVertex.glsl'
   static readonly fragment = 'shaders/lightmapFragment.glsl'
 
@@ -15,8 +15,8 @@ class LightmapRenderer extends Renderer {
     this.game.gl.bindFramebuffer(this.game.gl.FRAMEBUFFER, null)
   }
 
-  render (sceneRoot : SceneGraphNode, camera : Camera, timestamp : number) {
-    super.render(sceneRoot, camera, timestamp)
+  render (camera : Camera) {
+    super.render(camera)
     var gl = this.game.gl
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer)
@@ -28,7 +28,7 @@ class LightmapRenderer extends Renderer {
 
     gl.uniformMatrix4fv(this.u_projection, false, this.lightMatrix)
 
-    sceneRoot.walk(this, timestamp)
+    this.game.sceneRoot.walk(this)
   }
 
   draw (mode : number, vertBuffer : WebGLBuffer, normalBuffer : WebGLBuffer, numVerts : number) {

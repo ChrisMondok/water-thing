@@ -19,10 +19,6 @@ class Boat extends Actor {
     vec3.set(this.scale, 15, 15, 15)
   }
 
-  walk(renderer: any, timestamp: number) {
-    super.walk(renderer, timestamp)
-  }
-
   load() {
     var dinghyPromise = loadMesh('models', 'dinghy.obj').then((meshes : Mesh[]) => {
       meshes.forEach((m) => {

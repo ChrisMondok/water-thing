@@ -14,19 +14,19 @@ class SceneGraphNode {
     })
   }
 
-  walk(renderer : Renderer, timestamp : number) {
+  walk(renderer : GeometryRenderer) {
     this.updateTransformMatrix()
     renderer.transform(this.transformMatrix)
 
-    this.draw(renderer, timestamp)
+    this.draw(renderer)
     for (var i = 0; i < this.components.length; i++) {
-      this.components[i].walk(renderer, timestamp)
+      this.components[i].walk(renderer)
     }
 
     renderer.transform(this.inverseTransformMatrix)
   }
 
-  draw(renderer : Renderer, timestamp : number) {}
+  draw(renderer : Renderer) {}
 
   addComponent(c : SceneGraphNode) {
     this.components.push(c)

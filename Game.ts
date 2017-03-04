@@ -27,14 +27,15 @@ class Game {
 
   private lastTs = 0
 
-  constructor (canvas : HTMLCanvasElement) {
-    var gl = this.gl = (<any>window).gl = <WebGLRenderingContext>(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+  constructor (canvas: HTMLCanvasElement) {
+    let context = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+    let gl = this.gl = (window as any).gl = (context) as WebGLRenderingContext
 
-    var tick = this._tick = this.tick.bind(this)
+    let tick = this._tick = this.tick.bind(this)
 
     this.createComponents()
 
-    var size = Math.min(2048, gl.MAX_RENDERBUFFER_SIZE, gl.MAX_VIEWPORT_DIMS)
+    let size = Math.min(2048, gl.MAX_RENDERBUFFER_SIZE, gl.MAX_VIEWPORT_DIMS)
     this.lightmap = createTexture(this.gl, size, size)
 
     this.ready = this.addRenderer(LightmapRenderer)
@@ -42,7 +43,7 @@ class Game {
       .then(this.addRenderer.bind(this, TextureRenderer))
       .then(function () {
         window.requestAnimationFrame(tick)
-      }, function (error : any) {
+      }, function (error: any) {
         console.error(error)
       })
   }
@@ -58,7 +59,7 @@ class Game {
 
     this.updateSun()
 
-    for (var i = 0; i < this.actors.length; i++) {
+    for (let i = 0; i < this.actors.length; i++) {
       this.actors[i].tick()
     }
 
@@ -70,19 +71,19 @@ class Game {
   }
 
   draw() {
-    for (var i = 0; i < this.renderers.length; i++) {
-      this.renderers[i].render(this.sceneRoot, this.camera, this.now)
+    for (let i = 0; i < this.renderers.length; i++) {
+      this.renderers[i].render(this.camera)
     }
   }
 
-  private addRenderer<TType extends Renderer, TCtor extends RendererType<TType>> (type : TCtor) {
-    return Renderer.create(type, this).then(function (r : Renderer) {
+  private addRenderer<TType extends Renderer, TCtor extends RendererType<TType>> (type: TCtor) {
+    return Renderer.create(type, this).then(function (r: Renderer) {
       this.renderers.push(r)
     }.bind(this))
   }
 
   private updateSun() {
-    function computeSunIntensity (timeOfDay : number) {
+    function computeSunIntensity (timeOfDay: number) {
       return 1.0
     }
 

@@ -26,9 +26,9 @@ class TextureRenderer extends Renderer {
     gl.bufferData(gl.ARRAY_BUFFER, verts, gl.STATIC_DRAW)
   }
 
-  render (sceneRoot : SceneGraphNode, camera : Camera, timestamp : number) {
+  render (camera : Camera) {
     if (!(<any>window).debugging) return
-    Renderer.prototype.render.apply(this, arguments)
+    super.render(camera)
     var gl = this.game.gl
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null)
