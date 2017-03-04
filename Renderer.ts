@@ -1,5 +1,12 @@
 // There should be a 1:1 relationship between renderers and programs.
 // Perhaps this is a poor name.
+
+interface RendererType<T extends Renderer> {
+  vertex: string
+  fragment: string
+  new (game: Game, program: WebGLProgram): T
+}
+
 abstract class Renderer {
   protected readonly a_position: number
   protected u_transform: WebGLUniformLocation // TODO: push down
@@ -18,7 +25,7 @@ abstract class Renderer {
   }
 
 
-  render (sceneRoot, camera, timestamp) {
+  render (sceneRoot : SceneGraphNode, camera : Camera, timestamp : number) {
     this.game.gl.useProgram(this.program)
 
     vec3.normalize(Renderer.scratch.nSun, this.game.sun)
@@ -30,9 +37,7 @@ abstract class Renderer {
     mat4.multiply(this.lightMatrix, Renderer.getOrthoMatrix(vec3.distance(camera.target, camera.position) * 2), this.lightMatrix)
   }
 
-  private static getOrthoMatrix (width, height = undefined, depth = undefined) {
-    if (height === undefined && depth === undefined) height = depth = width
-
+  private static getOrthoMatrix (width : number, height = width, depth = height) {
     mat4.set(Renderer.scratch.orthoMatrix,
       2 / width, 0, 0, 0,
       0, 2 / height, 0, 0,
@@ -45,7 +50,7 @@ abstract class Renderer {
 
   protected static getUpVector = (function() {
     const upVector = vec3.create()
-    return function getUpVector (lookVector) {
+    return function getUpVector (lookVector : Float32Array) {
       var declination = Math.asin(lookVector[2])
 
       var xyAngle = Math.PI + Math.atan2(lookVector[1], lookVector[0])
@@ -61,25 +66,25 @@ abstract class Renderer {
   })()
 
   // TODO: push down
-  transform (transform) {
+  transform (transform : Float32Array) {
     mat4.multiply(this.transformMatrix, this.transformMatrix, transform)
     this.game.gl.uniformMatrix4fv(this.u_transform, false, this.transformMatrix)
   }
 
-  setMaterial (material) {
+  setMaterial (material : Material) {
     if (!material.isComplete()) throw new Error('Material is incomplete!')
   }
 
   // TODO: push down
-  abstract draw (mode, vertBuffer, normalBuffer, numVerts)
+  abstract draw (mode : number, vertBuffer : WebGLBuffer, normalBuffer : WebGLBuffer, numVerts : number) : void
 
-  static create = function (type, game) {
+  static create<T extends Renderer>(type : RendererType<T>, game : Game) : Promise<T> {
     var gl = game.gl
     return Promise.all([
       getShader(gl, type.vertex, gl.VERTEX_SHADER),
       getShader(gl, type.fragment, gl.FRAGMENT_SHADER)
     ]).then(function (shaders) {
-      var program = gl.createProgram()
+      var program = notNull(gl.createProgram())
       shaders.forEach(function (shader) {
         gl.attachShader(program, shader)
       })
@@ -92,12 +97,9 @@ abstract class Renderer {
         throw new Error('Error in program: ' + gl.getProgramInfoLog(program))
       }
       return program
-    }).then(function (program) {
-      var TypeWithACapitalTToMakeStandardHappy = type
-      return new TypeWithACapitalTToMakeStandardHappy(game, program)
-    })
+    }).then((program) => new type(game, program) as Renderer)
 
-    function getShader (gl, url, type) {
+    function getShader (gl : WebGLRenderingContext, url : string, type : number) {
       return fetch(url)
         .then(function (response) { return response.text() })
         .then(function (glsl) {

@@ -15,17 +15,17 @@ abstract class MeshComponent extends SceneGraphNode {
   vertexBuffer: WebGLBuffer
   normalBuffer: WebGLBuffer
 
-  constructor (mesh : Mesh, public material) {
+  constructor (mesh : Mesh, public material : Material) {
     super()
 
     var vertices = mesh.vertices
     var normals = mesh.normals
 
-    this.vertexBuffer = gl.createBuffer()
+    this.vertexBuffer = notNull(gl.createBuffer())
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer)
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
 
-    this.normalBuffer = gl.createBuffer()
+    this.normalBuffer = notNull(gl.createBuffer())
     gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer)
     gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW)
 
@@ -34,7 +34,7 @@ abstract class MeshComponent extends SceneGraphNode {
     this.drawMode = gl.TRIANGLE_STRIP
   }
 
-  draw(renderer, timestamp) {
+  draw(renderer : Renderer, timestamp : number) {
     SceneGraphNode.prototype.draw.apply(this, arguments)
     renderer.setMaterial(this.material)
     renderer.draw(this.drawMode, this.vertexBuffer, this.normalBuffer, this.numVertices)
@@ -43,7 +43,7 @@ abstract class MeshComponent extends SceneGraphNode {
 }
 
 class StaticMeshComponent extends MeshComponent {
-  constructor (staticMeshDefinition) {
+  constructor (staticMeshDefinition : Mesh) {
     super({
       vertices: staticMeshDefinition.vertices,
       normals: staticMeshDefinition.normals

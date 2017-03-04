@@ -2,7 +2,8 @@
     "compilerOptions": {
         "module": "None",
         "target": "es5",
-        "noImplicitAny": false,
+        "noImplicitAny": true,
+		"strictNullChecks": true,
         "sourceMap": true,
 		"outFile": "out.js",
 		"lib": ["ES5","DOM","ES2015.Promise"]

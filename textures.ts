@@ -1,12 +1,12 @@
-function createTexture (gl, width, height) : WebGLTextureWithDimensions {
-  var texture = gl.createTexture()
+function createTexture (gl : WebGLRenderingContext, width : number, height : number) : WebGLTextureWithDimensions {
+  var texture = <WebGLTextureWithDimensions>(gl.createTexture())
   gl.bindTexture(gl.TEXTURE_2D, texture)
 
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, undefined)
 
   // this does nothing, but it's handy to have.
   texture.width = width
@@ -15,8 +15,8 @@ function createTexture (gl, width, height) : WebGLTextureWithDimensions {
   return texture
 }
 
-function createFramebuffer (gl, texture, width, height) {
-  var fb = gl.createFramebuffer()
+function createFramebuffer (gl : WebGLRenderingContext, texture : WebGLTexture, width : number, height : number) {
+  var fb = notNull(gl.createFramebuffer())
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb)
 
   var rb = gl.createRenderbuffer()
@@ -34,6 +34,6 @@ function createFramebuffer (gl, texture, width, height) {
 }
 
 interface WebGLTextureWithDimensions extends WebGLTexture {
-  readonly width: number
-  readonly height: number
+  width: number
+  height: number
 }

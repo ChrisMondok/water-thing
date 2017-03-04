@@ -1,8 +1,12 @@
 /* globals PointWaveSource */
 
+interface Function {
+  name: string
+}
+
 namespace Editors {
   export class EnvironmentEditor {
-    constructor (world) {
+    constructor (world: Game) {
       var container = window.document.createElement('details')
 
       var summary = window.document.createElement('summary')
@@ -23,12 +27,12 @@ namespace Editors {
         world.timeScale = v
       }, world.timeScale, 0, 2))
 
-      window.document.querySelector('#toolbox').appendChild(container)
+      window.document.querySelector('#toolbox')!.appendChild(container)
     }
   }
 
   export class PointWaveSourceEditor {
-    constructor (pointWaveSource, name) {
+    constructor (pointWaveSource: PointWaveSource, name: string) {
       var container = window.document.createElement('details')
 
       var summary = window.document.createElement('summary')
@@ -51,7 +55,7 @@ namespace Editors {
         pointWaveSource.frequency = v
       }, pointWaveSource.frequency, 0, 1, 0.01))
 
-      window.document.querySelector('#toolbox').appendChild(container)
+      window.document.querySelector('#toolbox')!.appendChild(container)
     }
   }
 
@@ -69,7 +73,7 @@ namespace Editors {
         water.viscosity = v
       }, water.viscosity, 1, 100))
 
-      window.document.querySelector('#toolbox').appendChild(container)
+      window.document.querySelector('#toolbox')!.appendChild(container)
 
       water.waveSources.forEach(function (source, index) {
         if (source instanceof PointWaveSource) {
@@ -81,7 +85,7 @@ namespace Editors {
   }
 
   export class MaterialEditor {
-    constructor (material, materialName = undefined) {
+    constructor (material: Material, materialName?:string) {
       var container = window.document.createElement('details')
 
       var summary = window.document.createElement('summary')
@@ -89,6 +93,10 @@ namespace Editors {
       materialName = materialName || material.name || material.constructor.name
 
       summary.textContent = 'Material Editor (' + materialName + ')'
+
+      if (materialName === 'Material') {
+        debugger
+      }
 
       container.appendChild(summary)
 
@@ -101,15 +109,15 @@ namespace Editors {
         material.shininess = v
       }, material.shininess, 0, 50, 1))
 
-      window.document.querySelector('#toolbox').appendChild(container)
+      window.document.querySelector('#toolbox')!.appendChild(container)
     }
   }
 
-  function makeRange (name: string, callback, initialValue = undefined, min = undefined, max = undefined, step = undefined) {
+  function makeRange (name: string, callback:(n: number) => void, initialValue = 0.5, min: number = 0, max = 1, step = 0.001) {
     var label = window.document.createElement('label')
 
     var text = window.document.createElement('span')
-    function updateLabel (v) {
+    function updateLabel (v: number | string) {
       text.textContent = name + ': ' + v
     }
 
@@ -117,10 +125,10 @@ namespace Editors {
 
     var input = window.document.createElement('input')
     input.type = 'range'
-    input.min = min === undefined ? 0 : min
-    input.max = max === undefined ? 1 : max
-    input.step = step === undefined ? 0.001 : step
-    input.value = initialValue === undefined ? 0.5 : initialValue
+    input.min = min.toString()
+    input.max = max.toString()
+    input.step = step.toString()
+    input.value = initialValue.toString()
 
     input.addEventListener('input', function () {
       callback(Number(input.value))
@@ -134,7 +142,7 @@ namespace Editors {
     return label
   }
 
-  function makePositionEditor (name, model) {
+  function makePositionEditor (name: string, model: Actor) {
     var container = window.document.createElement('section')
     var header = window.document.createElement('header')
     header.textContent = name
@@ -153,7 +161,7 @@ namespace Editors {
     return container
   }
 
-  function makeColorPicker (name, colorArray) {
+  function makeColorPicker (name: string, colorArray: Float32Array) {
     var container = window.document.createElement('section')
     var header = window.document.createElement('header')
     header.textContent = name

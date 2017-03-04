@@ -10,7 +10,7 @@ class WaterSurface extends Actor{
   private vertexBuffer: WebGLBuffer
   private normalBuffer: WebGLBuffer
 
-  constructor (game, private water, private size, private cellsPerSide) {
+  constructor (game : Game, private water : Water, private size : number, private cellsPerSide : number) {
     super(game)
 
     var columns, rows
@@ -27,22 +27,18 @@ class WaterSurface extends Actor{
 
     this.material = new WaterMaterial()
 
-    this.vertexBuffer = game.gl.createBuffer()
-    this.normalBuffer = game.gl.createBuffer()
+    this.vertexBuffer = notNull(game.gl.createBuffer())
+    this.normalBuffer = notNull(game.gl.createBuffer())
   }
 
   width = 100
   height = 100
 
-  getWorldZ (xy) {
-    return this.water.getZ(xy)
-  }
-
   tick () {
     this.updateBuffers()
   }
 
-  draw (renderer, timestamp) {
+  draw (renderer : Renderer, timestamp : number) {
     super.draw(renderer, timestamp)
     Actor.prototype.draw.apply(this, arguments)
     var gl = this.game.gl
@@ -77,7 +73,7 @@ class WaterSurface extends Actor{
       }
     }
 
-    function addVertex (x, y) {
+    function addVertex (x : number, y : number) {
       var verts = self.vertexMap
       var norms = self.normalMap
       var i = y * (cps + 1) + x

@@ -1,16 +1,16 @@
 /* globals SceneRenderer, LightmapRenderer, Renderer, Camera, SceneGraphNode, createTexture, TextureRenderer */
 
 class Game {
-  renderers = []
+  renderers: Renderer[] = []
   actors: Actor[] = []
-  sceneRoot: SceneGraphNode = null
+  sceneRoot: SceneGraphNode
 
   origin = vec3.create()
   sun = vec3.create()
 
   gl: WebGLRenderingContext
 
-  camera = null
+  camera: Camera
 
   latitude = 40
   timeOfDay = 0.6 // 0-1 => 0h-24h
@@ -28,7 +28,7 @@ class Game {
   private lastTs = 0
 
   constructor (canvas : HTMLCanvasElement) {
-    var gl = this.gl = (<any>window).gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+    var gl = this.gl = (<any>window).gl = <WebGLRenderingContext>(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
 
     var tick = this._tick = this.tick.bind(this)
 
@@ -42,7 +42,7 @@ class Game {
       .then(this.addRenderer.bind(this, TextureRenderer))
       .then(function () {
         window.requestAnimationFrame(tick)
-      }, function (error) {
+      }, function (error : any) {
         console.error(error)
       })
   }
@@ -52,7 +52,7 @@ class Game {
     this.sceneRoot = new SceneGraphNode()
   }
 
-  tick(ts) {
+  tick(ts: number) {
     this.dt = this.timeScale * (ts - this.lastTs)
     this.now += this.dt
 
@@ -75,14 +75,14 @@ class Game {
     }
   }
 
-  addRenderer = function (type) {
-    return Renderer.create(type, this).then(function (r) {
+  private addRenderer<TType extends Renderer, TCtor extends RendererType<TType>> (type : TCtor) {
+    return Renderer.create(type, this).then(function (r : Renderer) {
       this.renderers.push(r)
     }.bind(this))
   }
 
   private updateSun() {
-    function computeSunIntensity (timeOfDay) {
+    function computeSunIntensity (timeOfDay : number) {
       return 1.0
     }
 

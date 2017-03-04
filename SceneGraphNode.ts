@@ -4,17 +4,17 @@ class SceneGraphNode {
   rotation = quat.create()
   scale = vec3.fromValues(1, 1, 1)
   transformMatrix = mat4.create()
-  ready = Promise.resolve().then(this.load.bind(this))
+  ready = Promise.resolve().then(() => this.load())
 
   protected inverseTransformMatrix = mat4.create()
 
-  load() {
+  load() : Promise<this> {
     return new Promise(function (resolve, reject) {
-      resolve()
+      resolve(this)
     })
   }
 
-  walk(renderer, timestamp) {
+  walk(renderer : Renderer, timestamp : number) {
     this.updateTransformMatrix()
     renderer.transform(this.transformMatrix)
 
@@ -26,9 +26,9 @@ class SceneGraphNode {
     renderer.transform(this.inverseTransformMatrix)
   }
 
-  draw(renderer, timestamp) {}
+  draw(renderer : Renderer, timestamp : number) {}
 
-  addComponent(c) {
+  addComponent(c : SceneGraphNode) {
     this.components.push(c)
   }
 

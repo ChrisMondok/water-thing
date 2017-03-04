@@ -1,10 +1,8 @@
-/* globals Actor */
-
 class Water {
   waveSources : WaveSource[] = []
   viscosity = 12 // this is probably totally the wrong name for this
 
-  getZ (timestamp, xy) {
+  getZ (timestamp: number, xy: Float32Array) {
     var z = 0
 
     for (var i = 0; i < this.waveSources.length; i++) {
@@ -14,7 +12,7 @@ class Water {
     return z
   }
 
-  getNormal (out, timestamp, xy) {
+  getNormal (out: Float32Array, timestamp: number, xy: Float32Array) {
     vec3.set(out, 0, 0, 1)
 
     for (var i = 0; i < this.waveSources.length; i++) {
@@ -26,7 +24,7 @@ class Water {
 }
 
 abstract class WaveSource extends Actor {
-  constructor(game, public fluid : Water) {
+  constructor(game : Game, public fluid : Water) {
     super(game)
   }
 
@@ -45,6 +43,6 @@ abstract class WaveSource extends Actor {
     return this.getSpeed() * this.period
   }
 
-  abstract getZ (timestamp, xy)
-  abstract accumulateNormal(out: vec3, timestamp, xy): void
+  abstract getZ (timestamp : number, xy : Float32Array) : number
+  abstract accumulateNormal(out: Float32Array, timestamp : number, xy : Float32Array): void
 }

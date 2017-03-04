@@ -11,7 +11,7 @@ class Buoy extends Actor {
     xy: vec2.create()
   }
 
-  constructor (game, private water) {
+  constructor (game: Game, private water: Water) {
     super(game)
     vec3.set(this.scale, 15, 15, 15)
   }

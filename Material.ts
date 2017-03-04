@@ -3,6 +3,7 @@ class Material {
   emissive: Float32Array
   specular: Float32Array
   ambient: Float32Array
+  name?: string
 
   shininess = 16
 
@@ -21,6 +22,7 @@ class Material {
     clone.specular = this.specular && new Float32Array(this.specular)
     clone.ambient = this.ambient && new Float32Array(this.ambient)
     clone.shininess = this.shininess
+    clone.name = this.name
     return clone
   }
 }

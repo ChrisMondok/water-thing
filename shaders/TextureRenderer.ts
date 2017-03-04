@@ -3,9 +3,9 @@ class TextureRenderer extends Renderer {
   static vertex = 'shaders/textureVertex.glsl'
   static fragment = 'shaders/textureFragment.glsl'
 
-  private readonly vertexBuffer: Float32Array
+  private readonly vertexBuffer: WebGLBuffer
 
-  constructor(game, program) {
+  constructor(game : Game, program : WebGLProgram) {
     super(game, program)
 
     var gl = game.gl
@@ -21,12 +21,12 @@ class TextureRenderer extends Renderer {
       0, 0, 0
     ])
 
-    this.vertexBuffer = gl.createBuffer()
+    this.vertexBuffer = notNull(gl.createBuffer())
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer)
     gl.bufferData(gl.ARRAY_BUFFER, verts, gl.STATIC_DRAW)
   }
 
-  render (sceneRoot, camera, timestamp) {
+  render (sceneRoot : SceneGraphNode, camera : Camera, timestamp : number) {
     if (!(<any>window).debugging) return
     Renderer.prototype.render.apply(this, arguments)
     var gl = this.game.gl
@@ -47,8 +47,7 @@ class TextureRenderer extends Renderer {
     gl.drawArrays(gl.TRIANGLES, 0, 6)
   }
 
-  draw(mode, vertBuffer, normalBuffer, numVerts) {
+  draw(mode : number, vertBuffer : WebGLBuffer, normalBuffer : WebGLBuffer, numVerts : number) {
     throw new Error('Not implemented')
   }
-
 }

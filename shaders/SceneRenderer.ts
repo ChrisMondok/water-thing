@@ -18,30 +18,30 @@ class SceneRenderer extends Renderer {
 
   protected readonly a_normal: number
 
-  constructor (game, program) {
+  constructor (game : Game, program : WebGLProgram) {
     super(game, program)
 
     var gl = game.gl
-    this.u_projection = gl.getUniformLocation(program, 'u_projection')
-    this.u_transform = gl.getUniformLocation(program, 'u_transform')
+    this.u_projection = notNull(gl.getUniformLocation(program, 'u_projection'))
+    this.u_transform = notNull(gl.getUniformLocation(program, 'u_transform'))
 
-    this.u_sun = gl.getUniformLocation(program, 'u_sun')
-    this.u_ambient_light = gl.getUniformLocation(program, 'u_ambient_light')
-    this.u_camera = gl.getUniformLocation(program, 'u_camera')
+    this.u_sun = notNull(gl.getUniformLocation(program, 'u_sun'))
+    this.u_ambient_light = notNull(gl.getUniformLocation(program, 'u_ambient_light'))
+    this.u_camera = notNull(gl.getUniformLocation(program, 'u_camera'))
 
-    this.u_mat_diffuse = gl.getUniformLocation(program, 'u_mat_diffuse')
-    this.u_mat_emissive = gl.getUniformLocation(program, 'u_mat_emissive')
-    this.u_mat_specular = gl.getUniformLocation(program, 'u_mat_specular')
-    this.u_mat_ambient = gl.getUniformLocation(program, 'u_mat_ambient')
-    this.u_mat_shininess = gl.getUniformLocation(program, 'u_mat_shininess')
+    this.u_mat_diffuse = notNull(gl.getUniformLocation(program, 'u_mat_diffuse'))
+    this.u_mat_emissive = notNull(gl.getUniformLocation(program, 'u_mat_emissive'))
+    this.u_mat_specular = notNull(gl.getUniformLocation(program, 'u_mat_specular'))
+    this.u_mat_ambient = notNull(gl.getUniformLocation(program, 'u_mat_ambient'))
+    this.u_mat_shininess = notNull(gl.getUniformLocation(program, 'u_mat_shininess'))
 
-    this.u_lightmap_sampler = gl.getUniformLocation(program, 'u_lightmap_sampler')
-    this.u_sun_projection = gl.getUniformLocation(program, 'u_sun_projection')
+    this.u_lightmap_sampler = notNull(gl.getUniformLocation(program, 'u_lightmap_sampler'))
+    this.u_sun_projection = notNull(gl.getUniformLocation(program, 'u_sun_projection'))
 
-    this.a_normal = gl.getAttribLocation(program, 'a_normal')
+    this.a_normal = notNull(gl.getAttribLocation(program, 'a_normal'))
   }
 
-  render (sceneRoot, camera, timestamp) {
+  render (sceneRoot : SceneGraphNode, camera : Camera, timestamp : number) {
     super.render(sceneRoot, camera, timestamp)
 
     var gl = this.game.gl
@@ -71,7 +71,7 @@ class SceneRenderer extends Renderer {
     sceneRoot.walk(this, timestamp)
   }
 
-  setMaterial (material) {
+  setMaterial (material : Material) {
     super.setMaterial(material)
 
     var gl = this.game.gl
@@ -83,7 +83,7 @@ class SceneRenderer extends Renderer {
     gl.uniform1f(this.u_mat_shininess, material.shininess)
   }
 
-  draw (mode, vertBuffer, normalBuffer, numVerts) {
+  draw (mode : number , vertBuffer : WebGLBuffer, normalBuffer : WebGLBuffer, numVerts : number) {
     var gl = this.game.gl
     gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer)
     gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0)

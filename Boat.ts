@@ -24,13 +24,13 @@ class Boat extends Actor {
   }
 
   load() {
-    var dinghyPromise = loadMesh('models', 'dinghy.obj').then(function (meshes : Mesh[]) {
-      meshes.forEach(function (m) {
+    var dinghyPromise = loadMesh('models', 'dinghy.obj').then((meshes : Mesh[]) => {
+      meshes.forEach((m) => {
         var mesh = new StaticMeshComponent(m)
         vec3.set(mesh.position, 0, 0, 0.1)
         this.addComponent(mesh)
-      }, this)
-    }.bind(this))
+      })
+    })
 
     vec3.set(this.motor.position, 0, -2.1, 0)
 
@@ -53,7 +53,7 @@ class Boat extends Actor {
       })
     })
 
-    return Promise.all([dinghyPromise, motorPromise, propPromise])
+    return Promise.all([dinghyPromise, motorPromise, propPromise]).then(() => this)
   }
 
 

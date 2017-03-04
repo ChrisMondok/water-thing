@@ -1,15 +1,15 @@
 /// <reference path="Game.ts"/>
 
 class DemoGame extends Game{
+  water: Water
+  private visitedMaterials: Material[]
 
   createComponents () {
     super.createComponents()
 
-    var editors = []
+    new Editors.EnvironmentEditor(this)
 
-    editors.push(new Editors.EnvironmentEditor(this))
-
-    var water = new Water()
+    var water = this.water = new Water()
 
     var pws = new PointWaveSource(this, water)
     pws.x = 200
@@ -24,48 +24,57 @@ class DemoGame extends Game{
     pws.period = 2
     water.waveSources.push(pws)
 
-    editors.push(new Editors.WaterEditor(water))
+    new Editors.WaterEditor(water)
 
     var waterSurface = new WaterSurface(this, water, 512, 16)
     this.sceneRoot.addComponent(waterSurface)
     this.actors.push(waterSurface)
 
-    var buoy = new Buoy(this, water)
+    Promise.all([this.spawnBoat(), this.spawnBuoy()]).then(() => {
+      return new Promise((resolve, reject) => {
+        setTimeout(resolve, 1000)
+      })
+    }).then(() => {
+      this.addMaterialEditorsForNodeAndChildren(this.sceneRoot)
+    })
 
-    buoy.ready.then(function (buoy) {
+    this.visitedMaterials = []
+  }
+
+  tick (ts: number) {
+    super.tick(ts)
+    var angle = ts / 10000
+    vec3.set(this.camera.position, Math.sin(angle) * 200, Math.cos(angle) * 200, Math.sin(ts / 7000) * 50 + 75)
+  }
+
+  private spawnBoat() {
+    var boat = new Boat(this, this.water)
+    return boat.ready.then((boat) => {
+      this.actors.push(boat)
+      this.sceneRoot.addComponent(boat)
+    }, function (e) {
+      console.error(e)
+    })
+  }
+
+  private spawnBuoy() {
+    var buoy = new Buoy(this, this.water)
+
+    buoy.ready.then((buoy) => {
       buoy.x = 100
 
       this.actors.push(buoy)
       this.sceneRoot.addComponent(buoy)
-    }.bind(this))
-
-    var boat = new Boat(this, water)
-    boat.ready.then(function () {
-      this.actors.push(boat)
-      this.sceneRoot.addComponent(boat)
-    }.bind(this), function (e) {
-      console.error(e)
     })
-
-    Promise.all([boat.ready, buoy.ready]).then(function () {
-      addMaterialEditorsForNodeAndChildren(this.sceneRoot)
-    }.bind(this))
-
-    var visitedMaterials = []
-    function addMaterialEditorsForNodeAndChildren (component) {
-      if (component.material instanceof Material &&
-        visitedMaterials.indexOf(component.material) === -1) {
-        visitedMaterials.push(component.material)
-        editors.push(new Editors.MaterialEditor(component.material))
-      }
-
-      component.components.forEach(addMaterialEditorsForNodeAndChildren)
-    }
   }
 
-  tick (ts) {
-    Game.prototype.tick.apply(this, arguments)
-    var angle = ts / 10000
-    vec3.set(this.camera.position, Math.sin(angle) * 200, Math.cos(angle) * 200, Math.sin(ts / 7000) * 50 + 75)
+  private addMaterialEditorsForNodeAndChildren (component: any)  {
+    if (component.material instanceof Material &&
+      this.visitedMaterials.indexOf(component.material) === -1) {
+      this.visitedMaterials.push(component.material)
+      new Editors.MaterialEditor(component.material)
+    }
+
+    component.components.forEach(this.addMaterialEditorsForNodeAndChildren, this)
   }
 }

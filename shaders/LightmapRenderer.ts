@@ -5,17 +5,17 @@ class LightmapRenderer extends Renderer {
   u_projection: WebGLUniformLocation
   framebuffer: WebGLFramebuffer
 
-  constructor (game, program) {
+  constructor (game : Game, program : WebGLProgram) {
     super(game, program)
 
-    this.u_projection = this.game.gl.getUniformLocation(program, 'u_projection')
-    this.u_transform = this.game.gl.getUniformLocation(program, 'u_transform')
+    this.u_projection = notNull(this.game.gl.getUniformLocation(program, 'u_projection'))
+    this.u_transform = notNull(this.game.gl.getUniformLocation(program, 'u_transform'))
 
     this.framebuffer = createFramebuffer(game.gl, game.lightmap, game.lightmap.width, game.lightmap.height)
     this.game.gl.bindFramebuffer(this.game.gl.FRAMEBUFFER, null)
   }
 
-  render (sceneRoot, camera, timestamp) {
+  render (sceneRoot : SceneGraphNode, camera : Camera, timestamp : number) {
     super.render(sceneRoot, camera, timestamp)
     var gl = this.game.gl
 
@@ -31,7 +31,7 @@ class LightmapRenderer extends Renderer {
     sceneRoot.walk(this, timestamp)
   }
 
-  draw (mode, vertBuffer, normalBuffer, numVerts) {
+  draw (mode : number, vertBuffer : WebGLBuffer, normalBuffer : WebGLBuffer, numVerts : number) {
     var gl = this.game.gl
 
     gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer)

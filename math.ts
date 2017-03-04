@@ -1,8 +1,8 @@
-function degToRad(deg) {
+function degToRad(deg : number) {
   return deg / 180 * Math.PI
 }
 
-function radToDeg(rad) {
+function radToDeg(rad : number) {
   return rad / Math.PI * 180
 }
 
@@ -11,7 +11,7 @@ var lookAt = function() {
   var y = vec3.create()
   var z = vec3.create()
 
-  return function lookAt (out, position, target, up) {
+  return function lookAt (out : Float32Array, position : Float32Array, target : Float32Array, up : Float32Array) {
     vec3.subtract(z, position, target)
     vec3.normalize(z, z)
     vec3.cross(x, up, z)
