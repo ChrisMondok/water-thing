@@ -11,10 +11,11 @@ class Boat extends Actor {
   private static readonly scratch = {
     up: vec3.fromValues(0, 0, 1),
     noRotation: quat.create(),
-    normal: vec3.create()
+    normal: vec3.create(),
+    xy: vec2.create()
   }
 
-  constructor(game: any, public water: any) {
+  constructor(game: Game, public water: Water) {
     super(game)
     vec3.set(this.scale, 15, 15, 15)
   }
@@ -52,12 +53,11 @@ class Boat extends Actor {
     return Promise.all([dinghyPromise, motorPromise, propPromise]).then(() => this)
   }
 
-
   tick() {
-    var xy = [this.x, this.y]
-    this.z = this.water.getZ(this.game.now, xy)
+    Boat.scratch.xy.set(this.x, this.y)
+    this.z = this.water.getZ(this.game.now, Boat.scratch.xy)
 
-    this.water.getNormal(Boat.scratch.normal, this.game.now, xy)
+    this.water.getNormal(Boat.scratch.normal, this.game.now, Boat.scratch.xy)
 
     quat.rotationTo(this.rotation, Boat.scratch.up, Boat.scratch.normal)
 
