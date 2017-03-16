@@ -83,8 +83,9 @@ class SceneRenderer extends GeometryRenderer {
     gl.uniform1f(this.u_mat_shininess, material.shininess)
   }
 
-  draw (mode : number , vertBuffer : WebGLBuffer, normalBuffer : WebGLBuffer, numVerts : number) {
+  drawArrays (mode : number, vertBuffer : WebGLBuffer, normalBuffer : WebGLBuffer, numVerts : number) {
     var gl = this.game.gl
+
     gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer)
     gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0)
 
@@ -94,4 +95,17 @@ class SceneRenderer extends GeometryRenderer {
     gl.drawArrays(mode, 0, numVerts)
   }
 
+  drawElements (elementBuffer : WebGLBuffer, vertBuffer : WebGLBuffer, normalBuffer : WebGLBuffer, numElements : number) {
+    var gl = this.game.gl
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer)
+    gl.vertexAttribPointer(this.a_position, 3, gl.FLOAT, false, 0, 0)
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer)
+    gl.vertexAttribPointer(this.a_normal, 3, gl.FLOAT, false, 0, 0)
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elementBuffer)
+
+    gl.drawElements(gl.TRIANGLES, numElements, gl.UNSIGNED_SHORT, 0)
+  }
 }

@@ -110,7 +110,8 @@ abstract class Renderer {
 abstract class GeometryRenderer extends Renderer {
   protected u_transform: WebGLUniformLocation
 
-  abstract draw (mode : number, vertBuffer : WebGLBuffer, normalBuffer : WebGLBuffer, numVerts : number) : void
+  abstract drawArrays (mode : number, vertBuffer : WebGLBuffer, normalBuffer : WebGLBuffer, numVerts : number): void
+  abstract drawElements (elementBuffer: WebGLBuffer, vertBuffer : WebGLBuffer, normalBuffer : WebGLBuffer, numVerts : number): void
 
   transform (transform : Float32Array) {
     mat4.multiply(this.transformMatrix, this.transformMatrix, transform)

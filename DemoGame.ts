@@ -26,7 +26,7 @@ class DemoGame extends Game{
 
     new Editors.WaterEditor(water)
 
-    var waterSurface = new WaterSurface(this, water, 512, 16)
+    var waterSurface = new WaterSurface(this, water, 64)
     this.sceneRoot.addComponent(waterSurface)
     this.actors.push(waterSurface)
 

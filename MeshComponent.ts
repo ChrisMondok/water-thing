@@ -35,7 +35,7 @@ abstract class MeshComponent extends SceneGraphNode {
   draw(renderer : GeometryRenderer) {
     SceneGraphNode.prototype.draw.apply(this, arguments)
     renderer.setMaterial(this.material)
-    renderer.draw(this.drawMode, this.vertexBuffer, this.normalBuffer, this.numVertices)
+    renderer.drawArrays(this.drawMode, this.vertexBuffer, this.normalBuffer, this.numVertices)
   }
 
 }
