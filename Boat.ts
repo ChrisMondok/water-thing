@@ -54,7 +54,8 @@ class Boat extends Actor {
   }
 
   tick() {
-    Boat.scratch.xy.set(this.x, this.y)
+    Boat.scratch.xy[0] = this.x;
+    Boat.scratch.xy[1] = this.y;
     this.z = this.water.getZ(this.game.now, Boat.scratch.xy)
 
     this.water.getNormal(Boat.scratch.normal, this.game.now, Boat.scratch.xy)
