@@ -27,7 +27,7 @@ class Buoy extends Actor {
           m = Object.create(m)
           m.material = this.lampMaterial
         }
-        var mesh = new StaticMeshComponent(m)
+        var mesh = new StaticMeshComponent(this.game.gl, m)
         vec3.set(mesh.position, 0, 0, 0.1)
         this.addComponent(mesh)
       }, this)

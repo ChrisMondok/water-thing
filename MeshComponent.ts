@@ -1,5 +1,3 @@
-declare const gl: WebGLRenderingContext
-
 interface Mesh {
   vertices: Float32Array
   normals: Float32Array
@@ -8,13 +6,15 @@ interface Mesh {
 }
 
 abstract class MeshComponent extends SceneGraphNode {
-  drawMode = gl.TRIANGLE_STRIP
+  drawMode: number
   numVertices: number
   vertexBuffer: WebGLBuffer
   normalBuffer: WebGLBuffer
 
-  constructor (mesh : Mesh, public material : Material) {
+  constructor (gl: WebGLRenderingContext, mesh : Mesh, public material : Material) {
     super()
+
+    this.drawMode = gl.TRIANGLE_STRIP;
 
     var vertices = mesh.vertices
     var normals = mesh.normals
@@ -41,8 +41,8 @@ abstract class MeshComponent extends SceneGraphNode {
 }
 
 class StaticMeshComponent extends MeshComponent {
-  constructor (staticMeshDefinition : Mesh) {
-    super({
+  constructor (gl: WebGLRenderingContext, staticMeshDefinition : Mesh) {
+    super(gl, {
       vertices: staticMeshDefinition.vertices,
       normals: staticMeshDefinition.normals
     }, staticMeshDefinition.material)

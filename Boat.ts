@@ -23,7 +23,7 @@ class Boat extends Actor {
   load() {
     var dinghyPromise = loadMesh('models', 'dinghy.obj').then((meshes : Mesh[]) => {
       meshes.forEach((m) => {
-        var mesh = new StaticMeshComponent(m)
+        var mesh = new StaticMeshComponent(this.game.gl, m)
         vec3.set(mesh.position, 0, 0, 0.1)
         this.addComponent(mesh)
       })
@@ -36,7 +36,7 @@ class Boat extends Actor {
     var motor = this.motor
     var motorPromise = loadMesh('models', 'outboard-motor.obj').then(function (meshes) {
       meshes.forEach(function (mesh) {
-        motor.addComponent(new StaticMeshComponent(mesh))
+        motor.addComponent(new StaticMeshComponent(this.game.gl, mesh))
       })
     })
 
@@ -46,7 +46,7 @@ class Boat extends Actor {
     var prop = this.prop
     var propPromise = loadMesh('models', 'prop.obj').then(function (meshes) {
       meshes.forEach(function (mesh) {
-        prop.addComponent(new StaticMeshComponent(mesh))
+        prop.addComponent(new StaticMeshComponent(this.game.gl, mesh))
       })
     })
 
