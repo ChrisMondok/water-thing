@@ -1,5 +1,3 @@
-/* globals SceneRenderer, LightmapRenderer, Renderer, Camera, SceneGraphNode, createTexture, TextureRenderer */
-
 class Game {
   renderers: Renderer[] = []
   actors: Actor[] = []

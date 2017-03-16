@@ -1,5 +1,3 @@
-/* globals PointWaveSource */
-
 interface Function {
   name: string
 }

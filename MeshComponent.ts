@@ -1,5 +1,3 @@
-/* globals SceneGraphNode, gl */
-
 declare const gl: WebGLRenderingContext
 
 interface Mesh {
