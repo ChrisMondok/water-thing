@@ -44,8 +44,8 @@ class Heightmap extends Actor {
     return vertices
 
     function add(x: number, y: number) {
-      vertices[i++] = x * 512
-      vertices[i++] = y * 512
+      vertices[i++] = x
+      vertices[i++] = y
       vertices[i++] = 0
     }
   }

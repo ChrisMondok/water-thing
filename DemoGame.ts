@@ -27,6 +27,7 @@ class DemoGame extends Game{
     new Editors.WaterEditor(water)
 
     var waterSurface = new WaterSurface(this, water, 64)
+    vec3.set(waterSurface.scale, 512, 512, 512)
     this.sceneRoot.addComponent(waterSurface)
     this.actors.push(waterSurface)
 
