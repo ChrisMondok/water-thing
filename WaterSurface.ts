@@ -15,6 +15,7 @@ class WaterSurface extends Heightmap {
     for(let i = 0; i < this.vertices.length; i += 3) {
       vec2.set(WaterSurface.scratchXY, this.vertices[i], this.vertices[i + 1])
       vec2.transformMat4(WaterSurface.scratchXY, WaterSurface.scratchXY, this.transformMatrix)
+      // HACK: heightScale only works as long as the water surface isn't rotated along X / Y.
       this.vertices[i + 2] = this.water.getZ(this.game.now, WaterSurface.scratchXY) * heightScale
       this.water.getNormal(WaterSurface.scratchXYZ, this.game.now, WaterSurface.scratchXY)
       this.normals[i] = WaterSurface.scratchXYZ[0]
