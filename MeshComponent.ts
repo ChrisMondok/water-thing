@@ -14,7 +14,7 @@ abstract class MeshComponent extends SceneGraphNode {
   constructor (gl: WebGLRenderingContext, mesh : Mesh, public material : Material) {
     super()
 
-    this.drawMode = gl.TRIANGLE_STRIP;
+    this.drawMode = gl.TRIANGLE_STRIP
 
     var vertices = mesh.vertices
     var normals = mesh.normals

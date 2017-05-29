@@ -35,8 +35,8 @@ class Heightmap extends Actor {
     let i = 0
 
     let vertices = new Float32Array(Math.pow(resolution, 2) * 3)
-    for(let y = 0; y < resolution; y++) {
-      for(let x = 0; x < resolution; x++) {
+    for (let y = 0; y < resolution; y++) {
+      for (let x = 0; x < resolution; x++) {
         add(-0.5 + (x / (resolution - 1)), -0.5 + (y / (resolution - 1)))
       }
     }
@@ -54,8 +54,8 @@ class Heightmap extends Actor {
     let i = 0
 
     let points = new Uint16Array(Math.pow(resolution - 1, 2) * 3 * 2)
-    for(let y = 1; y < resolution; y++) {
-      for(let x = 1; x < resolution; x++) {
+    for (let y = 1; y < resolution; y++) {
+      for (let x = 1; x < resolution; x++) {
         addPoint(x - 1, y)
         addPoint(x - 1, y - 1)
         addPoint(x, y - 1)

@@ -12,7 +12,7 @@ class WaterSurface extends Heightmap {
     vec3.transformMat4(WaterSurface.scratchXYZ, WaterSurface.scratchXYZ, this.inverseTransformMatrix)
     let heightScale = WaterSurface.scratchXYZ[2]
 
-    for(let i = 0; i < this.vertices.length; i += 3) {
+    for (let i = 0; i < this.vertices.length; i += 3) {
       vec2.set(WaterSurface.scratchXY, this.vertices[i], this.vertices[i + 1])
       vec2.transformMat4(WaterSurface.scratchXY, WaterSurface.scratchXY, this.transformMatrix)
       // HACK: heightScale only works as long as the water surface isn't rotated along X / Y.
