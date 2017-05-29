@@ -46,7 +46,6 @@ class SceneRenderer extends GeometryRenderer {
 
     var gl = this.game.gl
 
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null)
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
     gl.enable(gl.DEPTH_TEST)
@@ -54,6 +53,7 @@ class SceneRenderer extends GeometryRenderer {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
     gl.enableVertexAttribArray(this.a_normal)
+    gl.enableVertexAttribArray(this.a_position)
 
     gl.activeTexture(gl.TEXTURE0)
     gl.bindTexture(gl.TEXTURE_2D, this.game.lightmap)
@@ -69,6 +69,9 @@ class SceneRenderer extends GeometryRenderer {
     gl.uniform3fv(this.u_camera, camera.position)
 
     this.game.sceneRoot.walk(this)
+
+    gl.disableVertexAttribArray(this.a_normal)
+    gl.disableVertexAttribArray(this.a_position)
   }
 
   setMaterial (material : Material) {

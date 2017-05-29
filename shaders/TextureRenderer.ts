@@ -31,12 +31,13 @@ class TextureRenderer extends Renderer {
     super.render(camera)
     var gl = this.game.gl
 
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null)
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
     gl.clear(gl.COLOR_BUFFER_BIT)
     gl.disable(gl.DEPTH_TEST)
     gl.disable(gl.CULL_FACE)
+
+    gl.enableVertexAttribArray(this.a_position)
 
     gl.activeTexture(gl.TEXTURE0)
     gl.bindTexture(gl.TEXTURE_2D, this.game.lightmap)

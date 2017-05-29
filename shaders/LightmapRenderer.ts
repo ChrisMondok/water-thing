@@ -19,6 +19,8 @@ class LightmapRenderer extends GeometryRenderer {
     super.render(camera)
     var gl = this.game.gl
 
+    gl.enableVertexAttribArray(this.a_position)
+
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer)
     gl.viewport(0, 0, this.game.lightmap.width, this.game.lightmap.height)
 
@@ -29,6 +31,9 @@ class LightmapRenderer extends GeometryRenderer {
     gl.uniformMatrix4fv(this.u_projection, false, this.lightMatrix)
 
     this.game.sceneRoot.walk(this)
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+    gl.disableVertexAttribArray(this.a_position)
   }
 
   drawArrays (mode : number, vertBuffer : WebGLBuffer, normalBuffer : WebGLBuffer, numVerts : number) {
