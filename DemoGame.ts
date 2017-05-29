@@ -1,4 +1,5 @@
 /// <reference path="Game.ts"/>
+/// <reference path="Material.ts"/>
 
 class DemoGame extends Game{
   water: Water
@@ -30,6 +31,12 @@ class DemoGame extends Game{
     vec3.set(waterSurface.scale, 512, 512, 512)
     this.sceneRoot.addComponent(waterSurface)
     this.actors.push(waterSurface)
+
+    Heightmap.fromImage(this, new SandMaterial(), 'heightmaps/test.png', 0.3).then(hm => {
+      this.sceneRoot.addComponent(hm)
+      vec3.set(hm.scale, 2048, 2048, 2048)
+      vec3.set(hm.position, -512, 0, 0)
+    })
 
     Promise.all([this.spawnBoat(), this.spawnBuoy()]).then(() => {
       return new Promise((resolve, reject) => {
@@ -78,4 +85,13 @@ class DemoGame extends Game{
 
     component.components.forEach(this.addMaterialEditorsForNodeAndChildren, this)
   }
+}
+
+class SandMaterial extends Material {
+  name = 'Sand'
+  diffuse = new Float32Array([0.78, 0.65, 0.47])
+  emissive = new Float32Array([0, 0, 0])
+  ambient = new Float32Array([1, 1, 1])
+  specular = new Float32Array([0.4, 0.4, 0.4])
+  shininess = 4
 }

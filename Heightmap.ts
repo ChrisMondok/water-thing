@@ -1,6 +1,6 @@
 class Heightmap extends Actor {
-  protected vertices : Float32Array
-  protected normals : Float32Array
+  protected readonly vertices : Float32Array
+  protected readonly normals : Float32Array
 
   constructor(game: Game, public material : Material, public readonly resolution : number) {
     super(game)
@@ -10,13 +10,11 @@ class Heightmap extends Actor {
     this.vertices = Heightmap.buildVertexArray(this.resolution)
 
     this.vertexBuffer = notNull(gl.createBuffer())
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer)
-    gl.bufferData(gl.ARRAY_BUFFER, this.vertices, gl.DYNAMIC_DRAW)
 
     this.normalBuffer = notNull(gl.createBuffer())
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer)
     this.normals = new Float32Array(Math.pow(this.resolution, 2) * 3).map((x, i) => (i - 2) % 3 ? 0 : 1)
-    gl.bufferData(gl.ARRAY_BUFFER, this.normals, gl.DYNAMIC_DRAW)
+
+    this.updateBuffers()
 
     this.elementBuffer = notNull(gl.createBuffer())
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elementBuffer)
@@ -29,6 +27,67 @@ class Heightmap extends Actor {
 
     let numPoints = Math.pow(this.resolution - 1, 2) * 3 * 2
     renderer.drawElements(this.elementBuffer, this.vertexBuffer, this.normalBuffer, numPoints)
+  }
+
+  setNormalsFromVertices() {
+    const vertices = this.vertices
+    const normals = this.normals
+    const resolution = this.resolution
+
+    const scratch = vec3.create()
+
+    for (let y = 0; y < this.resolution; y++) {
+      for (let x = 0; x < this.resolution; x++) {
+        const dx = getZ(x + 1, y) - getZ(x - 1, y)
+        const dy = getZ(x, y + 1) - getZ(x, y - 1)
+        vec3.set(scratch, dx, dy, 2 / resolution)
+        vec3.normalize(scratch, scratch)
+        const normalOffset = 3 * (y * this.resolution + x)
+        normals[normalOffset + 0] = notNan(scratch[0])
+        normals[normalOffset + 1] = notNan(scratch[1])
+        normals[normalOffset + 2] = notNan(scratch[2])
+      }
+    }
+
+    function getZ(x: number, y: number) {
+      x = Math.max(Math.min(x, resolution - 1), 0)
+      y = Math.max(Math.min(y, resolution - 1), 0)
+      return vertices[3 * (resolution * y + x) + 2]
+    }
+  }
+
+  protected updateBuffers() {
+    const gl = this.game.gl
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer)
+    gl.bufferData(gl.ARRAY_BUFFER, this.vertices, gl.DYNAMIC_DRAW)
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer)
+    gl.bufferData(gl.ARRAY_BUFFER, this.normals, gl.DYNAMIC_DRAW)
+  }
+
+  static fromImage(game: Game, material: Material, uri: string, maxHeight: number) {
+    const img = document.createElement('img')
+    img.src = uri
+
+    return loadImage(uri).then(img => {
+      if (img.width !== img.height) throw new Error('Heightmap image must be square.')
+      const heights = getImageData(img).data.filter((n, i) => !(i % 4)) // Only use the red channel
+      const heightmap = new Heightmap(game, material, img.width)
+      heights.forEach((h, i) => {
+        heightmap.vertices[2 + i * 3] = maxHeight * ((h - 128) / 255)
+      })
+      heightmap.setNormalsFromVertices()
+      heightmap.updateBuffers()
+      return heightmap
+    })
+
+    function loadImage(uri: string) {
+      return new Promise<HTMLImageElement>((resolve, reject) => {
+        img.addEventListener('load', () => {
+          resolve(img)
+        })
+      })
+    }
   }
 
   private static buildVertexArray(resolution: number) {
