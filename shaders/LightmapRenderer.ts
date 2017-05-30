@@ -28,7 +28,7 @@ class LightmapRenderer extends GeometryRenderer {
     gl.enable(gl.CULL_FACE)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-    gl.uniformMatrix4fv(this.u_projection, false, this.lightMatrix)
+    gl.uniformMatrix4fv(this.u_projection, false, this.game.sun.matrix)
 
     this.game.sceneRoot.walk(this)
 

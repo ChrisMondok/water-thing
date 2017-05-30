@@ -1,10 +1,12 @@
+/// <reference path="Sun.ts"/>
+
 class Game {
   renderers: Renderer[] = []
   actors: Actor[] = []
   sceneRoot: SceneGraphNode
 
   origin = vec3.create()
-  sun = vec3.create()
+  sun: Sun
 
   gl: WebGLRenderingContext
 
@@ -49,13 +51,14 @@ class Game {
   createComponents() {
     this.camera = new Camera(this)
     this.sceneRoot = new SceneGraphNode()
+    this.sun = new Sun(this)
+    this.actors.push(this.sun)
+    this.sceneRoot.addComponent(this.sun)
   }
 
   tick(ts: number) {
     this.dt = this.timeScale * (ts - this.lastTs)
     this.now += this.dt
-
-    this.updateSun()
 
     for (let i = 0; i < this.actors.length; i++) {
       this.actors[i].tick()
@@ -78,15 +81,5 @@ class Game {
     return Renderer.create(type, this).then(function (r: Renderer) {
       this.renderers.push(r)
     }.bind(this))
-  }
-
-  private updateSun() {
-    function computeSunIntensity (timeOfDay: number) {
-      return 1.0
-    }
-
-    vec3.set(this.sun, 0, 0, -1 * computeSunIntensity(this.timeOfDay))
-    vec3.rotateX(this.sun, this.sun, this.origin, this.timeOfDay * Math.PI * 2)
-    vec3.rotateY(this.sun, this.sun, this.origin, -this.latitude / 180 * Math.PI)
   }
 }

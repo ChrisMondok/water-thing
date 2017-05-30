@@ -9,42 +9,16 @@ interface RendererType<T extends Renderer> {
 
 abstract class Renderer {
   protected readonly a_position: number
-  protected readonly lightMatrix = mat4.create()
 
   protected readonly transformMatrix = mat4.identity(mat4.create())
-
-  private static scratch = {
-    nSun: vec3.create(),
-    orthoMatrix: mat4.create()
-  }
 
   constructor (protected game : Game, protected program: WebGLProgram) {
     this.a_position = game.gl.getAttribLocation(program, 'a_position')
     game.gl.enableVertexAttribArray(this.a_position)
   }
 
-
   render (camera : Camera) {
     this.game.gl.useProgram(this.program)
-
-    vec3.normalize(Renderer.scratch.nSun, this.game.sun)
-
-    lookAt(this.lightMatrix, Renderer.scratch.nSun, camera.target, Renderer.getUpVector(Renderer.scratch.nSun))
-
-    mat4.invert(this.lightMatrix, this.lightMatrix)
-
-    mat4.multiply(this.lightMatrix, Renderer.getOrthoMatrix(vec3.distance(camera.target, camera.position) * 2), this.lightMatrix)
-  }
-
-  private static getOrthoMatrix (width : number, height = width, depth = height) {
-    mat4.set(Renderer.scratch.orthoMatrix,
-      2 / width, 0, 0, 0,
-      0, 2 / height, 0, 0,
-      0, 0, -2 / depth, 0,
-      0, 0, 0, 1
-    )
-
-    return Renderer.scratch.orthoMatrix
   }
 
   protected static getUpVector = (function() {

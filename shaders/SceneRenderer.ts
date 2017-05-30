@@ -61,9 +61,9 @@ class SceneRenderer extends GeometryRenderer {
 
     gl.uniformMatrix4fv(this.u_projection, false, camera.getMatrix())
 
-    gl.uniformMatrix4fv(this.u_sun_projection, false, this.lightMatrix)
+    gl.uniformMatrix4fv(this.u_sun_projection, false, this.game.sun.matrix)
 
-    gl.uniform3fv(this.u_sun, this.game.sun)
+    gl.uniform3fv(this.u_sun, this.game.sun.position)
     var ambient = 0.4
     gl.uniform3fv(this.u_ambient_light, new Float32Array([ambient, ambient, ambient]))
     gl.uniform3fv(this.u_camera, camera.position)
