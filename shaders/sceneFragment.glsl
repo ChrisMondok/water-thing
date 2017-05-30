@@ -22,7 +22,6 @@ const float shadow_fudge_factor = 0.005;
 
 float get_light() {
 	float sum = 0.0;
-	vec2 duv;
 	const float pcf_size = 4.0;
 
 	if(texture2D(u_lightmap_sampler, v_lightmap_pos.xy).a != 1.0)
@@ -30,7 +29,7 @@ float get_light() {
 
 	for(float pcf_x=-(pcf_size-1.0)/2.0; pcf_x <= (pcf_size-1.0)/2.0; pcf_x += 1.0)
 		for(float pcf_y=-(pcf_size-1.0)/2.0; pcf_y <= (pcf_size-1.0)/2.0; pcf_y += 1.0)
-			sum += texture2D(u_lightmap_sampler, v_lightmap_pos.xy + duv).r;
+			sum += texture2D(u_lightmap_sampler, v_lightmap_pos.xy).r;
 
 	sum /= (pcf_size * pcf_size);
 
