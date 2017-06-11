@@ -21,23 +21,6 @@ abstract class Renderer {
     this.game.gl.useProgram(this.program)
   }
 
-  protected static getUpVector = (function() {
-    const upVector = vec3.create()
-    return function getUpVector (lookVector : Float32Array) {
-      var declination = Math.asin(lookVector[2])
-
-      var xyAngle = Math.PI + Math.atan2(lookVector[1], lookVector[0])
-
-      vec3.set(upVector,
-        Math.cos(xyAngle) * Math.sin(declination),
-        Math.sin(xyAngle) * Math.sin(declination),
-        Math.cos(declination)
-      )
-
-      return upVector
-    }
-  })()
-
   setMaterial (material : Material) {
     if (!material.isComplete()) throw new Error('Material is incomplete!')
   }
