@@ -59,7 +59,7 @@
           setShininess(words)
           return
         default:
-          console.warn('Unrecognized mtl directive %s', words[0])
+          currentMaterial.unrecognizedDirectives.push(words[0])
       }
     }
 

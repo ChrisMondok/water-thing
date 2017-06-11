@@ -1,5 +1,6 @@
 var Material = (function () {
     function Material() {
+        this.unrecognizedDirectives = [];
         this.shininess = 16;
     }
     Material.prototype.isComplete = function () {
@@ -16,6 +17,7 @@ var Material = (function () {
         clone.specular = this.specular && new Float32Array(this.specular);
         clone.ambient = this.ambient && new Float32Array(this.ambient);
         clone.shininess = this.shininess;
+        clone.name = this.name;
         return clone;
     };
     return Material;

@@ -5,6 +5,8 @@ class Material {
   ambient: Float32Array
   name?: string
 
+  readonly unrecognizedDirectives: string[] = []
+
   shininess = 16
 
   isComplete() {
