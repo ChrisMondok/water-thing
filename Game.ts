@@ -38,9 +38,9 @@ class Game {
     let size = Math.min(2048, gl.MAX_RENDERBUFFER_SIZE, gl.MAX_VIEWPORT_DIMS)
     this.lightmap = createTexture(this.gl, size, size)
 
-    this.ready = this.addRenderer(LightmapRenderer)
-      .then(this.addRenderer.bind(this, SceneRenderer))
-      .then(this.addRenderer.bind(this, TextureRenderer))
+    this.ready = this.addRenderer(RadarRenderer)
+      //.then(this.addRenderer.bind(this, SceneRenderer))
+      //.then(this.addRenderer.bind(this, TextureRenderer))
       .then(function () {
         window.requestAnimationFrame(tick)
       }, function (error: any) {
